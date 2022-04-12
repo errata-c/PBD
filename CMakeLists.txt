@@ -21,7 +21,11 @@ find_package(glm CONFIG REQUIRED)
 
 add_library(pbd STATIC
 	"src/Engine3D.cpp"
+	
 	"src/constraint/Distance.cpp"
+	"src/constraint/TetraVolume.cpp"
+	"src/constraint/CollideParticle.cpp"
+	"src/constraint/CollidePlane.cpp"
 )
 target_include_directories(pbd PUBLIC
 	$<INSTALL_INTERFACE:include>
@@ -29,6 +33,8 @@ target_include_directories(pbd PUBLIC
 )
 target_compile_features(pbd PUBLIC cxx_std_17)
 target_link_libraries(pbd PUBLIC glm::glm)
+
+add_library(pbd::pbd ALIAS pbd)
 
 if(PBD_BUILD_TESTS)
 	add_subdirectory("test")

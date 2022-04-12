@@ -1,0 +1,16 @@
+
+Implement a simple class that wraps the 3d engine
+add some methods to interact with it and create some basic particles + constraints.
+
+make that particle information accessible for rendering with a multimesh in godot.
+
+MultiMeshInstance to contain the meshes, then pass the transform data over to godot
+Create a PoolRealArray to contain the tranform data.
+
+Transform3D is 12 floats, no custom data or color needed.
+Each instance will have the same orientation, but a different scale and position.
+Transform is a 3x4 matrix, column major order, this makes it easy to setup.
+
+Engine node will be setup, the scene will pass the mesh instance to it.
+Then the scene will call methods on the Engine node to create particles and instances, as well as constraints.
+The physics will be updated once per cycle of the physics process in godot
