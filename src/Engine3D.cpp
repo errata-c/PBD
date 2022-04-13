@@ -39,9 +39,9 @@ namespace pbd {
 			velocity[i] += gravity * sdt;
 			pos[i] += velocity[i] * sdt;
 
-			// Universal colliders
-			for (const CollidePlane & plane : planes) {
-				plane.eval(*this, i);
+			if (pos[i].y < 0.f) {
+				pos[i] = prevPos[i];
+				pos[i].y = 0.f;
 			}
 		}
 	}
@@ -53,6 +53,14 @@ namespace pbd {
 		for (const TetraVolume3D& constraint : tetras) {
 			constraint.eval(*this);
 		}
+		// Universal colliders
+		/*
+		for (const CollidePlane& plane : planes) {
+			for (int i = 0; i < size(); ++i) {
+				plane.eval(*this, i);
+			}
+		}
+		*/
 	}
 	void Engine3D::postSolve(float sdt) {
 		sdt = 1.f / sdt;

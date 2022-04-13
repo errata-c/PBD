@@ -33,6 +33,6 @@ namespace pbd {
 
 		// Update the positions for the next constraint to use.
 		x0 += lambda * w0 * grad;
-		x1 += lambda * w1 * grad;
+		x1 += -lambda * w1 * grad;
 	}
 }
