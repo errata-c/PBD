@@ -1,10 +1,10 @@
 #include <pbd/constraint/TetraVolume.hpp>
-#include <pbd/Engine3D.hpp>
+#include <pbd/Engine.hpp>
 
 #include <glm/geometric.hpp>
 
 namespace pbd {
-	void TetraVolume3D::eval(Engine3D & engine) const {
+	void TetraVolume::eval(Engine & engine) const {
 		std::array<glm::vec3*, 4> x;
 		// Fetch the addresses of the positions
 		for (int i = 0; i < ids.size(); ++i) {

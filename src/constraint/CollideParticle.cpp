@@ -1,10 +1,10 @@
 #include <pbd/constraint/CollideParticle.hpp>
-#include <pbd/Engine3D.hpp>
+#include <pbd/Engine.hpp>
 
 #include <glm/geometric.hpp>
 
 namespace pbd {
-	void CollideParticle3D::eval(Engine3D& engine) const {
+	void CollideParticle::eval(Engine& engine) const {
 		float w0 = engine.invMass[p0];
 		float w1 = engine.invMass[p1];
 

@@ -2,9 +2,9 @@
 #include <array>
 
 namespace pbd {
-	class Engine3D;
+	class Engine;
 
-	struct TetraVolume3D {
+	struct TetraVolume {
 		static constexpr std::array<std::array<int, 3>, 4> faceOrder{ {
 			{0,1,3},
 			{0,2,3},
@@ -14,6 +14,6 @@ namespace pbd {
 		std::array<int, 4> ids;
 		float initialVolume;
 
-		void eval(Engine3D & engine) const;
+		void eval(Engine & engine) const;
 	};
 }

@@ -1,10 +1,10 @@
 #include <pbd/constraint/Distance.hpp>
-#include <pbd/Engine3D.hpp>
+#include <pbd/Engine.hpp>
 
 #include <glm/geometric.hpp>
 
 namespace pbd {
-	void Distance3D::eval(Engine3D& engine) const {
+	void Distance::eval(Engine& engine) const {
 		float w0 = engine.invMass[p0];
 		float w1 = engine.invMass[p1];
 

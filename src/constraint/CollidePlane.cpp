@@ -1,10 +1,10 @@
 #include <pbd/constraint/CollidePlane.hpp>
-#include <pbd/Engine3D.hpp>
+#include <pbd/Engine.hpp>
 
 #include <glm/geometric.hpp>
 
 namespace pbd {
-	void CollidePlane::eval(Engine3D& engine, int id) const {
+	void CollidePlane::eval(Engine& engine, int id) const {
 		// C = dot((x0 - origin), normal)
 		// grad(C, x0) = x0 * normal
 

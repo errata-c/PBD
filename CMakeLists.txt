@@ -20,7 +20,7 @@ FetchContent_MakeAvailable(ez-cmake)
 find_package(glm CONFIG REQUIRED)
 
 add_library(pbd STATIC
-	"src/Engine3D.cpp"
+	"src/Engine.cpp"
 	
 	"src/constraint/Distance.cpp"
 	"src/constraint/TetraVolume.cpp"

@@ -1,19 +1,12 @@
 #pragma once
 
 namespace pbd {
-	class Engine3D;
+	class Engine;
 
-	struct Distance3D {
+	struct Distance {
 		int p0, p1;
 		float initialLength;
 
-		void eval(Engine3D& engine) const;
-	};
-
-	struct Distance2D {
-		int p0, p1;
-		float length;
-
-		void eval(Engine3D& engine) const;
+		void eval(Engine& engine) const;
 	};
 }
