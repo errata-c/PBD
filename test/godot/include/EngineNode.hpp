@@ -26,14 +26,15 @@ namespace godot {
 		int64_t num_particles() const;
 		void set_num_particles(int64_t count);
 
-		void set_friction(float friction);
+		void set_static_friction(float friction);
+		void set_kinetic_friction(float friction);
 
 		void set_particle(int index, Vector3 pos, float mass);
 
 		void add_distance_constraint(int id0, int id1, float compliance);
 		void add_tetra_volume_constraint(int id0, int id1, int id2, int id3, float compliance);
 
-		void add_plane_collide(Vector3 origin, Vector3 normal);
+		void add_plane_collide(int id, Vector3 origin, Vector3 normal);
 
 		void set_multi_mesh_instance(MultiMeshInstance* node);
 		void update_mesh();

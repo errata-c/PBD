@@ -7,7 +7,9 @@ func _ready():
 	engine = $Engine
 	engine.set_multi_mesh_instance($Particles)
 	engine.set_num_particles(4)
-	engine.set_friction(0.01)
+	
+	engine.set_static_friction(1.0)
+	engine.set_kinetic_friction(1.0)
 	
 	engine.set_particle(0,
 		Vector3(3,3,0),
@@ -32,27 +34,25 @@ func _ready():
 	engine.add_distance_constraint(2,3, compliance)
 	engine.add_tetra_volume_constraint(0,1,2,3, compliance)
 	
-	#engine.add_plane_collide(
-	#	Vector3(0,0,0),
-	#	Vector3(0,1,0)
-	#)
 	
-	#engine.add_plane_collide(
-	#	Vector3(10,0,0),
-	#	Vector3(-1,0,0)
-	#)
-	#engine.add_plane_collide(
-	#	Vector3(-10,0,0),
-	#	Vector3(1,0,0)
-	#)
-	#engine.add_plane_collide(
-	#	Vector3(0,0,10),
-	#	Vector3(0,0,-1)
-	#)
-	#engine.add_plane_collide(
-	#	Vector3(0,0,-10),
-	#	Vector3(0,0,1)
-	#)
+	var origins = [
+		Vector3(0,0,0),
+		#Vector3(10,0,0),
+		#Vector3(-10,0,0),
+		#Vector3(0,0,10),
+		#Vector3(0,0,-10)
+	]
+	var normals = [
+		Vector3(0,1,0),
+		#Vector3(-1,0,0),
+		#Vector3(1,0,0),
+		#Vector3(0,0,-1),
+		#Vector3(0,0,1)
+	]
+	
+	for i in range(len(origins)):
+		for p in range(4):
+			engine.add_plane_collide(p, origins[i], normals[i])
 	
 	engine.update_mesh()
 

@@ -44,7 +44,15 @@ One implementation breaks everything into blocks, then creates a secondary hash.
 
 Objects added to the scene will have a consecutive set of particles and constraints. Creation and deletion of objects will require changing the particle and constraint ordering. This will invalidate any indices the particles originally had. A mapping is needed to allow for rearrangement. Additionally, we need the constraints to be contained in a single location, instead of in several different ones. 
 
-It may be possible to implement rigid body physics for larger objects (like boxes, capsules, meshes) by emulating multiple particles. Compute center of mass of object, create tetrahedron of virtual particles around the origin. Wherever a collision occurs,  treat that collision as collision with a particle with mass of object over distance from object origin. Then apply a distance constraint between origin  
+It may be possible to implement rigid body physics for larger objects (like boxes, capsules, meshes) by emulating multiple particles. Compute center of mass of object, create tetrahedron of virtual particles around the origin. Then in theory all we need to do is compute a limited set of constraints to get the emergent behavior.
+
+It might be worthwhile to give the particles and other collision objects their own friction values. The number of values we have to store per-particle is already pretty high, but I don't think running out of memory is the biggest concern facing the performance.
+
+Damping could also be added into the mix. We have to option of implementing multiple forms of the constraints such that something like damping can be optional.
+
+Compliance could be added to the collision constraints as well, if desired. This would in effect make the collisions a bit softer. That could be a desirable effect. Just like the damping, this could also be made optional.
+
+XPBD makes mention of the Lagrange multiplier being cumulative over the timesteps. It seems like they are talking about having the multiplier update just like the position update, only this time just for the specific constraints and not the particles. I don't fully know what the benefit of this is, as I haven't seen an implementation of it anywhere. Additionally, the implementations without it seem to work fairly well. I may create a test branch later to test this out and see how well it performs, and if its worth the additional memory overhead.
 
 # Todo:
 

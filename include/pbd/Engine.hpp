@@ -20,7 +20,8 @@ namespace pbd {
 		glm::vec3 gravity;
 		float dt;
 		int numSubsteps;
-		float friction;
+		float kineticFriction;
+		float staticFriction;
 
 		// Map for objects?
 
@@ -31,7 +32,7 @@ namespace pbd {
 		// Structure of arrays or array of structures?
 		struct Particles {
 			std::vector<glm::vec3> pos, prevPos, velocity;
-			std::vector<float> invMass;
+			std::vector<float> invMass, radius;
 			std::vector<int32_t> flags;
 		} particle;
 

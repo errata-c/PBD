@@ -3,7 +3,8 @@
 
 namespace pbd {
 	Engine::Engine()
-		: friction(1)
+		: staticFriction(1.f)
+		, kineticFriction(1.f)
 		, gravity(0,-9.8,0)
 		, numSubsteps(4)
 		, dt(1.0 / 60.0)

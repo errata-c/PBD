@@ -11,7 +11,8 @@ namespace godot {
 	void EngineNode::_register_methods() {
 		register_method("set_multi_mesh_instance", &EngineNode::set_multi_mesh_instance);
 		register_method("set_particle", &EngineNode::set_particle);
-		register_method("set_friction", &EngineNode::set_friction);
+		register_method("set_static_friction", &EngineNode::set_static_friction);
+		register_method("set_kinetic_friction", &EngineNode::set_kinetic_friction);
 		register_method("set_num_particles", &EngineNode::set_num_particles);
 		register_method("num_particles", &EngineNode::num_particles);
 
@@ -41,10 +42,15 @@ namespace godot {
 		mminst = node;
 	}
 
-	void EngineNode::set_friction(float friction) {
+	void EngineNode::set_static_friction(float friction) {
 		// Cannot be zero (?), cannot be negative
 		friction = std::max(friction, 1e-5f);
-		engine.friction = friction;
+		engine.staticFriction = friction;
+	}
+	void EngineNode::set_kinetic_friction(float friction) {
+		// Cannot be zero (?), cannot be negative
+		friction = std::max(friction, 1e-5f);
+		engine.kineticFriction = friction;
 	}
 
 	int64_t EngineNode::num_particles() const {
@@ -90,7 +96,7 @@ namespace godot {
 		});
 	}
 
-	void EngineNode::add_plane_collide(Vector3 o, Vector3 n) {
+	void EngineNode::add_plane_collide(int id, Vector3 o, Vector3 n) {
 		glm::vec3 origin{
 			o.x,
 			o.y,
@@ -102,7 +108,7 @@ namespace godot {
 			n.z
 		};
 
-		//engine.add(pbd::CollidePlane( origin, normal ));
+		engine.add(pbd::CollidePlane{ id, origin, normal });
 	}
 
 

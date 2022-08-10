@@ -37,7 +37,9 @@ namespace pbd {
 		x1 += -lambda * w1 * grad;
 
 		// Frictional delta
-		// [(x0 delta) - (x1 delta)] perpendicular to normal (x0 - x1, see grad above)
+		// [(x0 - prev x0) - (x1 - prev x1)] perpendicular to normal (x0 - x1, see grad above)
 
+		const glm::vec3& px0 = engine.particle.prevPos[p0];
+		const glm::vec3& px1 = engine.particle.prevPos[p1];
 	}
 }
