@@ -4,7 +4,7 @@
 #include <glm/geometric.hpp>
 
 namespace pbd {
-	void CollideParticle::eval(Engine& engine) const {
+	void CollideParticle::eval(Engine& engine, float rdt2) const {
 		float w0 = engine.particle.invMass[p0];
 		float w1 = engine.particle.invMass[p1];
 
@@ -35,5 +35,9 @@ namespace pbd {
 		// Update the positions for the next constraint to use.
 		x0 += lambda * w0 * grad;
 		x1 += -lambda * w1 * grad;
+
+		// Frictional delta
+		// [(x0 delta) - (x1 delta)] perpendicular to normal (x0 - x1, see grad above)
+
 	}
 }

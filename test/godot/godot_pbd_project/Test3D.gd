@@ -7,6 +7,7 @@ func _ready():
 	engine = $Engine
 	engine.set_multi_mesh_instance($Particles)
 	engine.set_num_particles(4)
+	engine.set_friction(0.01)
 	
 	engine.set_particle(0,
 		Vector3(3,3,0),
@@ -21,13 +22,15 @@ func _ready():
 		Vector3(0,5,0),
 		1.0)
 		
-	engine.add_distance_constraint(0,1)
-	engine.add_distance_constraint(0,2)
-	engine.add_distance_constraint(0,3)
-	engine.add_distance_constraint(1,2)
-	engine.add_distance_constraint(1,3)
-	engine.add_distance_constraint(2,3)
-	engine.add_tetra_volume_constraint(0,1,2,3)
+	var compliance = 0.125
+		
+	engine.add_distance_constraint(0,1, compliance)
+	engine.add_distance_constraint(0,2, compliance)
+	engine.add_distance_constraint(0,3, compliance)
+	engine.add_distance_constraint(1,2, compliance)
+	engine.add_distance_constraint(1,3, compliance)
+	engine.add_distance_constraint(2,3, compliance)
+	engine.add_tetra_volume_constraint(0,1,2,3, compliance)
 	
 	#engine.add_plane_collide(
 	#	Vector3(0,0,0),

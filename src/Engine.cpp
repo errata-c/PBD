@@ -51,19 +51,21 @@ namespace pbd {
 	void Engine::midSolve(float sdt) {
 		// Run all the constraints, we need to have the constraints added to this
 
+		float rdt2 = 1.f / (sdt * sdt);
+
 		for (CVariant & cvar: constraints) {
 			switch (cvar.kind) {
 			case Constraint::Distance:
-				((ConstraintDistance*)(&cdata[cvar.index]))->eval(*this);
+				((ConstraintDistance*)(&cdata[cvar.index]))->eval(*this, rdt2);
 				break;
 			case Constraint::TetraVolume:
-				((ConstraintTetraVolume*)(&cdata[cvar.index]))->eval(*this);
+				((ConstraintTetraVolume*)(&cdata[cvar.index]))->eval(*this, rdt2);
 				break;
 			case Constraint::CollideParticle:
-				((CollideParticle*)(&cdata[cvar.index]))->eval(*this);
+				((CollideParticle*)(&cdata[cvar.index]))->eval(*this, rdt2);
 				break;
 			case Constraint::CollidePlane:
-				((CollidePlane*)(&cdata[cvar.index]))->eval(*this);
+				((CollidePlane*)(&cdata[cvar.index]))->eval(*this, rdt2);
 				break;
 			}
 		}

@@ -14,10 +14,12 @@ namespace pbd {
 			{0,3,1},
 			{0,1,2}
 		}};
-		std::array<int32_t, 4> ids;
-		float initialVolume;
 
-		void eval(Engine & engine) const;
+		std::array<int32_t, 4> ids;
+		float volume;
+		float compliance;
+
+		void eval(Engine & engine, float rdt2) const;
 	};
 
 	static_assert(alignof(ConstraintTetraVolume) == alignof(int32_t));

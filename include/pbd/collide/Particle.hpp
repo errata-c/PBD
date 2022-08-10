@@ -12,7 +12,7 @@ namespace pbd {
 		int32_t p0, p1;
 		float distance;
 
-		void eval(Engine& engine) const;
+		void eval(Engine& engine, float rdt2) const;
 	};
 
 	static_assert(alignof(CollideParticle) == alignof(int32_t));

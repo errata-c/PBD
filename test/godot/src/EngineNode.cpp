@@ -11,6 +11,7 @@ namespace godot {
 	void EngineNode::_register_methods() {
 		register_method("set_multi_mesh_instance", &EngineNode::set_multi_mesh_instance);
 		register_method("set_particle", &EngineNode::set_particle);
+		register_method("set_friction", &EngineNode::set_friction);
 		register_method("set_num_particles", &EngineNode::set_num_particles);
 		register_method("num_particles", &EngineNode::num_particles);
 
@@ -40,6 +41,12 @@ namespace godot {
 		mminst = node;
 	}
 
+	void EngineNode::set_friction(float friction) {
+		// Cannot be zero (?), cannot be negative
+		friction = std::max(friction, 1e-5f);
+		engine.friction = friction;
+	}
+
 	int64_t EngineNode::num_particles() const {
 		return engine.size();
 	}
@@ -54,15 +61,15 @@ namespace godot {
 		engine.particle.invMass[index] = 1.f / mass;
 	}
 
-	void EngineNode::add_distance_constraint(int id0, int id1) {
+	void EngineNode::add_distance_constraint(int id0, int id1, float compliance) {
 		glm::vec3
 			p0 = engine.particle.pos[id0],
 			p1 = engine.particle.pos[id1];
 
-		engine.add(pbd::ConstraintDistance{ id0, id1, glm::distance(p0, p1)});
+		engine.add(pbd::ConstraintDistance{ id0, id1, glm::distance(p0, p1), compliance });
 	}
 
-	void EngineNode::add_tetra_volume_constraint(int id0, int id1, int id2, int id3) {
+	void EngineNode::add_tetra_volume_constraint(int id0, int id1, int id2, int id3, float compliance) {
 		glm::vec3
 			p0 = engine.particle.pos[id0],
 			p1 = engine.particle.pos[id1],
@@ -78,7 +85,8 @@ namespace godot {
 
 		engine.add(pbd::ConstraintTetraVolume{
 			{id0, id1, id2, id3},
-			glm::dot(t3, t4) / 6.f
+			glm::dot(t3, t4) / 6.f,
+			compliance
 		});
 	}
 

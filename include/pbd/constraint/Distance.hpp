@@ -8,10 +8,11 @@ namespace pbd {
 	struct ConstraintDistance {
 		static constexpr Constraint Kind = Constraint::Distance;
 
+		void eval(Engine& engine, float rdt2) const;
+		
 		int32_t p0, p1;
-		float initialLength;
-
-		void eval(Engine& engine) const;
+		float length;
+		float compliance;
 	};
 
 	static_assert(alignof(ConstraintDistance) == alignof(int32_t));
