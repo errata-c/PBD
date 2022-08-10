@@ -49,24 +49,25 @@ namespace godot {
 	}
 
 	void EngineNode::set_particle(int index, Vector3 pos, float mass) {
-		engine.pos[index] = glm::vec3{pos.x, pos.y, pos.z};
-		engine.velocity[index] = glm::vec3{ 0.f };
-		engine.invMass[index] = 1.f / mass;
+		engine.particle.pos[index] = glm::vec3{pos.x, pos.y, pos.z};
+		engine.particle.velocity[index] = glm::vec3{ 0.f };
+		engine.particle.invMass[index] = 1.f / mass;
 	}
 
 	void EngineNode::add_distance_constraint(int id0, int id1) {
 		glm::vec3
-			p0 = engine.pos[id0],
-			p1 = engine.pos[id1];
-		engine.distances.push_back(pbd::Distance3D{ id0, id1, glm::distance(p0, p1)});
+			p0 = engine.particle.pos[id0],
+			p1 = engine.particle.pos[id1];
+
+		engine.add(pbd::ConstraintDistance{ id0, id1, glm::distance(p0, p1)});
 	}
 
 	void EngineNode::add_tetra_volume_constraint(int id0, int id1, int id2, int id3) {
 		glm::vec3
-			p0 = engine.pos[id0],
-			p1 = engine.pos[id1],
-			p2 = engine.pos[id2],
-			p3 = engine.pos[id3];
+			p0 = engine.particle.pos[id0],
+			p1 = engine.particle.pos[id1],
+			p2 = engine.particle.pos[id2],
+			p3 = engine.particle.pos[id3];
 
 		glm::vec3
 			t0 = p1 - p0,
@@ -75,7 +76,7 @@ namespace godot {
 
 		glm::vec3 t4 = glm::cross(t0, t1);
 
-		engine.tetras.push_back(pbd::TetraVolume3D{
+		engine.add(pbd::ConstraintTetraVolume{
 			{id0, id1, id2, id3},
 			glm::dot(t3, t4) / 6.f
 		});
@@ -93,7 +94,7 @@ namespace godot {
 			n.z
 		};
 
-		engine.planes.push_back(pbd::CollidePlane{ origin, normal });
+		//engine.add(pbd::CollidePlane( origin, normal ));
 	}
 
 
@@ -120,7 +121,7 @@ namespace godot {
 
 			float* data = write.ptr();
 			for (int i = 0; i < engine.size(); ++i) {
-				glm::vec3 pos = engine.pos[i];
+				glm::vec3 pos = engine.particle.pos[i];
 				form[3] = pos.x;
 				form[7] = pos.y;
 				form[11] = pos.z;
@@ -136,7 +137,7 @@ namespace godot {
 			once++;
 			if (once == 480) {
 				for (int i = 0; i < engine.size(); ++i) {
-					glm::vec3 p = engine.pos[i];
+					glm::vec3 p = engine.particle.pos[i];
 					String text = "pos: {0}, {1}, {2}";
 					Godot::print(text.format(Array::make(p.x, p.y, p.z)));
 				}

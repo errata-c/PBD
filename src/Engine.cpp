@@ -9,14 +9,14 @@ namespace pbd {
 		, dt(1.0 / 60.0)
 	{}
 
-	void Engine::resize(int count) {
-		pos.resize(count);
-		prevPos.resize(count);
-		velocity.resize(count);
-		invMass.resize(count);
+	void Engine::resize(int64_t count) {
+		particle.pos.resize(count);
+		particle.prevPos.resize(count);
+		particle.velocity.resize(count);
+		particle.invMass.resize(count);
 	}
-	int Engine::size() const {
-		return static_cast<int>(pos.size());
+	int64_t Engine::size() const {
+		return static_cast<int64_t>(particle.pos.size());
 	}
 
 	void Engine::solve() {
@@ -29,48 +29,54 @@ namespace pbd {
 	}
 
 	void Engine::preSolve(float sdt) {
-		prevPos.assign(pos.begin(), pos.end());
+		particle.prevPos.assign(particle.pos.begin(), particle.pos.end());
 
-		for (int i = 0; i < pos.size(); ++i) {
-			if (invMass[i] < 1e-5f) {
+		for (int64_t i = 0, count = size(); i < count; ++i) {
+			if (particle.invMass[i] < 1e-5f) {
 				continue;
 			}
+			glm::vec3 & velocity = particle.velocity[i];
+			glm::vec3 & position = particle.pos[i];
+			const glm::vec3 & prevPosition = particle.prevPos[i];
 
-			velocity[i] += gravity * sdt;
-			pos[i] += velocity[i] * sdt;
+			velocity += gravity * sdt;
+			position += velocity * sdt;
 
-			if (pos[i].y < 0.f) {
-				pos[i] = prevPos[i];
-				pos[i].y = 0.f;
+			if (position.y < 0.f) {
+				position = prevPosition;
+				position.y = 0.f;
 			}
 		}
 	}
 	void Engine::midSolve(float sdt) {
 		// Run all the constraints, we need to have the constraints added to this
-		for (const Distance & constraint : distances) {
-			constraint.eval(*this);
-		}
-		for (const TetraVolume& constraint : tetras) {
-			constraint.eval(*this);
-		}
-		// Universal colliders
-		/*
-		for (const CollidePlane& plane : planes) {
-			for (int i = 0; i < size(); ++i) {
-				plane.eval(*this, i);
+
+		for (CVariant & cvar: constraints) {
+			switch (cvar.kind) {
+			case Constraint::Distance:
+				((ConstraintDistance*)(&cdata[cvar.index]))->eval(*this);
+				break;
+			case Constraint::TetraVolume:
+				((ConstraintTetraVolume*)(&cdata[cvar.index]))->eval(*this);
+				break;
+			case Constraint::CollideParticle:
+				((CollideParticle*)(&cdata[cvar.index]))->eval(*this);
+				break;
+			case Constraint::CollidePlane:
+				((CollidePlane*)(&cdata[cvar.index]))->eval(*this);
+				break;
 			}
 		}
-		*/
 	}
 	void Engine::postSolve(float sdt) {
 		sdt = 1.f / sdt;
 
-		for (int i = 0; i < pos.size(); ++i) {
-			if (invMass[i] < 1e-5f) {
+		for (int64_t i = 0, count = size(); i < count; ++i) {
+			if (particle.invMass[i] < 1e-5f) {
 				continue;
 			}
 
-			velocity[i] = (pos[i] - prevPos[i]) * sdt;
+			particle.velocity[i] = (particle.pos[i] - particle.prevPos[i]) * sdt;
 		}
 	}
 }

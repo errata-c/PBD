@@ -1,12 +1,12 @@
-#include <pbd/constraint/CollideParticle.hpp>
+#include <pbd/collide/Particle.hpp>
 #include <pbd/Engine.hpp>
 
 #include <glm/geometric.hpp>
 
 namespace pbd {
 	void CollideParticle::eval(Engine& engine) const {
-		float w0 = engine.invMass[p0];
-		float w1 = engine.invMass[p1];
+		float w0 = engine.particle.invMass[p0];
+		float w1 = engine.particle.invMass[p1];
 
 		float w = w0 + w1;
 		if (w <= 1e-5f) {
@@ -15,8 +15,8 @@ namespace pbd {
 		}
 
 		// references, we are going to modify these in place.
-		glm::vec3& x0 = engine.pos[p0];
-		glm::vec3& x1 = engine.pos[p1];
+		glm::vec3& x0 = engine.particle.pos[p0];
+		glm::vec3& x1 = engine.particle.pos[p1];
 
 		// Grads 4x3
 		glm::vec3 grad = x0 - x1;

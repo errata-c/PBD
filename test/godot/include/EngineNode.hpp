@@ -4,7 +4,7 @@
 #include <MultiMeshInstance.hpp>
 #include <PoolArrays.hpp>
 
-#include <pbd/Engine3D.hpp>
+#include <pbd/Engine.hpp>
 
 namespace godot {
 	class EngineNode : public Node {
@@ -14,7 +14,7 @@ namespace godot {
 		MultiMeshInstance* mminst;
 
 		PoolRealArray buffer;
-		pbd::Engine3D engine;
+		pbd::Engine engine;
 	public:
 		static void _register_methods();
 
