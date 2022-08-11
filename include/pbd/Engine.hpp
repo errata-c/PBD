@@ -43,15 +43,16 @@ namespace pbd {
 		std::vector<CVariant> constraints;
 		std::vector<int32_t> cdata;
 
-		// Lets start with the bare minimum
 		void resize(int64_t count);
 		int64_t size() const;
 
 		void solve();
 
+		int32_t addParticle(const glm::vec3& position, const glm::vec3& velocity, float invMass, float radius);
+		int32_t addParticle(const glm::vec3& position, float invMass, float radius);
 		
 		template<typename T>
-		int64_t add(const T& cval) {
+		int64_t addConstraint(const T& cval) {
 			int64_t index = cdata.size();
 			Constraint kind = T::Kind;
 
@@ -64,8 +65,8 @@ namespace pbd {
 			return constraints.size()-1;
 		}
 	private:
-		void midSolve(float sdt);
-		void preSolve(float sdt);
-		void postSolve(float sdt);
+		void predictPositions(float sdt);
+		void applyConstraints(float sdt);
+		void updateParticles(float sdt);
 	};
 }

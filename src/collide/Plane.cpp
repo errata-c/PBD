@@ -19,16 +19,15 @@ namespace pbd {
 		}
 
 		// Calculate the constraint value
-
 		float c = glm::dot(x0 - origin, normal) - engine.particle.radius[id];
 		if (c >= 0.f) {
 			// Constraint does not apply.
 			return;
 		}
 
-		float lambda = -c * w0;
+		// w0 / (w0 + 0) == 1
+		float lambda = -c;
 
-		// Update the position
 		x0 += lambda * normal;
 
 		// Calculate interpenetration distance, ie overlap distance.
@@ -39,15 +38,17 @@ namespace pbd {
 		// The total delta over substeps
 		glm::vec3 pdelta = x0 - engine.particle.prevPos[id];
 
-		// Project the particle delta so that its perpendicular to the contact normal.
-		glm::vec3 perp = glm::proj(pdelta, normal);
+		// Find the perpendicular element of that motion.
+		glm::vec3 perp = pdelta - normal * glm::dot(pdelta, normal);
 		float plen = glm::length(perp);
 
 		if (plen < (engine.staticFriction * d)) {
-			x0 += perp;	
+			// Completely eliminate tangential motion
+			x0 -= perp;
 		}
 		else {
-			x0 += perp * std::min((engine.kineticFriction * d) / plen, 1.f);
+			// Damp tangential motion
+			x0 -= perp * std::min((engine.kineticFriction * d) / plen, 1.f);
 		}
 	}
 }

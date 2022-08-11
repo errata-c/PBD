@@ -18,7 +18,7 @@ namespace pbd {
 		glm::vec3& x0 = engine.particle.pos[p0];
 		glm::vec3& x1 = engine.particle.pos[p1];
 
-		// Grads 4x3
+		
 		glm::vec3 grad = x0 - x1;
 		float gradLen = glm::length(grad);
 		if (gradLen <= 1e-5f) {

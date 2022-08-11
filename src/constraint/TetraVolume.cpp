@@ -25,7 +25,7 @@ namespace pbd {
 		}
 
 		w += compliance * rdt2;
-	
+		
 		if (w <= 1e-5f) {
 			// Avoid division by zero
 			return;
@@ -43,7 +43,7 @@ namespace pbd {
 		}
 
 		// Apply the deltas
-		float lambda = -(currentVolume - volume) / w; // (w + a) for compliance calculation
+		float lambda = -(currentVolume - volume) / w;
 		for (int i = 0; i < 4; ++i) {
 			*x[i] += lambda * engine.particle.invMass[ids[i]] * grads[i];
 		}

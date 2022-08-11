@@ -1,7 +1,10 @@
 #include <pbd/Engine.hpp>
 #include <algorithm>
+#include <limits>
 
 namespace pbd {
+	static constexpr size_t ParticleLimit = std::numeric_limits<int32_t>::max();
+
 	Engine::Engine()
 		: staticFriction(1.f)
 		, kineticFriction(1.f)
@@ -11,6 +14,7 @@ namespace pbd {
 	{}
 
 	void Engine::resize(int64_t count) {
+		assert(count < ParticleLimit);
 		particle.pos.resize(count);
 		particle.prevPos.resize(count);
 		particle.velocity.resize(count);
@@ -20,36 +24,64 @@ namespace pbd {
 		return static_cast<int64_t>(particle.pos.size());
 	}
 
+	int32_t Engine::addParticle(const glm::vec3& position, const glm::vec3& velocity, float invMass, float radius) {
+		assert(size() < ParticleLimit);
+		int32_t id = static_cast<int32_t>(size());
+		particle.pos.push_back(position);
+		particle.velocity.push_back(velocity);
+		particle.invMass.push_back(invMass);
+		particle.radius.push_back(radius);
+
+		return id;
+	}
+	int32_t Engine::addParticle(const glm::vec3& position, float invMass, float radius) {
+		assert(size() < ParticleLimit);
+		int32_t id = static_cast<int32_t>(size());
+
+		particle.pos.push_back(position);
+		particle.velocity.push_back(glm::vec3(0.f));
+		particle.invMass.push_back(invMass);
+		particle.radius.push_back(radius);
+
+		return id;
+	}
+
+	// Run one iteration of the solver
 	void Engine::solve() {
+		// Collision constraints would be generated here!
+		// If needed we can predict where the positions will be roughly, then find the collisions.
+
+		
+		// Run the iteration substeps.
 		float sdt = dt / float(numSubsteps);
 		for (int i = 0; i < numSubsteps; ++i) {
-			preSolve(sdt);
-			midSolve(sdt);
-			postSolve(sdt);
+			predictPositions(sdt);
+			applyConstraints(sdt);
+			updateParticles(sdt);
 		}
 	}
 
-	void Engine::preSolve(float sdt) {
+	void Engine::predictPositions(float sdt) {
+		// Store these starting positions for comparison in the constraints.
 		particle.prevPos.assign(particle.pos.begin(), particle.pos.end());
 
 		for (int64_t i = 0, count = size(); i < count; ++i) {
-			if (particle.invMass[i] < 1e-5f) {
+			float imass = particle.invMass[i];
+			if (imass < 1e-5f) {
 				continue;
 			}
+			// The original XPBD paper does not update the velocity here, but a later review paper does.
+			// I'm going to trust the later paper, as its more comprehensive.
+
 			glm::vec3 & velocity = particle.velocity[i];
 			glm::vec3 & position = particle.pos[i];
-			const glm::vec3 & prevPosition = particle.prevPos[i];
 
-			velocity += gravity * sdt;
-			position += velocity * sdt;
-
-			if (position.y < 0.f) {
-				position = prevPosition;
-				position.y = 0.f;
-			}
+			// Right now gravity is the only external force, I'll add more later.
+			velocity = velocity + sdt * gravity * imass; // Mass?
+			position = position + sdt * velocity;
 		}
 	}
-	void Engine::midSolve(float sdt) {
+	void Engine::applyConstraints(float sdt) {
 		// Run all the constraints, we need to have the constraints added to this
 
 		float rdt2 = 1.f / (sdt * sdt);
@@ -71,13 +103,14 @@ namespace pbd {
 			}
 		}
 	}
-	void Engine::postSolve(float sdt) {
+	void Engine::updateParticles(float sdt) {
 		sdt = 1.f / sdt;
 
 		for (int64_t i = 0, count = size(); i < count; ++i) {
-			if (particle.invMass[i] < 1e-5f) {
-				continue;
-			}
+			/// We don't have to check the mass here, if they have infinite mass the delta will be zero anyways.
+			//if (particle.invMass[i] < 1e-5f) {
+			//	continue;
+			//}
 
 			particle.velocity[i] = (particle.pos[i] - particle.prevPos[i]) * sdt;
 		}

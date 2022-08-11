@@ -9,11 +9,13 @@
 
 namespace godot {
 	void EngineNode::_register_methods() {
+		register_method("set_substeps", &EngineNode::set_substeps);
+		register_method("set_timestep", &EngineNode::set_timestep);
+
 		register_method("set_multi_mesh_instance", &EngineNode::set_multi_mesh_instance);
-		register_method("set_particle", &EngineNode::set_particle);
+		register_method("add_particle", &EngineNode::add_particle);
 		register_method("set_static_friction", &EngineNode::set_static_friction);
 		register_method("set_kinetic_friction", &EngineNode::set_kinetic_friction);
-		register_method("set_num_particles", &EngineNode::set_num_particles);
 		register_method("num_particles", &EngineNode::num_particles);
 
 		register_method("add_distance_constraint", &EngineNode::add_distance_constraint);
@@ -42,6 +44,15 @@ namespace godot {
 		mminst = node;
 	}
 
+	void EngineNode::set_substeps(int count) {
+		count = std::max(count, 1);
+		engine.numSubsteps = count;
+	}
+	void EngineNode::set_timestep(float delta) {
+		delta = std::max(1e-5f, delta);
+		engine.dt = delta;
+	}
+
 	void EngineNode::set_static_friction(float friction) {
 		// Cannot be zero (?), cannot be negative
 		friction = std::max(friction, 1e-5f);
@@ -57,14 +68,8 @@ namespace godot {
 		return engine.size();
 	}
 
-	void EngineNode::set_num_particles(int64_t count) {
-		engine.resize(static_cast<int>(count));
-	}
-
-	void EngineNode::set_particle(int index, Vector3 pos, float mass) {
-		engine.particle.pos[index] = glm::vec3{pos.x, pos.y, pos.z};
-		engine.particle.velocity[index] = glm::vec3{ 0.f };
-		engine.particle.invMass[index] = 1.f / mass;
+	void EngineNode::add_particle(Vector3 pos, float imass, float radius) {
+		engine.addParticle(glm::vec3{ pos.x, pos.y, pos.z }, imass, radius);
 	}
 
 	void EngineNode::add_distance_constraint(int id0, int id1, float compliance) {
@@ -72,7 +77,7 @@ namespace godot {
 			p0 = engine.particle.pos[id0],
 			p1 = engine.particle.pos[id1];
 
-		engine.add(pbd::ConstraintDistance{ id0, id1, glm::distance(p0, p1), compliance });
+		engine.addConstraint(pbd::ConstraintDistance{ id0, id1, glm::length(p1 - p0), compliance });
 	}
 
 	void EngineNode::add_tetra_volume_constraint(int id0, int id1, int id2, int id3, float compliance) {
@@ -86,10 +91,10 @@ namespace godot {
 			t0 = p1 - p0,
 			t1 = p2 - p0,
 			t3 = p3 - p0;
-
+		
 		glm::vec3 t4 = glm::cross(t0, t1);
 
-		engine.add(pbd::ConstraintTetraVolume{
+		engine.addConstraint(pbd::ConstraintTetraVolume{
 			{id0, id1, id2, id3},
 			glm::dot(t3, t4) / 6.f,
 			compliance
@@ -108,7 +113,7 @@ namespace godot {
 			n.z
 		};
 
-		engine.add(pbd::CollidePlane{ id, origin, normal });
+		engine.addConstraint(pbd::CollidePlane{ id, origin, normal });
 	}
 
 

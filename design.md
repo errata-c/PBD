@@ -54,6 +54,8 @@ Compliance could be added to the collision constraints as well, if desired. This
 
 XPBD makes mention of the Lagrange multiplier being cumulative over the timesteps. It seems like they are talking about having the multiplier update just like the position update, only this time just for the specific constraints and not the particles. I don't fully know what the benefit of this is, as I haven't seen an implementation of it anywhere. Additionally, the implementations without it seem to work fairly well. I may create a test branch later to test this out and see how well it performs, and if its worth the additional memory overhead.
 
+We need a way to allow the users to apply external forces on a per-particle basis.
+
 # Todo:
 
 - [ ] Design a simple library for R/W of physics objects.

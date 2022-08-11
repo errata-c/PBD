@@ -6,32 +6,41 @@ var engine
 func _ready():
 	engine = $Engine
 	engine.set_multi_mesh_instance($Particles)
-	engine.set_num_particles(4)
+	engine.set_substeps(20)
+	engine.set_timestep(1.0 / 60.0)
 	
-	engine.set_static_friction(1.0)
-	engine.set_kinetic_friction(1.0)
+	engine.set_static_friction(0.9)
+	engine.set_kinetic_friction(0.6)
 	
-	engine.set_particle(0,
+	var radius = 0.9
+	var imass = 1.0 / 0.1
+	
+	engine.add_particle(
 		Vector3(3,3,0),
-		1.0)
-	engine.set_particle(1,
+		imass,
+		radius)
+	engine.add_particle(
 		Vector3(-1.5,3,2.598),
-		1.0)
-	engine.set_particle(2,
+		imass,
+		radius)
+	engine.add_particle(
 		Vector3(-1.5,3,-2.598),
-		1.0)
-	engine.set_particle(3,
+		imass,
+		radius)
+	engine.add_particle(
 		Vector3(0,5,0),
-		1.0)
-		
-	var compliance = 0.125
-		
+		imass,
+		radius)
+	
+	var compliance = 0.01
+	
 	engine.add_distance_constraint(0,1, compliance)
 	engine.add_distance_constraint(0,2, compliance)
 	engine.add_distance_constraint(0,3, compliance)
 	engine.add_distance_constraint(1,2, compliance)
 	engine.add_distance_constraint(1,3, compliance)
 	engine.add_distance_constraint(2,3, compliance)
+	
 	engine.add_tetra_volume_constraint(0,1,2,3, compliance)
 	
 	

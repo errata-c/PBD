@@ -24,12 +24,14 @@ namespace godot {
 		void _init(); // our initializer called by Godot
 
 		int64_t num_particles() const;
-		void set_num_particles(int64_t count);
+
+		void set_substeps(int count);
+		void set_timestep(float delta);
 
 		void set_static_friction(float friction);
 		void set_kinetic_friction(float friction);
 
-		void set_particle(int index, Vector3 pos, float mass);
+		void add_particle(Vector3 pos, float mass, float radius);
 
 		void add_distance_constraint(int id0, int id1, float compliance);
 		void add_tetra_volume_constraint(int id0, int id1, int id2, int id3, float compliance);
