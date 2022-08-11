@@ -8,6 +8,7 @@
 
 #include <pbd/constraint/Distance.hpp>
 #include <pbd/constraint/TetraVolume.hpp>
+#include <pbd/constraint/NHTetraVolume.hpp>
 
 #include <pbd/ExtractedRotation.hpp>
 #include <pbd/Types.hpp>

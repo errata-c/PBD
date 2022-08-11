@@ -29,13 +29,18 @@ add_library(pbd STATIC
 	"src/Engine.cpp"
 	
 	"src/ExtractedRotation.cpp"
+
 	"src/hash/Table.cpp"
 
 	"src/constraint/Distance.cpp"
 	"src/constraint/TetraVolume.cpp"
+	"src/constraint/NHTetraVolume.cpp"
+	"src/constraint/Utils.cpp"
 
 	"src/collide/Particle.cpp"
 	"src/collide/Plane.cpp"
+	"src/collide/ParticleCompliant.cpp"
+	"src/collide/PlaneCompliant.cpp"
 )
 target_include_directories(pbd PUBLIC
 	$<INSTALL_INTERFACE:include>

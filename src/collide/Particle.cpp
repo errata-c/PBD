@@ -1,7 +1,7 @@
 #include <pbd/collide/Particle.hpp>
 #include <pbd/Engine.hpp>
 
-#include <glm/geometric.hpp>
+#include <pbd/constraint/Utils.hpp>
 
 namespace pbd {
 	void CollideParticle::eval(Engine& engine, float rdt2) const {
@@ -21,7 +21,8 @@ namespace pbd {
 		// Grads 4x3
 		glm::vec3 grad = x0 - x1;
 		float length = glm::length(grad);
-		if ((length > distance) || (length < 1e-5f)) {
+		float C = length - distance;
+		if (C >= 0.f || length < 1e-5f) {
 			// Do nothing when the constraint is above zero
 			// Also prevent divide by zero
 			return;
@@ -29,17 +30,27 @@ namespace pbd {
 
 		grad /= length;
 
-		// The lambda value determines how the movement is to be weighted.
-		float lambda = -(length - distance) / w;
+		float lambda = C / w;
 
 		// Update the positions for the next constraint to use.
-		x0 += lambda * w0 * grad;
-		x1 += -lambda * w1 * grad;
+		x0 += -lambda * w0 * grad;
+		x1 +=  lambda * w1 * grad;
 
 		// Frictional delta
 		// [(x0 - prev x0) - (x1 - prev x1)] perpendicular to normal (x0 - x1, see grad above)
 
-		const glm::vec3& px0 = engine.particle.prevPos[p0];
-		const glm::vec3& px1 = engine.particle.prevPos[p1];
+		// Current positional deltas for the substep.
+		glm::vec3 px0 = x0 - engine.particle.prevPos[p0];
+		glm::vec3 px1 = x1 - engine.particle.prevPos[p1];
+
+		// Friction normal is the grad
+		px0 = perpendicular(px0, grad);
+		px1 = perpendicular(px1, grad);
+
+		px0 = frictionDelta(px0, -C, engine.staticFriction, engine.kineticFriction);
+		px1 = frictionDelta(px1, -C, engine.staticFriction, engine.kineticFriction);
+
+		x0 += w0 * w * px0;
+		x1 += w1 * w * px1;
 	}
 }

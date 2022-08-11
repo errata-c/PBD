@@ -35,6 +35,7 @@ namespace godot {
 
 		void add_distance_constraint(int id0, int id1, float compliance);
 		void add_tetra_volume_constraint(int id0, int id1, int id2, int id3, float compliance);
+		void add_nh_tetra_volume_constraint(int id0, int id1, int id2, int id3, float compliance);
 
 		void add_plane_collide(int id, Vector3 origin, Vector3 normal);
 

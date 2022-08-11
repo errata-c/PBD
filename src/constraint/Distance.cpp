@@ -30,10 +30,11 @@ namespace pbd {
 
 		// The lambda value determines how the movement is to be weighted.
 		// -C / (w1*|grad(C0)| + w2*|grad(C1)| + compliance / dt^2)
-		float lambda = -(gradLen - length) / w;
+		float C = (gradLen - length);
+		float lambda = C / w;
 
 		// Update the positions for the next constraint to use.
-		x0 += lambda * w0 * grad;
-		x1 += -lambda * w1 * grad;
+		x0 += -lambda * w0 * grad;
+		x1 += lambda * w1 * grad;
 	}
 }

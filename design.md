@@ -48,13 +48,13 @@ It may be possible to implement rigid body physics for larger objects (like boxe
 
 It might be worthwhile to give the particles and other collision objects their own friction values. The number of values we have to store per-particle is already pretty high, but I don't think running out of memory is the biggest concern facing the performance.
 
-Damping could also be added into the mix. We have to option of implementing multiple forms of the constraints such that something like damping can be optional.
+Damping could also be added into the mix. We have to option of implementing multiple forms of the constraints such that something like damping can be optional. As of right now, it does not seem necessary.
 
 Compliance could be added to the collision constraints as well, if desired. This would in effect make the collisions a bit softer. That could be a desirable effect. Just like the damping, this could also be made optional.
 
-XPBD makes mention of the Lagrange multiplier being cumulative over the timesteps. It seems like they are talking about having the multiplier update just like the position update, only this time just for the specific constraints and not the particles. I don't fully know what the benefit of this is, as I haven't seen an implementation of it anywhere. Additionally, the implementations without it seem to work fairly well. I may create a test branch later to test this out and see how well it performs, and if its worth the additional memory overhead.
+XPBD makes mention of the Lagrange multiplier being accumulated over multiple constraint iterations. This is only needed when we process each constraint multiple times per substep. I might try this in another branch to see if it actually improves performance or accuracy.
 
-We need a way to allow the users to apply external forces on a per-particle basis.
+We need a way to allow the users to apply external forces on a per-particle basis. 
 
 # Todo:
 

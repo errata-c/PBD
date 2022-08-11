@@ -20,6 +20,7 @@ namespace godot {
 
 		register_method("add_distance_constraint", &EngineNode::add_distance_constraint);
 		register_method("add_tetra_volume_constraint", &EngineNode::add_tetra_volume_constraint);
+		register_method("add_nh_tetra_volume_constraint", &EngineNode::add_nh_tetra_volume_constraint);
 		register_method("add_plane_collide", &EngineNode::add_plane_collide);
 
 		register_method("add_plane_collide", &EngineNode::add_plane_collide);
@@ -97,6 +98,25 @@ namespace godot {
 		engine.addConstraint(pbd::ConstraintTetraVolume{
 			{id0, id1, id2, id3},
 			glm::dot(t3, t4) / 6.f,
+			compliance
+		});
+	}
+	void EngineNode::add_nh_tetra_volume_constraint(int id0, int id1, int id2, int id3, float compliance) {
+		glm::vec3
+			p0 = engine.particle.pos[id0],
+			p1 = engine.particle.pos[id1],
+			p2 = engine.particle.pos[id2],
+			p3 = engine.particle.pos[id3];
+		glm::mat3 restPose;
+		restPose[0] = p1 - p0;
+		restPose[1] = p2 - p0;
+		restPose[2] = p3 - p0;
+
+		restPose = glm::inverse(restPose);
+
+		engine.addConstraint(pbd::ConstraintNHTetraVolume{
+			{id0, id1, id2, id3},
+			restPose,
 			compliance
 		});
 	}

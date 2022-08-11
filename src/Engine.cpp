@@ -94,6 +94,9 @@ namespace pbd {
 			case Constraint::TetraVolume:
 				((ConstraintTetraVolume*)(&cdata[cvar.index]))->eval(*this, rdt2);
 				break;
+			case Constraint::NHTetraVolume:
+				((ConstraintNHTetraVolume*)(&cdata[cvar.index]))->eval(*this, rdt2);
+				break;
 			case Constraint::CollideParticle:
 				((CollideParticle*)(&cdata[cvar.index]))->eval(*this, rdt2);
 				break;

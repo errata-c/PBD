@@ -13,36 +13,35 @@ func _ready():
 	engine.set_kinetic_friction(0.6)
 	
 	var radius = 0.9
-	var imass = 1.0 / 0.1
+	var imass = 1.0 / 0.5
 	
-	engine.add_particle(
+	var p = [
 		Vector3(3,3,0),
-		imass,
-		radius)
-	engine.add_particle(
 		Vector3(-1.5,3,2.598),
-		imass,
-		radius)
-	engine.add_particle(
 		Vector3(-1.5,3,-2.598),
-		imass,
-		radius)
-	engine.add_particle(
 		Vector3(0,5,0),
-		imass,
-		radius)
+	]
 	
-	var compliance = 0.01
+	for x in p:
+		engine.add_particle(
+			x,
+			imass,
+			radius)
 	
-	engine.add_distance_constraint(0,1, compliance)
-	engine.add_distance_constraint(0,2, compliance)
-	engine.add_distance_constraint(0,3, compliance)
-	engine.add_distance_constraint(1,2, compliance)
-	engine.add_distance_constraint(1,3, compliance)
-	engine.add_distance_constraint(2,3, compliance)
+	var compliance = 0.005
 	
-	engine.add_tetra_volume_constraint(0,1,2,3, compliance)
+	#engine.add_distance_constraint(0,1, compliance)
+	#engine.add_distance_constraint(0,2, compliance)
+	#engine.add_distance_constraint(0,3, compliance)
+	#engine.add_distance_constraint(1,2, compliance)
+	#engine.add_distance_constraint(1,3, compliance)
+	#engine.add_distance_constraint(2,3, compliance)
 	
+	#engine.add_tetra_volume_constraint(0,1,2,3, compliance)
+	
+	# 0,1,2,3  1,0,2,3  1,2,3,0
+	
+	engine.add_nh_tetra_volume_constraint(0,1,2,3, compliance)
 	
 	var origins = [
 		Vector3(0,0,0),
@@ -60,8 +59,8 @@ func _ready():
 	]
 	
 	for i in range(len(origins)):
-		for p in range(4):
-			engine.add_plane_collide(p, origins[i], normals[i])
+		for id in range(4):
+			engine.add_plane_collide(id, origins[i], normals[i])
 	
 	engine.update_mesh()
 
