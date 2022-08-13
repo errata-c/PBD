@@ -12,6 +12,8 @@ namespace pbd {
 		glm::vec3 origin, normal;
 
 		void eval(Engine& engine, float rdt2) const;
+
+		void remap(int32_t offset);
 	};
 
 	static_assert(alignof(CollidePlane) == alignof(int32_t));

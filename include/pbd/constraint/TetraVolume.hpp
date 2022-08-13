@@ -20,6 +20,8 @@ namespace pbd {
 		float compliance;
 
 		void eval(Engine & engine, float rdt2) const;
+
+		void remap(int32_t offset);
 	};
 
 	static_assert(alignof(ConstraintTetraVolume) == alignof(int32_t));

@@ -6,9 +6,14 @@
 #include <array>
 
 #include <glm/geometric.hpp>
+#include <glm/gtx/norm.hpp>
 
 namespace godot {
 	void EngineNode::_register_methods() {
+		register_method("nearest_point", &EngineNode::nearest_point);
+		register_method("get_position", &EngineNode::get_position);
+		register_method("set_force", &EngineNode::set_force);
+
 		register_method("set_substeps", &EngineNode::set_substeps);
 		register_method("set_timestep", &EngineNode::set_timestep);
 
@@ -43,6 +48,42 @@ namespace godot {
 
 	void EngineNode::set_multi_mesh_instance(MultiMeshInstance* node) {
 		mminst = node;
+	}
+
+	void EngineNode::set_force(int32_t id, Vector3 force) {
+		if (id < 0 || id >= engine.size()) {
+			return;
+		}
+
+		engine.particle.force[id] = glm::vec3(force.x, force.y, force.z);
+	}
+
+	int32_t EngineNode::nearest_point(Vector3 _origin, Vector3 _normal) const {
+		glm::vec3 o(_origin.x, _origin.y, _origin.z);
+		glm::vec3 n(_normal.x, _normal.y, _normal.z);
+
+		int32_t nearest = -1;
+		float ndist = 1e10;
+		for (size_t i = 0, count = engine.size(); i < count; ++i) {
+			glm::vec3 d = engine.particle.pos[i] - o;
+			float t = glm::dot(d, n);
+			float dist = glm::length2(engine.particle.pos[i] - (n * t + o));
+
+			if (dist < ndist) {
+				nearest = static_cast<int32_t>(i);
+				ndist = dist;
+			}
+		}
+
+		return nearest;
+	}
+
+	Vector3 EngineNode::get_position(int32_t id) const {
+		if (id < 0 || id  >= engine.size()) {
+			return Vector3(0,0,0);
+		}
+		const glm::vec3 & p = engine.particle.pos[id];
+		return Vector3(p.x, p.y, p.z);
 	}
 
 	void EngineNode::set_substeps(int count) {

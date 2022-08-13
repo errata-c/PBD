@@ -43,4 +43,8 @@ namespace pbd {
 
 		x0 += frictionDelta(perp, d, engine.staticFriction, engine.kineticFriction);
 	}
+
+	void CollidePlane::remap(int32_t offset) {
+		id += offset;
+	}
 }

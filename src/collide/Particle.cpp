@@ -21,6 +21,7 @@ namespace pbd {
 		// Grads 4x3
 		glm::vec3 grad = x0 - x1;
 		float length = glm::length(grad);
+		float distance = engine.particle.radius[p0] + engine.particle.radius[p1];
 		float C = length - distance;
 		if (C >= 0.f || length < 1e-5f) {
 			// Do nothing when the constraint is above zero
@@ -52,5 +53,10 @@ namespace pbd {
 
 		x0 += w0 * w * px0;
 		x1 += w1 * w * px1;
+	}
+
+	void CollideParticle::remap(int32_t offset) {
+		p0 += offset;
+		p1 += offset;
 	}
 }

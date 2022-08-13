@@ -10,6 +10,8 @@ namespace pbd {
 
 		void eval(Engine& engine, float rdt2) const;
 		
+		void remap(int32_t offset);
+
 		int32_t p0, p1;
 		float length;
 		float compliance;

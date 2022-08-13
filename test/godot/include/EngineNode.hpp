@@ -23,6 +23,12 @@ namespace godot {
 
 		void _init(); // our initializer called by Godot
 
+		void set_force(int32_t id, Vector3 force);
+
+		int32_t nearest_point(Vector3 origin, Vector3 normal) const;
+
+		Vector3 get_position(int32_t id) const;
+
 		int64_t num_particles() const;
 
 		void set_substeps(int count);

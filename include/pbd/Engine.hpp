@@ -26,13 +26,11 @@ namespace pbd {
 
 		// Map for objects?
 
-		// We should allow for setting the position and the velocity in between steps.
-		// We should allow the mass to change as well.
 		// prevPos is entirely for internal use.
 		
 		// Structure of arrays or array of structures?
 		struct Particles {
-			std::vector<glm::vec3> pos, prevPos, velocity;
+			std::vector<glm::vec3> pos, prevPos, velocity, force;
 			std::vector<float> invMass, radius;
 			std::vector<int32_t> flags;
 		} particle;
@@ -43,8 +41,8 @@ namespace pbd {
 		};
 		std::vector<CVariant> constraints;
 		std::vector<int32_t> cdata;
-
-		void resize(int64_t count);
+		
+		void reserve(int64_t count);
 		int64_t size() const;
 
 		void solve();

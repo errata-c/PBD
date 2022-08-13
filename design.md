@@ -60,9 +60,12 @@ We need a way to allow the users to apply external forces on a per-particle basi
 
 - [ ] Design a simple library for R/W of physics objects.
 - [ ] Add collision groups
-- [ ] Add compliance to constraints
+- [x] Add compliance to constraints
 - [x] Make it easier to add constraints to the engine.
-- [ ] Make it easier to add particles to the engine
+- [x] Make it easier to add particles to the engine
+- [x] Provide a mechanism to add forces to particles
+- [x] Implement constraint variant, store all constraints in single buffer
+- [x] Provide method to reorder constraint ids
 - [ ] Add object mapping that updates when particles or constraints are removed
 - [x] Implement spatial hashing for collision detection
 - [ ] Find collisions using the spatial hashing, add them to a second dynamic constraint set 

@@ -48,4 +48,10 @@ namespace pbd {
 			*x[i] += lambda * engine.particle.invMass[ids[i]] * grads[i];
 		}
 	}
+
+	void ConstraintTetraVolume::remap(int32_t offset) {
+		for (int32_t& id : ids) {
+			id += offset;
+		}
+	}
 }

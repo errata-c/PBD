@@ -37,4 +37,9 @@ namespace pbd {
 		x0 += -lambda * w0 * grad;
 		x1 += lambda * w1 * grad;
 	}
+
+	void ConstraintDistance::remap(int32_t offset) {
+		p0 += offset;
+		p1 += offset;
+	}
 }

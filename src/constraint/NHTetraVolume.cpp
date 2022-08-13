@@ -89,5 +89,9 @@ namespace pbd {
 		apply(*this, engine, x, grads, C, rdt2);
 	}
 
-	
+	void ConstraintNHTetraVolume::remap(int32_t offset) {
+		for (int32_t& id : ids) {
+			id += offset;
+		}
+	}
 }

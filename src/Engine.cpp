@@ -13,12 +13,16 @@ namespace pbd {
 		, dt(1.0 / 60.0)
 	{}
 
-	void Engine::resize(int64_t count) {
+	void Engine::reserve(int64_t count) {
 		assert(count < ParticleLimit);
-		particle.pos.resize(count);
-		particle.prevPos.resize(count);
-		particle.velocity.resize(count);
-		particle.invMass.resize(count);
+
+		particle.pos.reserve(count);
+		particle.prevPos.reserve(count);
+		particle.velocity.reserve(count);
+		particle.invMass.reserve(count);
+		particle.radius.reserve(count);
+		particle.force.reserve(count);
+		particle.flags.reserve(count);
 	}
 	int64_t Engine::size() const {
 		return static_cast<int64_t>(particle.pos.size());
@@ -31,19 +35,13 @@ namespace pbd {
 		particle.velocity.push_back(velocity);
 		particle.invMass.push_back(invMass);
 		particle.radius.push_back(radius);
+		particle.force.push_back(glm::vec3(0));
+		particle.flags.push_back(0);
 
 		return id;
 	}
 	int32_t Engine::addParticle(const glm::vec3& position, float invMass, float radius) {
-		assert(size() < ParticleLimit);
-		int32_t id = static_cast<int32_t>(size());
-
-		particle.pos.push_back(position);
-		particle.velocity.push_back(glm::vec3(0.f));
-		particle.invMass.push_back(invMass);
-		particle.radius.push_back(radius);
-
-		return id;
+		return addParticle(position, glm::vec3(0), invMass, radius);
 	}
 
 	// Run one iteration of the solver
@@ -59,6 +57,11 @@ namespace pbd {
 			applyConstraints(sdt);
 			updateParticles(sdt);
 		}
+
+		// Clear the external forces
+		for (glm::vec3 & force : particle.force) {
+			force = glm::vec3(0.f);
+		}
 	}
 
 	void Engine::predictPositions(float sdt) {
@@ -70,14 +73,15 @@ namespace pbd {
 			if (imass < 1e-5f) {
 				continue;
 			}
-			// The original XPBD paper does not update the velocity here, but a later review paper does.
-			// I'm going to trust the later paper, as its more comprehensive.
 
 			glm::vec3 & velocity = particle.velocity[i];
 			glm::vec3 & position = particle.pos[i];
 
-			// Right now gravity is the only external force, I'll add more later.
-			velocity = velocity + sdt * gravity * imass; // Mass?
+			// External forces
+			const glm::vec3 & force = particle.force[i];
+			
+			// Simple euler integration
+			velocity = velocity + sdt * (gravity + force * imass);
 			position = position + sdt * velocity;
 		}
 	}
@@ -110,11 +114,6 @@ namespace pbd {
 		sdt = 1.f / sdt;
 
 		for (int64_t i = 0, count = size(); i < count; ++i) {
-			/// We don't have to check the mass here, if they have infinite mass the delta will be zero anyways.
-			//if (particle.invMass[i] < 1e-5f) {
-			//	continue;
-			//}
-
 			particle.velocity[i] = (particle.pos[i] - particle.prevPos[i]) * sdt;
 		}
 	}
