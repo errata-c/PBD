@@ -10,8 +10,8 @@
 #include <pbd/constraint/TetraVolume.hpp>
 #include <pbd/constraint/NHTetraVolume.hpp>
 
-#include <pbd/ExtractedRotation.hpp>
-#include <pbd/Types.hpp>
+#include <pbd/engine/ExtractedRotation.hpp>
+#include <pbd/common/Types.hpp>
 
 namespace pbd {
 	class Engine {

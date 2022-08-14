@@ -1,5 +1,5 @@
 #include <pbd/constraint/Distance.hpp>
-#include <pbd/Engine.hpp>
+#include <pbd/engine/Engine.hpp>
 
 #include <glm/geometric.hpp>
 

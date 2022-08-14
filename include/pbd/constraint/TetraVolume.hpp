@@ -1,7 +1,7 @@
 #pragma once
 #include <cinttypes>
 #include <array>
-#include <pbd/Types.hpp>
+#include <pbd/common/Types.hpp>
 
 namespace pbd {
 	class Engine;

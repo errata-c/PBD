@@ -9,28 +9,21 @@
 #include <pbd/constraint/TetraVolume.hpp>
 #include <pbd/constraint/NHTetraVolume.hpp>
 
+#include <pbd/common/ConstraintRef.hpp>
+
 namespace pbd {
 	class Engine;
 
-	class ConstraintRef {
-	public:
-		ConstraintRef(const ConstraintRef&) noexcept = default;
-		ConstraintRef& operator=(const ConstraintRef&) noexcept = default;
-
-		ConstraintRef(Constraint _kind, int32_t * _data) noexcept;
-		
-		void eval(Engine& engine, float rdt2) const;
-
-		Constraint type() const noexcept;
-
-
-	private:
-		Constraint kind;
-		int32_t * data;
-	};
-
 	class ConstraintList {
 	public:
+		class iterator;
+		class const_iterator;
+
+		ConstraintList() = default;
+		ConstraintList(const ConstraintList&) = default;
+		ConstraintList& operator=(const ConstraintList &) = default;
+		ConstraintList(ConstraintList&&) noexcept = default;
+		ConstraintList& operator=(ConstraintList&&) noexcept = default;
 
 		template<typename T>
 		int64_t addConstraint(const T& cval) {
@@ -46,7 +39,7 @@ namespace pbd {
 			return constraints.size() - 1;
 		}
 
-
+		
 	private:
 		struct CVariant {
 			Constraint kind;
@@ -55,5 +48,11 @@ namespace pbd {
 
 		std::vector<CVariant> constraints;
 		std::vector<int32_t> cdata;
+
+	private:
+		class iterator {
+		public:
+			
+		};
 	};
 }

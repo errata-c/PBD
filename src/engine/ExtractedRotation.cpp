@@ -1,5 +1,5 @@
-#include <pbd/ExtractedRotation.hpp>
-#include <pbd/Engine.hpp>
+#include <pbd/engine/ExtractedRotation.hpp>
+#include <pbd/engine/Engine.hpp>
 
 namespace pbd {
 	static glm::quat genericExtract(const Engine& engine, const glm::mat3 & A, const glm::quat& _q, int iters) {

@@ -1,7 +1,7 @@
 #include <pbd/collide/Particle.hpp>
-#include <pbd/Engine.hpp>
+#include <pbd/engine/Engine.hpp>
 
-#include <pbd/constraint/Utils.hpp>
+#include <pbd/common/Utils.hpp>
 
 namespace pbd {
 	void CollideParticle::eval(Engine& engine, float rdt2) const {

@@ -4,7 +4,7 @@
 #include <MultiMeshInstance.hpp>
 #include <PoolArrays.hpp>
 
-#include <pbd/Engine.hpp>
+#include <pbd/pbd.hpp>
 
 namespace godot {
 	class EngineNode : public Node {

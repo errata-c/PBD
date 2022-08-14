@@ -1,6 +1,6 @@
 #pragma once
 #include <pbd/constraint/NHTetraVolume.hpp>
-#include <pbd/Engine.hpp>
+#include <pbd/engine/Engine.hpp>
 
 #include <glm/geometric.hpp>
 #include <glm/common.hpp>

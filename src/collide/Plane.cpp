@@ -1,7 +1,7 @@
 #include <pbd/collide/Plane.hpp>
-#include <pbd/Engine.hpp>
+#include <pbd/engine/Engine.hpp>
 
-#include <pbd/constraint/Utils.hpp>
+#include <pbd/common/Utils.hpp>
 
 
 namespace pbd {

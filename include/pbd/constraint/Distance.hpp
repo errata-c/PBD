@@ -1,6 +1,6 @@
 #pragma once
 #include <cinttypes>
-#include <pbd/Types.hpp>
+#include <pbd/common/Types.hpp>
 
 namespace pbd {
 	class Engine;

@@ -26,9 +26,11 @@ if("${PHMAP_HEADERS}" STREQUAL "PHMAP_HEADERS-NOTFOUND")
 endif()
 
 add_library(pbd STATIC
-	"src/Engine.cpp"
-	
-	"src/ExtractedRotation.cpp"
+	"src/engine/Engine.cpp"
+	"src/engine/ExtractedRotation.cpp"
+	"src/engine/ConstraintList.cpp"
+	"src/engine/ObjectMap.cpp"
+	"src/engine/ObjectPrefab.cpp"
 
 	"src/hash/Table.cpp"
 

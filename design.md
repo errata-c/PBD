@@ -42,8 +42,6 @@ One implementation breaks everything into blocks, then creates a secondary hash.
 
 ## Other things:
 
-Objects added to the scene will have a consecutive set of particles and constraints. Creation and deletion of objects will require changing the particle and constraint ordering. This will invalidate any indices the particles originally had. A mapping is needed to allow for rearrangement. Additionally, we need the constraints to be contained in a single location, instead of in several different ones. 
-
 It may be possible to implement rigid body physics for larger objects (like boxes, capsules, meshes) by emulating multiple particles. Compute center of mass of object, create tetrahedron of virtual particles around the origin. Then in theory all we need to do is compute a limited set of constraints to get the emergent behavior.
 
 It might be worthwhile to give the particles and other collision objects their own friction values. The number of values we have to store per-particle is already pretty high, but I don't think running out of memory is the biggest concern facing the performance.
@@ -53,8 +51,6 @@ Damping could also be added into the mix. We have to option of implementing mult
 Compliance could be added to the collision constraints as well, if desired. This would in effect make the collisions a bit softer. That could be a desirable effect. Just like the damping, this could also be made optional.
 
 XPBD makes mention of the Lagrange multiplier being accumulated over multiple constraint iterations. This is only needed when we process each constraint multiple times per substep. I might try this in another branch to see if it actually improves performance or accuracy.
-
-We need a way to allow the users to apply external forces on a per-particle basis. 
 
 # Todo:
 
@@ -66,8 +62,12 @@ We need a way to allow the users to apply external forces on a per-particle basi
 - [x] Provide a mechanism to add forces to particles
 - [x] Implement constraint variant, store all constraints in single buffer
 - [x] Provide method to reorder constraint ids
-- [ ] Add object mapping that updates when particles or constraints are removed
+- [ ] Implement a reusable constraint list
+  - [ ] Constraint references
+  - [ ] Constraint id access
+- [ ] Implement a particle prefab class, containing a list of particles and constraints
+- [ ] Implement a rotation tracker class, containing the list of ids to extract rotations from
 - [x] Implement spatial hashing for collision detection
 - [ ] Find collisions using the spatial hashing, add them to a second dynamic constraint set 
-- [x] Implement rotational extraction
-- [ ] Implement rotational tracking for skeletal animation of deformations
+- [x] Implement rotational extraction methods
+- [ ] Object map with ID generation
