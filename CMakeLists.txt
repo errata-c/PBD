@@ -26,6 +26,9 @@ if("${PHMAP_HEADERS}" STREQUAL "PHMAP_HEADERS-NOTFOUND")
 endif()
 
 add_library(pbd STATIC
+	"src/common/Utils.cpp"
+	"src/common/ConstraintRef.cpp"
+
 	"src/engine/Engine.cpp"
 	"src/engine/ExtractedRotation.cpp"
 	"src/engine/ConstraintList.cpp"
@@ -37,7 +40,6 @@ add_library(pbd STATIC
 	"src/constraint/Distance.cpp"
 	"src/constraint/TetraVolume.cpp"
 	"src/constraint/NHTetraVolume.cpp"
-	"src/constraint/Utils.cpp"
 
 	"src/collide/Particle.cpp"
 	"src/collide/Plane.cpp"

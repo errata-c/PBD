@@ -25,4 +25,5 @@ namespace pbd {
 	};
 
 	static_assert(alignof(ConstraintTetraVolume) == alignof(int32_t));
+	static_assert(SizeOf(Constraint::TetraVolume) == sizeof(ConstraintTetraVolume));
 }

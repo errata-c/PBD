@@ -18,4 +18,5 @@ namespace pbd {
 	};
 
 	static_assert(alignof(ConstraintDistance) == alignof(int32_t));
+	static_assert(SizeOf(Constraint::Distance) == sizeof(ConstraintDistance));
 }

@@ -17,4 +17,5 @@ namespace pbd {
 	};
 
 	static_assert(alignof(CollideParticle) == alignof(int32_t));
+	static_assert(SizeOf(Constraint::CollideParticle) == sizeof(CollideParticle));
 }

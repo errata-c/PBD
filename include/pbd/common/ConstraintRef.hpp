@@ -21,4 +21,19 @@ namespace pbd {
 		Constraint kind;
 		int32_t* data;
 	};
+
+	class ConstConstraintRef {
+	public:
+		ConstConstraintRef(const ConstConstraintRef&) noexcept = default;
+		ConstConstraintRef& operator=(const ConstConstraintRef&) noexcept = default;
+
+		ConstConstraintRef(const ConstraintRef & other) noexcept;
+		ConstConstraintRef(Constraint _kind, int32_t const* _data) noexcept;
+
+		void eval(Engine& engine, float rdt2) const;
+
+		Constraint type() const noexcept;
+	private:
+		ConstraintRef ref;
+	};
 }

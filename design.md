@@ -63,11 +63,22 @@ XPBD makes mention of the Lagrange multiplier being accumulated over multiple co
 - [x] Implement constraint variant, store all constraints in single buffer
 - [x] Provide method to reorder constraint ids
 - [ ] Implement a reusable constraint list
-  - [ ] Constraint references
-  - [ ] Constraint id access
+  - [x] Constraint references
+  - [ ] Constraint id array access
+  - [ ] `iterator` class
+  - [ ] `const_iterator` class
+  - [ ] erase method for ranges of constraints with remapping
+  - [ ] Combined erase method for efficiently erasing multiple ranges of constraints?
+  - [ ] Append from another constraint list
 - [ ] Implement a particle prefab class, containing a list of particles and constraints
+  - [ ] Simple particle object, position, velocity, inverse mass, collision flags, radius.
+  - [ ] Constraint list, local ids
 - [ ] Implement a rotation tracker class, containing the list of ids to extract rotations from
 - [x] Implement spatial hashing for collision detection
 - [ ] Find collisions using the spatial hashing, add them to a second dynamic constraint set 
 - [x] Implement rotational extraction methods
 - [ ] Object map with ID generation
+  - [ ] ID type, 64 bits
+  - [ ] Mapping from ID to particle range and constraint range
+  - [ ] Update ID mapping as needed
+  - [ ] Creating new IDs as needed
