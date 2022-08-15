@@ -3,12 +3,7 @@
 #include <cinttypes>
 #include <glm/vec3.hpp>
 
-#include <pbd/collide/Particle.hpp>
-#include <pbd/collide/Plane.hpp>
-
-#include <pbd/constraint/Distance.hpp>
-#include <pbd/constraint/TetraVolume.hpp>
-#include <pbd/constraint/NHTetraVolume.hpp>
+#include <pbd/engine/ConstraintList.hpp>
 
 #include <pbd/engine/ExtractedRotation.hpp>
 #include <pbd/common/Types.hpp>
@@ -35,15 +30,12 @@ namespace pbd {
 			std::vector<int32_t> flags;
 		} particle;
 
-		struct CVariant {
-			Constraint kind;
-			int64_t index;
-		};
-		std::vector<CVariant> constraints;
-		std::vector<int32_t> cdata;
+		ConstraintList constraints;
 		
 		void reserve(int64_t count);
-		int64_t size() const;
+		int64_t size() const noexcept;
+		int64_t numParticles() const noexcept;
+		int64_t numConstraints() const noexcept;
 
 		void solve();
 
@@ -52,16 +44,7 @@ namespace pbd {
 		
 		template<typename T>
 		int64_t addConstraint(const T& cval) {
-			int64_t index = cdata.size();
-			Constraint kind = T::Kind;
-
-			const int32_t* ival = (const int32_t*)&cval;
-			for (size_t i = 0; i < (sizeof(T) / sizeof(int32_t)); ++i) {
-				cdata.push_back(ival[i]);
-			}
-			constraints.push_back(CVariant{kind, index});
-
-			return constraints.size()-1;
+			return constraints.add(cval);
 		}
 	private:
 		void predictPositions(float sdt);

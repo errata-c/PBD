@@ -64,12 +64,12 @@ XPBD makes mention of the Lagrange multiplier being accumulated over multiple co
 - [x] Provide method to reorder constraint ids
 - [ ] Implement a reusable constraint list
   - [x] Constraint references
-  - [ ] Constraint id array access
-  - [ ] `iterator` class
-  - [ ] `const_iterator` class
-  - [ ] erase method for ranges of constraints with remapping
+  - [x] Constraint id array access
+  - [x] erase method for ranges of constraints with remapping
   - [ ] Combined erase method for efficiently erasing multiple ranges of constraints?
-  - [ ] Append from another constraint list
+  - [x] Append from another constraint list
+  - [x] Add to the engine class
+  - [x] Test it in the Godot project
 - [ ] Implement a particle prefab class, containing a list of particles and constraints
   - [ ] Simple particle object, position, velocity, inverse mass, collision flags, radius.
   - [ ] Constraint list, local ids

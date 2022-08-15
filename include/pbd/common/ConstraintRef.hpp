@@ -17,9 +17,11 @@ namespace pbd {
 		void remap(int32_t offset);
 
 		Constraint type() const noexcept;
+
+		int32_t * data() const noexcept;
 	private:
-		Constraint kind;
-		int32_t* data;
+		Constraint mkind;
+		int32_t* mdata;
 	};
 
 	class ConstConstraintRef {
@@ -33,6 +35,8 @@ namespace pbd {
 		void eval(Engine& engine, float rdt2) const;
 
 		Constraint type() const noexcept;
+
+		const int32_t* data() const noexcept;
 	private:
 		ConstraintRef ref;
 	};

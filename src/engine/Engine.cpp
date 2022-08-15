@@ -24,8 +24,14 @@ namespace pbd {
 		particle.force.reserve(count);
 		particle.flags.reserve(count);
 	}
-	int64_t Engine::size() const {
+	int64_t Engine::size() const noexcept {
 		return static_cast<int64_t>(particle.pos.size());
+	}
+	int64_t Engine::numParticles() const noexcept {
+		return static_cast<int64_t>(particle.pos.size());
+	}
+	int64_t Engine::numConstraints() const noexcept {
+		return constraints.size();
 	}
 
 	int32_t Engine::addParticle(const glm::vec3& position, const glm::vec3& velocity, float invMass, float radius) {
@@ -86,28 +92,11 @@ namespace pbd {
 		}
 	}
 	void Engine::applyConstraints(float sdt) {
-		// Run all the constraints, we need to have the constraints added to this
+		// Run all the constraints
 
 		float rdt2 = 1.f / (sdt * sdt);
-
-		for (CVariant & cvar: constraints) {
-			switch (cvar.kind) {
-			case Constraint::Distance:
-				((ConstraintDistance*)(&cdata[cvar.index]))->eval(*this, rdt2);
-				break;
-			case Constraint::TetraVolume:
-				((ConstraintTetraVolume*)(&cdata[cvar.index]))->eval(*this, rdt2);
-				break;
-			case Constraint::NHTetraVolume:
-				((ConstraintNHTetraVolume*)(&cdata[cvar.index]))->eval(*this, rdt2);
-				break;
-			case Constraint::CollideParticle:
-				((CollideParticle*)(&cdata[cvar.index]))->eval(*this, rdt2);
-				break;
-			case Constraint::CollidePlane:
-				((CollidePlane*)(&cdata[cvar.index]))->eval(*this, rdt2);
-				break;
-			}
+		for (int64_t i = 0, count = constraints.size(); i < count; ++i) {
+			constraints[i].eval(*this, rdt2);
 		}
 	}
 	void Engine::updateParticles(float sdt) {

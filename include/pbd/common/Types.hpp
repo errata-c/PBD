@@ -20,4 +20,13 @@ namespace pbd {
 	constexpr size_t NumIds(Constraint type) noexcept {
 		return (static_cast<uint32_t>(type) >> 16) & 0xFF;
 	}
+
+	enum class ObjectID : uint64_t {
+		Invalid = ~uint64_t(0)
+	};
+}
+
+// Hashing support for phmap
+constexpr size_t hash_value(const pbd::ObjectID& id) noexcept {
+	return static_cast<size_t>(id);
 }

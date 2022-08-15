@@ -46,6 +46,7 @@ namespace pbd {
 		void erase(int64_t i);
 		// Erase a range of constraints
 		void erase(int64_t first, int64_t last);
+		
 
 		int64_t size() const noexcept;
 		bool empty() const noexcept;

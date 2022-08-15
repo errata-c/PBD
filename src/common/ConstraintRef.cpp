@@ -9,60 +9,42 @@
 
 namespace pbd {
 	ConstraintRef::ConstraintRef(Constraint _kind, int32_t* _data) noexcept
-		: kind(_kind)
-		, data(_data)
+		: mkind(_kind)
+		, mdata(_data)
 	{}
 
 	void ConstraintRef::eval(Engine& engine, float rdt2) const {
 		switch (type()) {
 		case Constraint::Distance:
-			((ConstraintDistance*)data)->eval(engine, rdt2);
+			((ConstraintDistance*)mdata)->eval(engine, rdt2);
 			break;
 		case Constraint::TetraVolume:
-			((ConstraintTetraVolume*)data)->eval(engine, rdt2);
+			((ConstraintTetraVolume*)mdata)->eval(engine, rdt2);
 			break;
 		case Constraint::NHTetraVolume:
-			((ConstraintNHTetraVolume*)data)->eval(engine, rdt2);
+			((ConstraintNHTetraVolume*)mdata)->eval(engine, rdt2);
 			break;
 		case Constraint::CollideParticle:
-			((CollideParticle*)data)->eval(engine, rdt2);
+			((CollideParticle*)mdata)->eval(engine, rdt2);
 			break;
 		case Constraint::CollidePlane:
-			((CollidePlane*)data)->eval(engine, rdt2);
+			((CollidePlane*)mdata)->eval(engine, rdt2);
 			break;
 		}	
 	}
 
 	void ConstraintRef::remap(int32_t offset) {
-		switch (type()) {
-		case Constraint::Distance:
-			data[0] += offset;
-			data[1] += offset;
-			break;
-		case Constraint::TetraVolume:
-			data[0] += offset;
-			data[1] += offset;
-			data[2] += offset;
-			data[3] += offset;
-			break;
-		case Constraint::NHTetraVolume:
-			data[0] += offset;
-			data[1] += offset;
-			data[2] += offset;
-			data[3] += offset;
-			break;
-		case Constraint::CollideParticle:
-			data[0] += offset;
-			data[1] += offset;
-			break;
-		case Constraint::CollidePlane:
-			data[0] += offset;
-			break;
+		for (size_t i = 0, count = NumIds(type()); i < count; ++i) {
+			mdata[i] += offset;
 		}
 	}
 
 	Constraint ConstraintRef::type() const noexcept {
-		return kind;
+		return mkind;
+	}
+
+	int32_t* ConstraintRef::data() const noexcept {
+		return mdata;
 	}
 
 
@@ -80,5 +62,9 @@ namespace pbd {
 
 	Constraint ConstConstraintRef::type() const noexcept {
 		return ref.type();
+	}
+
+	const int32_t* ConstConstraintRef::data() const noexcept {
+		return ref.data();
 	}
 }
