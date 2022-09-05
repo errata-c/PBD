@@ -19,19 +19,25 @@ FetchContent_MakeAvailable(ez-cmake)
 
 find_package(glm CONFIG REQUIRED)
 find_package(nlohmann_json CONFIG REQUIRED)
+find_package(ez-kvstore CONFIG REQUIRED)
 
 find_path(PHMAP_HEADERS "parallel_hashmap/phmap.h")
 if("${PHMAP_HEADERS}" STREQUAL "PHMAP_HEADERS-NOTFOUND")
 	message(FATAL_ERROR "Failed to find the parallel_hashmap headers!")
 endif()
 
+find_path(PCG_HEADERS "pcg_random.hpp")
+if("${PCG_HEADERS}" STREQUAL "PCG_HEADERS-NOTFOUND")
+	message(FATAL_ERROR "Failed to find the pcg_random headers!")
+endif()
+
 add_library(pbd STATIC
 	"src/common/Utils.cpp"
 	"src/common/ConstraintRef.cpp"
+	"src/common/ConstraintList.cpp"
 
 	"src/engine/Engine.cpp"
 	"src/engine/ExtractedRotation.cpp"
-	"src/engine/ConstraintList.cpp"
 	"src/engine/ObjectMap.cpp"
 	"src/engine/ObjectPrefab.cpp"
 
@@ -50,6 +56,7 @@ target_include_directories(pbd PUBLIC
 	$<INSTALL_INTERFACE:include>
 	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
 	$<BUILD_INTERFACE:${PHMAP_HEADERS}>
+	$<BUILD_INTERFACE:${PCG_HEADERS}>
 )
 target_compile_features(pbd PUBLIC cxx_std_17)
 target_link_libraries(pbd PUBLIC 

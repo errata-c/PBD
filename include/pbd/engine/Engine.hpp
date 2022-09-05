@@ -3,10 +3,10 @@
 #include <cinttypes>
 #include <glm/vec3.hpp>
 
-#include <pbd/engine/ConstraintList.hpp>
-
 #include <pbd/engine/ExtractedRotation.hpp>
+
 #include <pbd/common/Types.hpp>
+#include <pbd/common/ConstraintList.hpp>
 
 namespace pbd {
 	class Engine {
@@ -19,10 +19,8 @@ namespace pbd {
 		float kineticFriction;
 		float staticFriction;
 
-		// Map for objects?
 
 		// prevPos is entirely for internal use.
-		
 		// Structure of arrays or array of structures?
 		struct Particles {
 			std::vector<glm::vec3> pos, prevPos, velocity, force;

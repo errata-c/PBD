@@ -70,15 +70,15 @@ XPBD makes mention of the Lagrange multiplier being accumulated over multiple co
   - [x] Append from another constraint list
   - [x] Add to the engine class
   - [x] Test it in the Godot project
-- [ ] Implement a particle prefab class, containing a list of particles and constraints
-  - [ ] Simple particle object, position, velocity, inverse mass, collision flags, radius.
-  - [ ] Constraint list, local ids
+- [x] Implement a object prefab class, containing a list of particles and constraints
+  - [x] Simple particle object, position, velocity, inverse mass, collision flags, radius.
+  - [x] Constraint list, local ids
 - [ ] Implement a rotation tracker class, containing the list of ids to extract rotations from
 - [x] Implement spatial hashing for collision detection
 - [ ] Find collisions using the spatial hashing, add them to a second dynamic constraint set 
 - [x] Implement rotational extraction methods
 - [ ] Object map with ID generation
-  - [ ] ID type, 64 bits
+  - [x] ID type, 64 bits
   - [ ] Mapping from ID to particle range and constraint range
   - [ ] Update ID mapping as needed
   - [ ] Creating new IDs as needed
