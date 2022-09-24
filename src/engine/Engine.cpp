@@ -3,51 +3,22 @@
 #include <limits>
 
 namespace pbd {
-	static constexpr size_t ParticleLimit = std::numeric_limits<int32_t>::max();
-
 	Engine::Engine()
-		: staticFriction(1.f)
-		, kineticFriction(1.f)
+		: static_friction(1.f)
+		, kinetic_friction(1.f)
 		, gravity(0,-9.8,0)
-		, numSubsteps(4)
+		, substeps(4)
 		, dt(1.0 / 60.0)
 	{}
 
-	void Engine::reserve(int64_t count) {
-		assert(count < ParticleLimit);
-
-		particle.pos.reserve(count);
-		particle.prevPos.reserve(count);
-		particle.velocity.reserve(count);
-		particle.invMass.reserve(count);
-		particle.radius.reserve(count);
-		particle.force.reserve(count);
-		particle.flags.reserve(count);
+	size_t Engine::size() const noexcept {
+		return particle.size();
 	}
-	int64_t Engine::size() const noexcept {
-		return static_cast<int64_t>(particle.pos.size());
+	size_t Engine::num_particles() const noexcept {
+		return particle.size();
 	}
-	int64_t Engine::numParticles() const noexcept {
-		return static_cast<int64_t>(particle.pos.size());
-	}
-	int64_t Engine::numConstraints() const noexcept {
+	size_t Engine::num_constraints() const noexcept {
 		return constraints.size();
-	}
-
-	int32_t Engine::addParticle(const glm::vec3& position, const glm::vec3& velocity, float invMass, float radius) {
-		assert(size() < ParticleLimit);
-		int32_t id = static_cast<int32_t>(size());
-		particle.pos.push_back(position);
-		particle.velocity.push_back(velocity);
-		particle.invMass.push_back(invMass);
-		particle.radius.push_back(radius);
-		particle.force.push_back(glm::vec3(0));
-		particle.flags.push_back(0);
-
-		return id;
-	}
-	int32_t Engine::addParticle(const glm::vec3& position, float invMass, float radius) {
-		return addParticle(position, glm::vec3(0), invMass, radius);
 	}
 
 	// Run one iteration of the solver
@@ -57,8 +28,8 @@ namespace pbd {
 
 		
 		// Run the iteration substeps.
-		float sdt = dt / float(numSubsteps);
-		for (int i = 0; i < numSubsteps; ++i) {
+		float sdt = dt / float(substeps);
+		for (int i = 0; i < substeps; ++i) {
 			predictPositions(sdt);
 			applyConstraints(sdt);
 			updateParticles(sdt);

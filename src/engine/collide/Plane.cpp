@@ -1,4 +1,4 @@
-#include <pbd/collide/Plane.hpp>
+#include <pbd/engine/collide/Plane.hpp>
 #include <pbd/engine/Engine.hpp>
 
 #include <pbd/common/Utils.hpp>
@@ -41,7 +41,7 @@ namespace pbd {
 		// Find the perpendicular element of that motion.
 		glm::vec3 perp = perpendicular(pdelta, normal);
 
-		x0 += frictionDelta(perp, d, engine.staticFriction, engine.kineticFriction);
+		x0 += friction_delta(perp, d, engine.static_friction, engine.kinetic_friction);
 	}
 
 	void CollidePlane::remap(int32_t offset) {

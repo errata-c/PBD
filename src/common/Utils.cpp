@@ -8,7 +8,7 @@ namespace pbd {
 		return x - n * glm::dot(x, n);
 	}
 
-	glm::vec3 frictionDelta(const glm::vec3& perp, float overlap, float sfriction, float kfriction) {
+	glm::vec3 friction_delta(const glm::vec3& perp, float overlap, float sfriction, float kfriction) {
 		float plen = glm::length(perp);
 		if (plen < (sfriction * overlap)) {
 			// Completely eliminate tangential motion
@@ -18,5 +18,15 @@ namespace pbd {
 			// Damp tangential motion
 			return -perp * std::min((kfriction * overlap) / plen, 1.f);
 		}
+	}
+
+	float tetrahedron_volume(const glm::vec3& p0, const glm::vec3& p1, const glm::vec3& p2, const glm::vec3& p3) {
+		glm::mat3 form{
+			p1 - p0,
+			p2 - p0,
+			p3 - p0
+		};
+
+		return std::abs(glm::determinant(form)) / 6.f;
 	}
 }

@@ -1,11 +1,11 @@
-#include <pbd/common/ConstraintRef.hpp>
+#include <pbd/engine/ConstraintRef.hpp>
 
-#include <pbd/collide/Particle.hpp>
-#include <pbd/collide/Plane.hpp>
+#include <pbd/engine/collide/Particle.hpp>
+#include <pbd/engine/collide/Plane.hpp>
 
-#include <pbd/constraint/Distance.hpp>
-#include <pbd/constraint/TetraVolume.hpp>
-#include <pbd/constraint/NHTetraVolume.hpp>
+#include <pbd/engine/constraint/Distance.hpp>
+#include <pbd/engine/constraint/TetraVolume.hpp>
+#include <pbd/engine/constraint/NHTetraVolume.hpp>
 
 namespace pbd {
 	ConstraintRef::ConstraintRef(Constraint _kind, int32_t* _data) noexcept
@@ -34,13 +34,17 @@ namespace pbd {
 	}
 
 	void ConstraintRef::remap(int32_t offset) {
-		for (size_t i = 0, count = NumIds(type()); i < count; ++i) {
-			mdata[i] += offset;
+		for (int32_t & id: ids()) {
+			id += offset;
 		}
 	}
 
 	Constraint ConstraintRef::type() const noexcept {
 		return mkind;
+	}
+
+	ConstraintDataRange ConstraintRef::ids() const noexcept {
+		return ConstraintDataRange{data(), data() + NumIds(type())};
 	}
 
 	int32_t* ConstraintRef::data() const noexcept {
@@ -62,6 +66,10 @@ namespace pbd {
 
 	Constraint ConstConstraintRef::type() const noexcept {
 		return ref.type();
+	}
+
+	ConstConstraintDataRange ConstConstraintRef::ids() const noexcept {
+		return ConstConstraintDataRange{ data(), data() + NumIds(type()) };
 	}
 
 	const int32_t* ConstConstraintRef::data() const noexcept {

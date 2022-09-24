@@ -1,5 +1,5 @@
 #pragma once
-#include <pbd/constraint/NHTetraVolume.hpp>
+#include <pbd/engine/constraint/NHTetraVolume.hpp>
 #include <pbd/engine/Engine.hpp>
 
 #include <glm/geometric.hpp>
@@ -7,7 +7,47 @@
 #include <glm/gtx/norm.hpp>
 
 namespace pbd {
-	static void apply(const ConstraintNHTetraVolume & tet, Engine & engine, std::array<glm::vec3*, 4> & x, std::array<glm::vec3, 4> & grads, float C, float rdt2) {
+	ConstraintNHTetraVolume::ConstraintNHTetraVolume()
+		: ids{0,0,0,0}
+		, hydrostatic_compliance(1.f)
+		, deviatoric_compliance(1.f)
+		, inv_rest(1.f)
+	{}
+	ConstraintNHTetraVolume::ConstraintNHTetraVolume(const std::array<int32_t, 4> _ids, const glm::mat3& _irest, float hydro, float devia)
+		: ids(_ids)
+		, inv_rest(_irest)
+		, hydrostatic_compliance(hydro)
+		, deviatoric_compliance(devia)
+	{}
+	ConstraintNHTetraVolume::ConstraintNHTetraVolume(
+		const std::array<int32_t, 4> _ids,
+		const glm::vec3& p0,
+		const glm::vec3& p1,
+		const glm::vec3& p2,
+		const glm::vec3& p3,
+		float hydro,
+		float devia)
+		: ids(_ids)
+		, hydrostatic_compliance(hydro)
+		, deviatoric_compliance(devia)
+	{
+		inv_rest = glm::mat3(
+			p1 - p0,
+			p2 - p0,
+			p3 - p0
+		);
+		inv_rest = glm::inverse(inv_rest);
+	}
+
+	static void apply(
+		const ConstraintNHTetraVolume & tet, 
+		Engine & engine, 
+		std::array<glm::vec3*, 4> & x, 
+		std::array<glm::vec3, 4> & grads, 
+		float C, 
+		float rdt2,
+		float compliance) 
+	{
 		if(std::abs(C) < 1e-4f) {
 			return;
 		}
@@ -23,7 +63,7 @@ namespace pbd {
 			return;
 		}
 
-		float lambda = -C / (w + tet.compliance * rdt2);
+		float lambda = -C / (w + compliance * rdt2);
 		for (int i = 0; i < 4; ++i) {
 			*x[i] += grads[i] * lambda * engine.particle.invMass[tet.ids[i]];
 		}
@@ -45,48 +85,48 @@ namespace pbd {
 			(*x[3]) - (*x[0])
 		};
 
-		glm::mat3 F = P * invRestPose;
+		glm::mat3 F = P * inv_rest;
 
 		std::array<glm::vec3, 4> grads;
 
 		for (int i = 0; i < 3; ++i) {
 			grads[i + 1] = 
-				2.f * matIJ(invRestPose, i, 0) * F[0] +
-				2.f * matIJ(invRestPose, i, 1) * F[1] +
-				2.f * matIJ(invRestPose, i, 2) * F[2];
+				2.f * matIJ(inv_rest, i, 0) * F[0] +
+				2.f * matIJ(inv_rest, i, 1) * F[1] +
+				2.f * matIJ(inv_rest, i, 2) * F[2];
 		}
 		
 		float C = glm::length2(F[0]) + glm::length2(F[1]) + glm::length2(F[2]) - 3.f;
 
-		apply(*this, engine, x, grads, C, rdt2);
+		apply(*this, engine, x, grads, C, rdt2, deviatoric_compliance);
 
 
 		P[0] = (*x[1]) - (*x[0]);
 		P[1] = (*x[2]) - (*x[0]);
 		P[2] = (*x[3]) - (*x[0]);
 
-		F = P * invRestPose;
+		F = P * inv_rest;
 
 		grads.fill(glm::vec3(0));
 
 		glm::vec3 dF = glm::cross(F[1], F[2]);
 		for (int i = 0; i < 3; ++i) {
-			grads[i + 1] += dF * matIJ(invRestPose, i, 0);
+			grads[i + 1] += dF * matIJ(inv_rest, i, 0);
 		}
 
 		dF = glm::cross(F[2], F[0]);
 		for (int i = 0; i < 3; ++i) {
-			grads[i + 1] += dF * matIJ(invRestPose, i, 1);
+			grads[i + 1] += dF * matIJ(inv_rest, i, 1);
 		}
 
 		dF = glm::cross(F[0], F[1]);
 		for (int i = 0; i < 3; ++i) {
-			grads[i + 1] += dF * matIJ(invRestPose, i, 2);
+			grads[i + 1] += dF * matIJ(inv_rest, i, 2);
 		}
 
 		C = glm::determinant(F) - 1.f;
 		
-		apply(*this, engine, x, grads, C, rdt2);
+		apply(*this, engine, x, grads, C, rdt2, hydrostatic_compliance);
 	}
 
 	void ConstraintNHTetraVolume::remap(int32_t offset) {

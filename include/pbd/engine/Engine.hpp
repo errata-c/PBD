@@ -3,10 +3,9 @@
 #include <cinttypes>
 #include <glm/vec3.hpp>
 
-#include <pbd/engine/ExtractedRotation.hpp>
-
 #include <pbd/common/Types.hpp>
-#include <pbd/common/ConstraintList.hpp>
+#include <pbd/engine/ConstraintList.hpp>
+#include <pbd/engine/Particles.hpp>
 
 namespace pbd {
 	class Engine {
@@ -15,33 +14,29 @@ namespace pbd {
 
 		glm::vec3 gravity;
 		float dt;
-		int numSubsteps;
-		float kineticFriction;
-		float staticFriction;
+		int substeps;
+		// Perhaps change the global friction to be a particle specific thing?
+		// The issue is that friction is calculated on a material pairing basis.
+		float kinetic_friction;
+		float static_friction;
 
-
-		// prevPos is entirely for internal use.
-		// Structure of arrays or array of structures?
-		struct Particles {
-			std::vector<glm::vec3> pos, prevPos, velocity, force;
-			std::vector<float> invMass, radius;
-			std::vector<int32_t> flags;
-		} particle;
-
+		// The particles, and their execution data
+		Particles particle;
+		// The constraints and their execution data
 		ConstraintList constraints;
-		
-		void reserve(int64_t count);
-		int64_t size() const noexcept;
-		int64_t numParticles() const noexcept;
-		int64_t numConstraints() const noexcept;
+
+		//void reserve(int64_t count);
+		size_t size() const noexcept;
+		size_t num_particles() const noexcept;
+		size_t num_constraints() const noexcept;
 
 		void solve();
 
-		int32_t addParticle(const glm::vec3& position, const glm::vec3& velocity, float invMass, float radius);
-		int32_t addParticle(const glm::vec3& position, float invMass, float radius);
+		//int32_t add_particle(const glm::vec3& position, const glm::vec3& velocity, float invMass, float radius);
+		//int32_t add_particle(const glm::vec3& position, float invMass, float radius);
 		
 		template<typename T>
-		int64_t addConstraint(const T& cval) {
+		int64_t add_constraint(const T& cval) {
 			return constraints.add(cval);
 		}
 	private:

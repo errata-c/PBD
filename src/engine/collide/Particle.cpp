@@ -1,4 +1,4 @@
-#include <pbd/collide/Particle.hpp>
+#include <pbd/engine/collide/Particle.hpp>
 #include <pbd/engine/Engine.hpp>
 
 #include <pbd/common/Utils.hpp>
@@ -48,8 +48,8 @@ namespace pbd {
 		px0 = perpendicular(px0, grad);
 		px1 = perpendicular(px1, grad);
 
-		px0 = frictionDelta(px0, -C, engine.staticFriction, engine.kineticFriction);
-		px1 = frictionDelta(px1, -C, engine.staticFriction, engine.kineticFriction);
+		px0 = friction_delta(px0, -C, engine.static_friction, engine.kinetic_friction);
+		px1 = friction_delta(px1, -C, engine.static_friction, engine.kinetic_friction);
 
 		x0 += w0 * w * px0;
 		x1 += w1 * w * px1;

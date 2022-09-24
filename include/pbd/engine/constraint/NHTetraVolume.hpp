@@ -14,9 +14,20 @@ namespace pbd {
 	struct ConstraintNHTetraVolume {
 		static constexpr Constraint Kind = Constraint::NHTetraVolume;
 
+		ConstraintNHTetraVolume();
+		ConstraintNHTetraVolume(const std::array<int32_t, 4> _ids, const glm::mat3& _irest, float hydro, float devia);
+		ConstraintNHTetraVolume(
+			const std::array<int32_t, 4> _ids, 
+			const glm::vec3& p0,
+			const glm::vec3& p1,
+			const glm::vec3& p2,
+			const glm::vec3& p3,
+			float hydro, 
+			float devia);
+
 		std::array<int32_t, 4> ids;
-		glm::mat3 invRestPose;
-		float compliance;
+		glm::mat3 inv_rest;
+		float hydrostatic_compliance, deviatoric_compliance;
 
 		void eval(Engine& engine, float rdt2) const;
 

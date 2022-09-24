@@ -1,14 +1,14 @@
-cmake_minimum_required(VERSION 3.20)
+cmake_minimum_required(VERSION 3.21)
 
 project(PBD
-VERSION 0.1.0
+VERSION 0.2.0
 LANGUAGES CXX)
-
-option(PBD_BUILD_TESTS "Build the test executables" OFF)
-set(PBD_CONFIG_DIR "share/pbd" CACHE STRING "The relative directory to install package config files.")
 
 include(GNUInstallDirs)
 include(FetchContent)
+
+set(PBD_CONFIG_DIR "${CMAKE_INSTALL_DATADIR}/pbd" CACHE STRING "The relative directory to install package config files.")
+
 
 FetchContent_Declare(
 	ez-cmake
@@ -18,8 +18,11 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(ez-cmake)
 
 find_package(glm CONFIG REQUIRED)
-find_package(nlohmann_json CONFIG REQUIRED)
 find_package(ez-kvstore CONFIG REQUIRED)
+find_package(ez-serialize CONFIG REQUIRED)
+find_package(cppitertools CONFIG REQUIRED)
+
+find_package(pbd-hashing CONFIG REQUIRED)
 
 find_path(PHMAP_HEADERS "parallel_hashmap/phmap.h")
 if("${PHMAP_HEADERS}" STREQUAL "PHMAP_HEADERS-NOTFOUND")
@@ -33,24 +36,30 @@ endif()
 
 add_library(pbd STATIC
 	"src/common/Utils.cpp"
-	"src/common/ConstraintRef.cpp"
-	"src/common/ConstraintList.cpp"
+	"src/common/TransformTracker.cpp"
+	"src/common/RotationExtractor.cpp"
 
 	"src/engine/Engine.cpp"
-	"src/engine/ExtractedRotation.cpp"
+	"src/engine/ManagedEngine.cpp"
+	"src/engine/Particles.cpp"
 	"src/engine/ObjectMap.cpp"
-	"src/engine/ObjectPrefab.cpp"
+	"src/engine/ObjectQueue.cpp"
+	"src/engine/ConstraintRef.cpp"
+	"src/engine/ConstraintList.cpp"
 
-	"src/hash/Table.cpp"
+	"src/engine/constraint/Distance.cpp"
+	"src/engine/constraint/TetraVolume.cpp"
+	"src/engine/constraint/NHTetraVolume.cpp"
 
-	"src/constraint/Distance.cpp"
-	"src/constraint/TetraVolume.cpp"
-	"src/constraint/NHTetraVolume.cpp"
+	"src/engine/collide/Particle.cpp"
+	"src/engine/collide/Plane.cpp"
+	"src/engine/collide/ParticleCompliant.cpp"
+	"src/engine/collide/PlaneCompliant.cpp"
 
-	"src/collide/Particle.cpp"
-	"src/collide/Plane.cpp"
-	"src/collide/ParticleCompliant.cpp"
-	"src/collide/PlaneCompliant.cpp"
+	"src/prefab/Prefab.cpp"
+	"src/prefab/PrefabDatabase.cpp"
+	"src/prefab/PrefabParticle.cpp"
+	"src/prefab/PrefabTracker.cpp"
 )
 target_include_directories(pbd PUBLIC
 	$<INSTALL_INTERFACE:include>
@@ -59,13 +68,19 @@ target_include_directories(pbd PUBLIC
 	$<BUILD_INTERFACE:${PCG_HEADERS}>
 )
 target_compile_features(pbd PUBLIC cxx_std_17)
-target_link_libraries(pbd PUBLIC 
+target_link_libraries(pbd PUBLIC
 	glm::glm
-	nlohmann_json::nlohmann_json
+	cppitertools::cppitertools
+
+	ez::kvstore
+	ez::serialize
+
+	pbd::hashing
 )
 
 add_library(pbd::pbd ALIAS pbd)
 
-if(PBD_BUILD_TESTS)
+include(CTest)
+if(BUILD_TESTING)
 	add_subdirectory("test")
 endif()

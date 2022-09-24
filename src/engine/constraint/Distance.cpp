@@ -1,4 +1,4 @@
-#include <pbd/constraint/Distance.hpp>
+#include <pbd/engine/constraint/Distance.hpp>
 #include <pbd/engine/Engine.hpp>
 
 #include <glm/geometric.hpp>

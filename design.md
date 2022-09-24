@@ -73,12 +73,16 @@ XPBD makes mention of the Lagrange multiplier being accumulated over multiple co
 - [x] Implement a object prefab class, containing a list of particles and constraints
   - [x] Simple particle object, position, velocity, inverse mass, collision flags, radius.
   - [x] Constraint list, local ids
-- [ ] Implement a rotation tracker class, containing the list of ids to extract rotations from
+- [x] Implement a rotation tracker class, containing the list of ids to extract rotations from
 - [x] Implement spatial hashing for collision detection
-- [ ] Find collisions using the spatial hashing, add them to a second dynamic constraint set 
+- [x] Find collisions using the spatial hashing, 
 - [x] Implement rotational extraction methods
-- [ ] Object map with ID generation
+- [x] Object map with ID generation
   - [x] ID type, 64 bits
-  - [ ] Mapping from ID to particle range and constraint range
-  - [ ] Update ID mapping as needed
-  - [ ] Creating new IDs as needed
+  - [x] Mapping from ID to particle range and constraint range
+  - [x] Update ID mapping as needed
+  - [x] Creating new IDs as needed
+- [ ] Add trackers to the managed engine
+- [ ] Add the object map to the managed engine
+- [ ] Add a method to create an instance from a prefab
+- [ ] 

@@ -2,10 +2,13 @@
 #include <cinttypes>
 
 namespace pbd {
+	// First value is the constraint ID
+	// Second is the size of the class
+	// Third is the number of ids referenced
 	enum class Constraint: uint32_t {
 		Distance = 0 | (16 << 8) | (2 << 16),
 		TetraVolume = 1 | (24 << 8) | (4 << 16),
-		NHTetraVolume = 2 | (56 << 8) | (4 << 16),
+		NHTetraVolume = 2 | (60 << 8) | (4 << 16),
 
 		CollideParticle = 3 | (8 << 8) | (2 << 16),
 		CollidePlane = 4 | (28 << 8) | (1 << 16),

@@ -1,4 +1,4 @@
-#include <pbd/constraint/TetraVolume.hpp>
+#include <pbd/engine/constraint/TetraVolume.hpp>
 #include <pbd/engine/Engine.hpp>
 
 #include <glm/geometric.hpp>

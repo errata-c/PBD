@@ -4,6 +4,26 @@
 
 namespace pbd {
 	class Engine;
+	struct ConstraintDataRange {
+		int32_t *first, *last;
+
+		int32_t* begin() const noexcept {
+			return first;
+		}
+		int32_t* end() const noexcept {
+			return last;
+		}
+	};
+	struct ConstConstraintDataRange {
+		const int32_t* first, * last;
+
+		const int32_t* begin() const noexcept {
+			return first;
+		}
+		const int32_t* end() const noexcept {
+			return last;
+		}
+	};
 
 	class ConstraintRef {
 	public:
@@ -17,6 +37,8 @@ namespace pbd {
 		void remap(int32_t offset);
 
 		Constraint type() const noexcept;
+
+		ConstraintDataRange ids() const noexcept;
 
 		int32_t * data() const noexcept;
 	private:
@@ -35,6 +57,8 @@ namespace pbd {
 		void eval(Engine& engine, float rdt2) const;
 
 		Constraint type() const noexcept;
+
+		ConstConstraintDataRange ids() const noexcept;
 
 		const int32_t* data() const noexcept;
 	private:

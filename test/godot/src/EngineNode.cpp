@@ -31,13 +31,14 @@ namespace godot {
 		register_method("add_plane_collide", &EngineNode::add_plane_collide);
 		register_method("update_mesh", &EngineNode::update_mesh);
 		register_method("solve", &EngineNode::solve);
+
+		register_method("set_tracker", &EngineNode::set_tracker);
+		register_method("get_tracker_transform", &EngineNode::get_tracker_transform);
 	}
 
 	EngineNode::EngineNode() 
 		: mminst(nullptr)
-	{
-
-	}
+	{}
 	EngineNode::~EngineNode() {
 
 	}
@@ -88,7 +89,7 @@ namespace godot {
 
 	void EngineNode::set_substeps(int count) {
 		count = std::max(count, 1);
-		engine.numSubsteps = count;
+		engine.substeps = count;
 	}
 	void EngineNode::set_timestep(float delta) {
 		delta = std::max(1e-5f, delta);
@@ -98,12 +99,12 @@ namespace godot {
 	void EngineNode::set_static_friction(float friction) {
 		// Cannot be zero (?), cannot be negative
 		friction = std::max(friction, 1e-5f);
-		engine.staticFriction = friction;
+		engine.static_friction = friction;
 	}
 	void EngineNode::set_kinetic_friction(float friction) {
 		// Cannot be zero (?), cannot be negative
 		friction = std::max(friction, 1e-5f);
-		engine.kineticFriction = friction;
+		engine.kinetic_friction = friction;
 	}
 
 	int64_t EngineNode::num_particles() const {
@@ -111,7 +112,7 @@ namespace godot {
 	}
 
 	void EngineNode::add_particle(Vector3 pos, float imass, float radius) {
-		engine.addParticle(glm::vec3{ pos.x, pos.y, pos.z }, imass, radius);
+		engine.particle.add(glm::vec3{ pos.x, pos.y, pos.z }, imass, radius);
 	}
 
 	void EngineNode::add_distance_constraint(int id0, int id1, float compliance) {
@@ -119,7 +120,7 @@ namespace godot {
 			p0 = engine.particle.pos[id0],
 			p1 = engine.particle.pos[id1];
 
-		engine.addConstraint(pbd::ConstraintDistance{ id0, id1, glm::length(p1 - p0), compliance });
+		engine.add_constraint(pbd::ConstraintDistance{ id0, id1, glm::length(p1 - p0), compliance });
 	}
 
 	void EngineNode::add_tetra_volume_constraint(int id0, int id1, int id2, int id3, float compliance) {
@@ -136,13 +137,13 @@ namespace godot {
 		
 		glm::vec3 t4 = glm::cross(t0, t1);
 
-		engine.addConstraint(pbd::ConstraintTetraVolume{
+		engine.add_constraint(pbd::ConstraintTetraVolume{
 			{id0, id1, id2, id3},
 			glm::dot(t3, t4) / 6.f,
 			compliance
 		});
 	}
-	void EngineNode::add_nh_tetra_volume_constraint(int id0, int id1, int id2, int id3, float compliance) {
+	void EngineNode::add_nh_tetra_volume_constraint(int id0, int id1, int id2, int id3, float hydrostatic_compliance, float deviatoric_compliance) {
 		glm::vec3
 			p0 = engine.particle.pos[id0],
 			p1 = engine.particle.pos[id1],
@@ -155,10 +156,11 @@ namespace godot {
 
 		restPose = glm::inverse(restPose);
 
-		engine.addConstraint(pbd::ConstraintNHTetraVolume{
+		engine.add_constraint(pbd::ConstraintNHTetraVolume{
 			{id0, id1, id2, id3},
 			restPose,
-			compliance
+			hydrostatic_compliance,
+			deviatoric_compliance
 		});
 	}
 
@@ -174,7 +176,7 @@ namespace godot {
 			n.z
 		};
 
-		engine.addConstraint(pbd::CollidePlane{ id, origin, normal });
+		engine.add_constraint(pbd::CollidePlane{ id, origin, normal });
 	}
 
 
@@ -229,5 +231,42 @@ namespace godot {
 
 	void EngineNode::solve() {
 		engine.solve();
+
+		if (tracker) {
+			tracker.update(engine);
+		}
+	}
+
+	void EngineNode::set_tracker(int id0, int id1, int id2, int id3) {
+		for (int id : {id0, id1, id2, id3}) {
+			if (id < 0 || id >= engine.num_particles()) {
+				Godot::print_error("Tracker id is invalid!", __FUNCTION__, __FILE__, __LINE__);
+				return;
+			}
+		}
+		
+		tracker.reset(id0, id1, id2, id3, engine);
+	}
+	Transform EngineNode::get_tracker_transform() {
+		if (!tracker) {
+			Godot::print_warning("Attempted to get tracker transform without initializing the tracker!", __FUNCTION__, __FILE__, __LINE__);
+			return Transform{};
+		}
+
+		auto convert = [](const glm::vec3 & vec) {
+			return Vector3(vec.x, vec.y, vec.z);
+		};
+		
+		glm::mat3 rmat = glm::transpose(tracker.basis());
+
+		// Previous version of the convert code was broken, this works.
+		Basis basis(
+			convert(rmat[0]),
+			convert(rmat[1]),
+			convert(rmat[2]));
+		
+		glm::vec3 origin = tracker.position();
+
+		return Transform(basis, convert(origin));
 	}
 }
