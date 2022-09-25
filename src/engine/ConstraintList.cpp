@@ -119,6 +119,14 @@ namespace pbd {
 			}
 		}
 	}
+	void ConstraintList::append(const ConstraintList& other, int32_t offset, const Transform3& form) {
+		int64_t first = size();
+		append(other, offset);
+		int64_t last = size();
+		for (; first != last; ++first) {
+			(*this)[first].transform(form);
+		}
+	}
 
 
 	void ConstraintList::serialize(const ConstraintList& clist, std::string& output) {

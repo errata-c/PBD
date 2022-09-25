@@ -4,15 +4,14 @@
 
 namespace pbd {
 	PrefabParticle::PrefabParticle()
-		: position(0.f)
-		, velocity(0.f)
-		, imass(1.f)
-		, radius(1.f)
-		, flags(1)
+		: PrefabParticle(glm::vec3(0.f), 1.f, 1.f, 0u)
 	{}
 	PrefabParticle::PrefabParticle(const glm::vec3& _pos, float _imass, float _radius, uint32_t _flags)
+		: PrefabParticle(_pos, glm::vec3(0.f), _imass, _radius, _flags)
+	{}
+	PrefabParticle::PrefabParticle(const glm::vec3& _pos, const glm::vec3& _vel, float _imass, float _radius, uint32_t _flags)
 		: position(_pos)
-		, velocity(0.f)
+		, velocity(_vel)
 		, imass(_imass)
 		, radius(_radius)
 		, flags(_flags)

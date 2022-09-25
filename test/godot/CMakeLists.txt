@@ -5,6 +5,7 @@ add_library(pbd_godot_test SHARED
 	"src/gdnativelib.cpp"
 
 	"src/EngineNode.cpp"
+	"src/PrefabRef.cpp"
 )
 target_include_directories(pbd_godot_test PRIVATE
 	"include"
@@ -22,7 +23,8 @@ install_gdnlib(
 	DESTINATION "${CMAKE_CURRENT_LIST_DIR}/godot_pbd_project/bin"
 
 	CLASSES 
-		"EngineNode" 
+		"EngineNode"
+		"PrefabRef"
 
 	EXCLUDE_FROM_ALL
 	COMPONENT "TEST_INSTALL"

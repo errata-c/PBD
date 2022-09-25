@@ -1,4 +1,5 @@
 #include <pbd/engine/Particles.hpp>
+#include <pbd/prefab/PrefabParticle.hpp>
 #include <limits>
 #include <cassert>
 
@@ -20,6 +21,18 @@ namespace pbd {
 	}
 	int32_t Particles::add(const glm::vec3& _pos, float _imass, float _radius, uint32_t _flags) {
 		return add(_pos, glm::vec3(0.f), _imass, _radius, _flags);
+	}
+	int32_t Particles::add(const PrefabParticle& particle) {
+		return add(particle.position, particle.velocity, particle.imass, particle.radius, particle.flags);
+	}
+	int32_t Particles::add(const PrefabParticle& particle, const Transform3& form) {
+		return add(
+			form.toWorld(particle.position), 
+			form.toWorldVector(particle.velocity), 
+			particle.imass / form.size, 
+			particle.radius * form.size,
+			particle.flags
+		);
 	}
 
 	size_t Particles::size() const noexcept {

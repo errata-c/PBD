@@ -1,6 +1,7 @@
 #pragma once
 #include <cinttypes>
 #include <pbd/common/Types.hpp>
+#include <pbd/common/Transform.hpp>
 
 namespace pbd {
 	class Engine;
@@ -11,6 +12,7 @@ namespace pbd {
 		void eval(Engine& engine, float rdt2) const;
 		
 		void remap(int32_t offset);
+		void transform(const Transform3& form);
 
 		int32_t p0, p1;
 		float length;

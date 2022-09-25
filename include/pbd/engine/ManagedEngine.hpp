@@ -1,4 +1,6 @@
 #pragma once
+#include <pbd/common/Transform.hpp>
+
 #include <vector>
 #include <pbd/engine/Engine.hpp>
 #include <pbd/engine/ObjectMap.hpp>
@@ -14,7 +16,9 @@ namespace pbd {
 
 		ManagedEngine();
 
-		ObjectID create(const Prefab & prefab);
+		ObjectID create(const Prefab& prefab);
+		ObjectID create(const Prefab& prefab, const Transform3 & transform);
+
 		bool queue_destroy(ObjectID id);
 		size_t num_queued_destroy() const noexcept;
 

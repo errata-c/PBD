@@ -9,7 +9,6 @@ include(FetchContent)
 
 set(PBD_CONFIG_DIR "${CMAKE_INSTALL_DATADIR}/pbd" CACHE STRING "The relative directory to install package config files.")
 
-
 FetchContent_Declare(
 	ez-cmake
 	GIT_REPOSITORY "https://github.com/errata-c/ez-cmake.git"
@@ -20,6 +19,7 @@ FetchContent_MakeAvailable(ez-cmake)
 find_package(glm CONFIG REQUIRED)
 find_package(ez-kvstore CONFIG REQUIRED)
 find_package(ez-serialize CONFIG REQUIRED)
+find_package(ez-math CONFIG REQUIRED)
 find_package(cppitertools CONFIG REQUIRED)
 
 find_package(pbd-hashing CONFIG REQUIRED)
@@ -74,13 +74,52 @@ target_link_libraries(pbd PUBLIC
 
 	ez::kvstore
 	ez::serialize
+	ez::math
 
 	pbd::hashing
 )
 
 add_library(pbd::pbd ALIAS pbd)
 
-include(CTest)
-if(BUILD_TESTING)
-	add_subdirectory("test")
+if(PROJECT_IS_TOP_LEVEL)
+	include(CTest)
+	if(BUILD_TESTING)
+		add_subdirectory("test")
+	endif()
+
+	install(
+		DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/include/"
+		TYPE INCLUDE
+		FILES_MATCHING
+		PATTERN "*.h" PATTERN "*.hpp"
+	)
+
+	install(TARGETS pbd
+		EXPORT pbd-targets
+		RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}/$<CONFIG>"
+		ARCHIVE DESTINATION "${CMAKE_INSTALL_LIBDIR}/$<CONFIG>"
+		LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}/$<CONFIG>"
+	)
+
+	install_package(
+		NAME "pbd"
+		EXPORT "pbd-targets"
+		VERSION "${CMAKE_PROJECT_VERSION}"
+
+		NAMESPACE "pbd::"
+
+		# Version compatiblity
+		COMPATIBILITY "SameMajorVersion"
+
+		# Relative install location of the package config files.
+		DESTINATION "${PBD_CONFIG_DIR}"
+
+		# Pre and Post configuration files for the packages. Files are run as scripts when the package is found.
+		# Most dependencies must be found in the preconfig file, except non-target dependencies
+		# Non-target dependencies should probably be found in the post config, and added onto the imported target manually.
+		# Non-target dependencies kinda suck, avoid them if you can.
+
+		PRECONFIG "cmake/preconfig.cmake"
+		POSTCONFIG "cmake/postconfig.cmake"
+	)
 endif()

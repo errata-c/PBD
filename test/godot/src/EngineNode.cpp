@@ -34,6 +34,8 @@ namespace godot {
 
 		register_method("set_tracker", &EngineNode::set_tracker);
 		register_method("get_tracker_transform", &EngineNode::get_tracker_transform);
+
+		register_method("create_empty_prefab", &EngineNode::create_empty_prefab);
 	}
 
 	EngineNode::EngineNode() 
@@ -45,6 +47,10 @@ namespace godot {
 
 	void EngineNode::_init() {
 		Godot::print("EngineNode initialized!");
+	}
+
+	PrefabRef* EngineNode::create_empty_prefab() {
+		return PrefabRef::_new();
 	}
 
 	void EngineNode::set_multi_mesh_instance(MultiMeshInstance* node) {

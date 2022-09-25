@@ -5,9 +5,41 @@ namespace pbd {
 	{}
 
 	ObjectID ManagedEngine::create(const Prefab& prefab) {
-		
-		return ObjectID::Invalid;
+		return create(prefab, Transform3());
 	}
+	ObjectID ManagedEngine::create(const Prefab& prefab, const Transform3 & form) {
+		// Instance the prefab.
+		// First reserve the range of particles, constraints, and trackers for it.
+		// Get the offset for each
+		// Get a new ObjectID from the map.
+		// Create a transform matrix for the particles, make sure to update the constraints as well.
+		
+		int32_t pfirst = static_cast<int32_t>(engine.num_particles());
+		int32_t cfirst = static_cast<int32_t>(engine.num_constraints());
+		int32_t tfirst = static_cast<int32_t>(trackers.size());
+
+		int32_t plast = pfirst + static_cast<int32_t>(prefab.num_particles());
+		int32_t clast = cfirst + static_cast<int32_t>(prefab.num_constraints());
+		int32_t tlast = tfirst + static_cast<int32_t>(prefab.num_trackers());
+
+		ObjectID id = map.create(IndexRange(pfirst, plast), IndexRange(cfirst, clast), IndexRange(tfirst, tlast));
+
+		for (const PrefabParticle & part: prefab.particles) {
+			engine.particle.add(part, form);
+		}
+
+		// Trackers reference particles, so offset by the first particle index.
+		for (const PrefabTracker & tracker: prefab.trackers) {
+			trackers.add(tracker, engine, pfirst);
+		}
+
+		// Constraints reference particles, so offset by the first particle index.
+		engine.constraints.append(prefab.constraints, pfirst, form);
+
+		// Fin
+		return id;
+	}
+
 	bool ManagedEngine::queue_destroy(ObjectID id) {
 		return queue.push(id);
 	}

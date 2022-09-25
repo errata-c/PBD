@@ -38,6 +38,19 @@ namespace pbd {
 			id += offset;
 		}
 	}
+	void ConstraintRef::transform(const Transform3& form) {
+		switch (type()) {
+		case Constraint::Distance:
+			((ConstraintDistance*)mdata)->transform(form);
+			break;
+		case Constraint::TetraVolume:
+			((ConstraintTetraVolume*)mdata)->transform(form);
+			break;
+		case Constraint::NHTetraVolume:
+			((ConstraintNHTetraVolume*)mdata)->transform(form);
+			break;
+		}
+	}
 
 	Constraint ConstraintRef::type() const noexcept {
 		return mkind;

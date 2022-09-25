@@ -1,3 +1,4 @@
+#pragma once
 #include <cinttypes>
 #include <Godot.hpp>
 #include <Vector3.hpp>
@@ -5,6 +6,8 @@
 #include <PoolArrays.hpp>
 
 #include <Transform.hpp>
+
+#include <PrefabRef.hpp>
 
 #include <pbd/pbd.hpp>
 #include <pbd/common/TransformTracker.hpp>
@@ -27,6 +30,8 @@ namespace godot {
 		~EngineNode();
 
 		void _init(); // our initializer called by Godot
+
+		PrefabRef* create_empty_prefab();
 
 		void set_force(int32_t id, Vector3 force);
 

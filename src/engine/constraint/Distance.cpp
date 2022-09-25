@@ -42,4 +42,7 @@ namespace pbd {
 		p0 += offset;
 		p1 += offset;
 	}
+	void ConstraintDistance::transform(const Transform3& form) {
+		length *= form.size;
+	}
 }

@@ -83,4 +83,17 @@ namespace pbd {
 	size_t Prefab::num_trackers() const noexcept {
 		return trackers.size();
 	}
+
+	int32_t Prefab::add_particle(const glm::vec3& _pos, float _imass, float _radius, uint32_t _flags) {
+		particles.emplace_back(_pos, _imass, _radius, _flags);
+		return static_cast<int32_t>(particles.size() - 1);
+	}
+	int32_t Prefab::add_particle(const glm::vec3& _pos, const glm::vec3& _vel, float _imass, float _radius, uint32_t _flags) {
+		particles.emplace_back(_pos, _vel, _imass, _radius, _flags);
+		return static_cast<int32_t>(particles.size() - 1);
+	}
+
+	void Prefab::add_tracker(std::string_view _name, int32_t p0, int32_t p1, int32_t p2, int32_t p3) {
+		trackers.emplace_back(_name, p0, p1, p2, p3);
+	}
 }

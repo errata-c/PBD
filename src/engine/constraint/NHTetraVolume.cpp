@@ -134,4 +134,9 @@ namespace pbd {
 			id += offset;
 		}
 	}
+	void ConstraintNHTetraVolume::transform(const Transform3& form) {
+		glm::mat3 tmp = glm::inverse(inv_rest);
+		tmp *= form.size;
+		inv_rest = glm::inverse(tmp);
+	}
 }

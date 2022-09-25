@@ -40,7 +40,15 @@ namespace pbd {
 		size_t num_constraints() const noexcept;
 		size_t num_trackers() const noexcept;
 
+		int32_t add_particle(const glm::vec3& _pos, float _imass, float _radius, uint32_t _flags);
+		int32_t add_particle(const glm::vec3& _pos, const glm::vec3& _vel, float _imass, float _radius, uint32_t _flags);
 
+		void add_tracker(std::string_view _name, int32_t p0, int32_t p1, int32_t p2, int32_t p3);
+
+		template<typename T>
+		int64_t add_constraint(const T& cval) {
+			return constraints.add(cval);
+		}
 
 		std::vector<PrefabParticle> particles;
 		std::vector<PrefabTracker> trackers;

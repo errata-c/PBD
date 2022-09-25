@@ -3,6 +3,8 @@
 #include <string>
 #include <cinttypes>
 
+#include <pbd/common/Transform.hpp>
+
 #include <pbd/engine/collide/Particle.hpp>
 #include <pbd/engine/collide/Plane.hpp>
 
@@ -61,6 +63,8 @@ namespace pbd {
 
 		// Append another list of constraints to this list, offsetting their particle ids as needed.
 		void append(const ConstraintList & other, int32_t offset);
+
+		void append(const ConstraintList& other, int32_t offset, const Transform3& form);
 	private:
 		struct CVariant {
 			Constraint kind;

@@ -54,4 +54,7 @@ namespace pbd {
 			id += offset;
 		}
 	}
+	void ConstraintTetraVolume::transform(const Transform3& form) {
+		volume *= form.size;
+	}
 }

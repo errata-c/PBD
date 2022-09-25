@@ -12,6 +12,7 @@ namespace pbd {
 
 		PrefabParticle();
 		PrefabParticle(const glm::vec3 & _pos, float _imass, float _radius, uint32_t _flags);
+		PrefabParticle(const glm::vec3& _pos, const glm::vec3& _vel, float _imass, float _radius, uint32_t _flags);
 		
 		glm::vec3 position, velocity;
 		float imass, radius;
