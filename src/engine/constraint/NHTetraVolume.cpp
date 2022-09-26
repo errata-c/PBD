@@ -56,7 +56,7 @@ namespace pbd {
 
 		float w = 0.f;
 		for (int i = 0; i < 4; ++i) {
-			w += glm::length2(grads[i]) * engine.particle.invMass[tet.ids[i]];
+			w += glm::length2(grads[i]) * engine.particles.invMass[tet.ids[i]];
 		}
 
 		if (std::abs(w) < 1e-4f) {
@@ -65,7 +65,7 @@ namespace pbd {
 
 		float lambda = -C / (w + compliance * rdt2);
 		for (int i = 0; i < 4; ++i) {
-			*x[i] += grads[i] * lambda * engine.particle.invMass[tet.ids[i]];
+			*x[i] += grads[i] * lambda * engine.particles.invMass[tet.ids[i]];
 		}
 	}
 	static float matIJ(const glm::mat3& mat, int i, int j) {
@@ -76,7 +76,7 @@ namespace pbd {
 		std::array<glm::vec3*, 4> x;
 		// Fetch the addresses of the positions
 		for (int i = 0; i < ids.size(); ++i) {
-			x[i] = &engine.particle.pos[ids[i]];
+			x[i] = &engine.particles.pos[ids[i]];
 		}
 
 		glm::mat3 P{

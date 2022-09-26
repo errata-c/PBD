@@ -11,8 +11,11 @@
 
 #include <pbd/pbd.hpp>
 #include <pbd/common/TransformTracker.hpp>
+#include <pbd/engine/ManagedEngine.hpp>
 
 namespace godot {
+	class PrefabRef;
+
 	class EngineNode : public Node {
 		GODOT_CLASS(EngineNode, Node)
 
@@ -20,8 +23,7 @@ namespace godot {
 		MultiMeshInstance* mminst;
 
 		PoolRealArray buffer;
-		pbd::Engine engine;
-
+		pbd::ManagedEngine engine;
 		pbd::TransformTracker tracker;
 	public:
 		static void _register_methods();
@@ -34,9 +36,7 @@ namespace godot {
 		PrefabRef* create_empty_prefab();
 
 		void set_force(int32_t id, Vector3 force);
-
 		int32_t nearest_point(Vector3 origin, Vector3 normal) const;
-
 		Vector3 get_position(int32_t id) const;
 
 		int64_t num_particles() const;
@@ -47,11 +47,9 @@ namespace godot {
 		void set_static_friction(float friction);
 		void set_kinetic_friction(float friction);
 
-		void add_particle(Vector3 pos, float mass, float radius);
-
-		void add_distance_constraint(int id0, int id1, float compliance);
-		void add_tetra_volume_constraint(int id0, int id1, int id2, int id3, float compliance);
-		void add_nh_tetra_volume_constraint(int id0, int id1, int id2, int id3, float hydrostatic_compliance, float deviatoric_compliance);
+		uint64_t instance_prefab(PrefabRef * ref);
+		void destroy_prefab(uint64_t id);
+		void destroy_queued();
 
 		void add_plane_collide(int id, Vector3 origin, Vector3 normal);
 

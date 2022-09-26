@@ -4,7 +4,7 @@
 #include <pbd/common/RotationExtractor.hpp>
 
 namespace pbd {
-	class Engine;
+	class ParticleList;
 
 	// Class to handle the robust extraction of rotation matricies from deformable objects.
 	// This class will calculate a matrix that represents the rotation of a deformed tetrahedron.
@@ -14,15 +14,14 @@ namespace pbd {
 		static void serialize(const TransformTracker& clist, std::string& output);
 		static const char* deserialize(const char* first, const char* last, TransformTracker& clist);
 
-
 		TransformTracker();
-		TransformTracker(int i0, int i1, int i2, int i3, const Engine & engine);
+		TransformTracker(int i0, int i1, int i2, int i3, const ParticleList& particles);
 
 		explicit operator bool() const noexcept;
 
-		void reset(int i0, int i1, int i2, int i3, const Engine & engine);
+		void reset(int i0, int i1, int i2, int i3, const ParticleList& particles);
 		
-		void update(const Engine & engine);
+		void update(const ParticleList & particles);
 
 		const std::array<int, 4>& ids() const noexcept;
 		

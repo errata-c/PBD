@@ -96,7 +96,7 @@ func _ready():
 	# If the order is reversed the rotation extraction bugs out.
 	# We need a method of finding the ideal indices for a tracker...
 	# Has something to do with the handedness of the 3x3 matrix formed.
-	engine.set_tracker(4, 2, 1, 0)
+	engine.set_tracker(3, 0, 1, 2)
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.

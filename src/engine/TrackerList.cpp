@@ -22,16 +22,16 @@ namespace pbd {
 		}
 	}
 
-	void TrackerList::add(int i0, int i1, int i2, int i3, Engine& engine) {
-		trackers.emplace_back(i0, i1, i2, i3, engine);
+	void TrackerList::add(int i0, int i1, int i2, int i3, const ParticleList& particles) {
+		trackers.emplace_back(i0, i1, i2, i3, particles);
 	}
-	void TrackerList::add(const PrefabTracker& tracker, Engine& engine, int32_t offset) {
+	void TrackerList::add(const PrefabTracker& tracker, const ParticleList& particles, int32_t offset) {
 		add(
 			tracker.particles[0] + offset, 
 			tracker.particles[1] + offset,
 			tracker.particles[2] + offset,
 			tracker.particles[3] + offset,
-			engine);
+			particles);
 	}
 
 	void TrackerList::pop(int32_t count) {

@@ -5,7 +5,6 @@
 #include <pbd/common/TransformTracker.hpp>
 
 namespace pbd {
-	class Engine;
 	class PrefabTracker;
 
 	class TrackerList {
@@ -19,8 +18,8 @@ namespace pbd {
 
 		void shift(int32_t first, int32_t last, int32_t amount);
 
-		void add(int i0, int i1, int i2, int i3, Engine& engine);
-		void add(const PrefabTracker & tracker, Engine& engine, int32_t offset);
+		void add(int i0, int i1, int i2, int i3, const ParticleList& engine);
+		void add(const PrefabTracker & tracker, const ParticleList& engine, int32_t offset);
 
 		void pop(int32_t count);
 

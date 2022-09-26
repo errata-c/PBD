@@ -7,6 +7,8 @@
 
 #include <glm/geometric.hpp>
 #include <glm/gtx/norm.hpp>
+#include <glm/gtx/handed_coordinate_space.hpp>
+#include <glm/gtx/orthonormalize.hpp>
 
 namespace godot {
 	void EngineNode::_register_methods() {
@@ -18,24 +20,23 @@ namespace godot {
 		register_method("set_timestep", &EngineNode::set_timestep);
 
 		register_method("set_multi_mesh_instance", &EngineNode::set_multi_mesh_instance);
-		register_method("add_particle", &EngineNode::add_particle);
 		register_method("set_static_friction", &EngineNode::set_static_friction);
 		register_method("set_kinetic_friction", &EngineNode::set_kinetic_friction);
 		register_method("num_particles", &EngineNode::num_particles);
-
-		register_method("add_distance_constraint", &EngineNode::add_distance_constraint);
-		register_method("add_tetra_volume_constraint", &EngineNode::add_tetra_volume_constraint);
-		register_method("add_nh_tetra_volume_constraint", &EngineNode::add_nh_tetra_volume_constraint);
+		
 		register_method("add_plane_collide", &EngineNode::add_plane_collide);
 
 		register_method("add_plane_collide", &EngineNode::add_plane_collide);
 		register_method("update_mesh", &EngineNode::update_mesh);
 		register_method("solve", &EngineNode::solve);
 
-		register_method("set_tracker", &EngineNode::set_tracker);
-		register_method("get_tracker_transform", &EngineNode::get_tracker_transform);
+		//register_method("set_tracker", &EngineNode::set_tracker);
+		//register_method("get_tracker_transform", &EngineNode::get_tracker_transform);
 
 		register_method("create_empty_prefab", &EngineNode::create_empty_prefab);
+		register_method("instance_prefab", &EngineNode::instance_prefab);
+		register_method("destroy_prefab", &EngineNode::destroy_prefab);
+		register_method("destroy_queued", &EngineNode::destroy_queued);
 	}
 
 	EngineNode::EngineNode() 
@@ -58,11 +59,12 @@ namespace godot {
 	}
 
 	void EngineNode::set_force(int32_t id, Vector3 force) {
-		if (id < 0 || id >= engine.size()) {
+		if (id < 0 || id >= engine.num_particles()) {
 			return;
 		}
 
-		engine.particle.force[id] = glm::vec3(force.x, force.y, force.z);
+
+		//engine.particle.force[id] = glm::vec3(force.x, force.y, force.z);
 	}
 
 	int32_t EngineNode::nearest_point(Vector3 _origin, Vector3 _normal) const {
@@ -71,10 +73,10 @@ namespace godot {
 
 		int32_t nearest = -1;
 		float ndist = 1e10;
-		for (size_t i = 0, count = engine.size(); i < count; ++i) {
-			glm::vec3 d = engine.particle.pos[i] - o;
+		for (size_t i = 0, count = engine.num_particles(); i < count; ++i) {
+			glm::vec3 d = engine.particles().pos[i] - o;
 			float t = glm::dot(d, n);
-			float dist = glm::length2(engine.particle.pos[i] - (n * t + o));
+			float dist = glm::length2(engine.particles().pos[i] - (n * t + o));
 
 			if (dist < ndist) {
 				nearest = static_cast<int32_t>(i);
@@ -86,88 +88,47 @@ namespace godot {
 	}
 
 	Vector3 EngineNode::get_position(int32_t id) const {
-		if (id < 0 || id  >= engine.size()) {
+		if (id < 0 || id  >= engine.num_particles()) {
 			return Vector3(0,0,0);
 		}
-		const glm::vec3 & p = engine.particle.pos[id];
+		const glm::vec3 & p = engine.particles().pos[id];
 		return Vector3(p.x, p.y, p.z);
 	}
 
 	void EngineNode::set_substeps(int count) {
 		count = std::max(count, 1);
-		engine.substeps = count;
+		engine.set_substeps(count);
 	}
 	void EngineNode::set_timestep(float delta) {
 		delta = std::max(1e-5f, delta);
-		engine.dt = delta;
+		engine.set_timestep(delta);
 	}
 
 	void EngineNode::set_static_friction(float friction) {
 		// Cannot be zero (?), cannot be negative
 		friction = std::max(friction, 1e-5f);
-		engine.static_friction = friction;
+		engine.set_static_friction(friction);
 	}
 	void EngineNode::set_kinetic_friction(float friction) {
 		// Cannot be zero (?), cannot be negative
 		friction = std::max(friction, 1e-5f);
-		engine.kinetic_friction = friction;
+		engine.set_kinetic_friction(friction);
+	}
+
+	uint64_t EngineNode::instance_prefab(PrefabRef* ref) {
+		pbd::ObjectID id = engine.create(ref->prefab);
+		return static_cast<uint64_t>(id);
+	}
+	void EngineNode::destroy_prefab(uint64_t _id) {
+		auto id = static_cast<pbd::ObjectID>(_id);
+		engine.queue_destroy(id);
+	}
+	void EngineNode::destroy_queued() {
+		engine.destroy_queued();
 	}
 
 	int64_t EngineNode::num_particles() const {
-		return engine.size();
-	}
-
-	void EngineNode::add_particle(Vector3 pos, float imass, float radius) {
-		engine.particle.add(glm::vec3{ pos.x, pos.y, pos.z }, imass, radius);
-	}
-
-	void EngineNode::add_distance_constraint(int id0, int id1, float compliance) {
-		glm::vec3
-			p0 = engine.particle.pos[id0],
-			p1 = engine.particle.pos[id1];
-
-		engine.add_constraint(pbd::ConstraintDistance{ id0, id1, glm::length(p1 - p0), compliance });
-	}
-
-	void EngineNode::add_tetra_volume_constraint(int id0, int id1, int id2, int id3, float compliance) {
-		glm::vec3
-			p0 = engine.particle.pos[id0],
-			p1 = engine.particle.pos[id1],
-			p2 = engine.particle.pos[id2],
-			p3 = engine.particle.pos[id3];
-
-		glm::vec3
-			t0 = p1 - p0,
-			t1 = p2 - p0,
-			t3 = p3 - p0;
-		
-		glm::vec3 t4 = glm::cross(t0, t1);
-
-		engine.add_constraint(pbd::ConstraintTetraVolume{
-			{id0, id1, id2, id3},
-			glm::dot(t3, t4) / 6.f,
-			compliance
-		});
-	}
-	void EngineNode::add_nh_tetra_volume_constraint(int id0, int id1, int id2, int id3, float hydrostatic_compliance, float deviatoric_compliance) {
-		glm::vec3
-			p0 = engine.particle.pos[id0],
-			p1 = engine.particle.pos[id1],
-			p2 = engine.particle.pos[id2],
-			p3 = engine.particle.pos[id3];
-		glm::mat3 restPose;
-		restPose[0] = p1 - p0;
-		restPose[1] = p2 - p0;
-		restPose[2] = p3 - p0;
-
-		restPose = glm::inverse(restPose);
-
-		engine.add_constraint(pbd::ConstraintNHTetraVolume{
-			{id0, id1, id2, id3},
-			restPose,
-			hydrostatic_compliance,
-			deviatoric_compliance
-		});
+		return engine.num_particles();
 	}
 
 	void EngineNode::add_plane_collide(int id, Vector3 o, Vector3 n) {
@@ -175,14 +136,14 @@ namespace godot {
 			o.x,
 			o.y,
 			o.z
-		}, 
+		},
 		normal{
 			n.x,
 			n.y,
 			n.z
 		};
 
-		engine.add_constraint(pbd::CollidePlane{ id, origin, normal });
+		//engine.add_constraint(pbd::CollidePlane{ id, origin, normal });
 	}
 
 
@@ -191,12 +152,12 @@ namespace godot {
 
 		auto mmesh = mminst->get_multimesh();
 
-		if (buffer.size() < (engine.size() * 12)) {
-			buffer.resize(engine.size() * 12);
+		if (buffer.size() < (engine.num_particles() * 12)) {
+			buffer.resize(engine.num_particles() * 12);
 
-			mmesh->set_instance_count(engine.size());
+			mmesh->set_instance_count(engine.num_particles());
 		}
-		mmesh->set_visible_instance_count(engine.size());
+		mmesh->set_visible_instance_count(engine.num_particles());
 
 		{
 			auto write = buffer.write();
@@ -207,9 +168,11 @@ namespace godot {
 			form[5] = 1.f;
 			form[10] = 1.f;
 
+			auto& particles = engine.particles();
+
 			float* data = write.ptr();
-			for (int i = 0; i < engine.size(); ++i) {
-				glm::vec3 pos = engine.particle.pos[i];
+			for (int i = 0; i < engine.num_particles(); ++i) {
+				glm::vec3 pos = particles.pos[i];
 				form[3] = pos.x;
 				form[7] = pos.y;
 				form[11] = pos.z;
@@ -224,8 +187,8 @@ namespace godot {
 			static int once = 0;
 			once++;
 			if (once == 480) {
-				for (int i = 0; i < engine.size(); ++i) {
-					glm::vec3 p = engine.particle.pos[i];
+				for (int i = 0; i < engine.num_particles(); ++i) {
+					glm::vec3 p = particles.pos[i];
 					String text = "pos: {0}, {1}, {2}";
 					Godot::print(text.format(Array::make(p.x, p.y, p.z)));
 				}
@@ -239,7 +202,7 @@ namespace godot {
 		engine.solve();
 
 		if (tracker) {
-			tracker.update(engine);
+			tracker.update(engine.particles());
 		}
 	}
 
@@ -251,7 +214,25 @@ namespace godot {
 			}
 		}
 		
-		tracker.reset(id0, id1, id2, id3, engine);
+		const glm::vec3 
+			& p0 = engine.particles().pos[id0],
+			& p1 = engine.particles().pos[id1],
+			& p2 = engine.particles().pos[id2],
+			& p3 = engine.particles().pos[id3];
+
+		glm::mat3 tmp{
+			p1 - p0,
+			p2 - p0,
+			p3 - p0,
+		};
+		tmp = glm::orthonormalize(tmp);
+
+		if (glm::leftHanded(tmp[1], tmp[0], tmp[2])) {
+			tracker.reset(id0, id1, id2, id3, engine.particles());
+		}
+		else {
+			tracker.reset(id0, id3, id2, id1, engine.particles());
+		}
 	}
 	Transform EngineNode::get_tracker_transform() {
 		if (!tracker) {

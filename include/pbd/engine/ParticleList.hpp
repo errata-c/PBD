@@ -8,14 +8,14 @@
 namespace pbd {
 	class PrefabParticle;
 
-	class Particles {
+	class ParticleList {
 	public:
-		~Particles() = default;
-		Particles() = default;
-		Particles(Particles&&) noexcept = default;
-		Particles& operator=(Particles&&) noexcept = default;
-		Particles(const Particles&) = default;
-		Particles& operator=(const Particles& ) = default;
+		~ParticleList() = default;
+		ParticleList() = default;
+		ParticleList(ParticleList&&) noexcept = default;
+		ParticleList& operator=(ParticleList&&) noexcept = default;
+		ParticleList(const ParticleList&) = default;
+		ParticleList& operator=(const ParticleList& ) = default;
 
 		size_t size() const noexcept;
 		bool empty() const noexcept;

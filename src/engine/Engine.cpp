@@ -11,11 +11,8 @@ namespace pbd {
 		, dt(1.0 / 60.0)
 	{}
 
-	size_t Engine::size() const noexcept {
-		return particle.size();
-	}
 	size_t Engine::num_particles() const noexcept {
-		return particle.size();
+		return particles.size();
 	}
 	size_t Engine::num_constraints() const noexcept {
 		return constraints.size();
@@ -36,26 +33,26 @@ namespace pbd {
 		}
 
 		// Clear the external forces
-		for (glm::vec3 & force : particle.force) {
+		for (glm::vec3 & force : particles.force) {
 			force = glm::vec3(0.f);
 		}
 	}
 
 	void Engine::predictPositions(float sdt) {
 		// Store these starting positions for comparison in the constraints.
-		particle.prevPos.assign(particle.pos.begin(), particle.pos.end());
+		particles.prevPos.assign(particles.pos.begin(), particles.pos.end());
 
-		for (int64_t i = 0, count = size(); i < count; ++i) {
-			float imass = particle.invMass[i];
+		for (int64_t i = 0, count = num_particles(); i < count; ++i) {
+			float imass = particles.invMass[i];
 			if (imass < 1e-5f) {
 				continue;
 			}
 
-			glm::vec3 & velocity = particle.velocity[i];
-			glm::vec3 & position = particle.pos[i];
+			glm::vec3 & velocity = particles.velocity[i];
+			glm::vec3 & position = particles.pos[i];
 
 			// External forces
-			const glm::vec3 & force = particle.force[i];
+			const glm::vec3 & force = particles.force[i];
 			
 			// Simple euler integration
 			velocity = velocity + sdt * (gravity + force * imass);
@@ -73,8 +70,8 @@ namespace pbd {
 	void Engine::updateParticles(float sdt) {
 		sdt = 1.f / sdt;
 
-		for (int64_t i = 0, count = size(); i < count; ++i) {
-			particle.velocity[i] = (particle.pos[i] - particle.prevPos[i]) * sdt;
+		for (int64_t i = 0, count = num_particles(); i < count; ++i) {
+			particles.velocity[i] = (particles.pos[i] - particles.prevPos[i]) * sdt;
 		}
 	}
 }

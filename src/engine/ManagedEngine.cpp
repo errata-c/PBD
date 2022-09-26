@@ -16,7 +16,7 @@ namespace pbd {
 		
 		int32_t pfirst = static_cast<int32_t>(engine.num_particles());
 		int32_t cfirst = static_cast<int32_t>(engine.num_constraints());
-		int32_t tfirst = static_cast<int32_t>(trackers.size());
+		int32_t tfirst = static_cast<int32_t>(mtrackers.size());
 
 		int32_t plast = pfirst + static_cast<int32_t>(prefab.num_particles());
 		int32_t clast = cfirst + static_cast<int32_t>(prefab.num_constraints());
@@ -25,12 +25,12 @@ namespace pbd {
 		ObjectID id = map.create(IndexRange(pfirst, plast), IndexRange(cfirst, clast), IndexRange(tfirst, tlast));
 
 		for (const PrefabParticle & part: prefab.particles) {
-			engine.particle.add(part, form);
+			engine.particles.add(part, form);
 		}
 
 		// Trackers reference particles, so offset by the first particle index.
 		for (const PrefabTracker & tracker: prefab.trackers) {
-			trackers.add(tracker, engine, pfirst);
+			mtrackers.add(tracker, engine.particles, pfirst);
 		}
 
 		// Constraints reference particles, so offset by the first particle index.
@@ -58,9 +58,9 @@ namespace pbd {
 			}
 			else {
 				// Shift everything down.
-				engine.particle.shift(obj.particles().first, obj.particles().last, wp - obj.particles().first);
+				engine.particles.shift(obj.particles().first, obj.particles().last, wp - obj.particles().first);
 				engine.constraints.shift(obj.constraints().first, obj.constraints().last, wc - obj.constraints().first);
-				trackers.shift(obj.trackers().first, obj.trackers().last, wt - obj.trackers().first);
+				mtrackers.shift(obj.trackers().first, obj.trackers().last, wt - obj.trackers().first);
 
 				// Update the write positions
 				wp += obj.particles().size();
@@ -73,16 +73,15 @@ namespace pbd {
 		map.destroy(queue);
 		
 		// Finish up by erasing the unused back elements.
-		if (engine.particle.size() > wp) {
-			engine.particle.pop(engine.particle.size() - wp);
+		if (engine.particles.size() > wp) {
+			engine.particles.pop(engine.particles.size() - wp);
 		}
 		if (engine.constraints.size() > wc) {
 			engine.constraints.pop(engine.constraints.size() - wc);
 		}
-		if (trackers.size() > wt) {
-			trackers.pop(trackers.size() - wt);
+		if (mtrackers.size() > wt) {
+			mtrackers.pop(mtrackers.size() - wt);
 		}
-		
 	}
 
 	size_t ManagedEngine::num_particles() const noexcept {
@@ -93,6 +92,16 @@ namespace pbd {
 	}
 	size_t ManagedEngine::num_objects() const noexcept {
 		return map.size();
+	}
+
+	const ParticleList& ManagedEngine::particles() const {
+		return engine.particles;
+	}
+	const TrackerList& ManagedEngine::trackers() const {
+		return mtrackers;
+	}
+	const ConstraintList& ManagedEngine::constraints() const {
+		return engine.constraints;
 	}
 
 	void ManagedEngine::solve() {
@@ -111,5 +120,25 @@ namespace pbd {
 	}
 	int ManagedEngine::get_substeps() const noexcept {
 		return engine.substeps;
+	}
+
+	void ManagedEngine::set_static_friction(float friction) {
+		engine.static_friction = friction;
+	}
+	float ManagedEngine::get_static_friction() const noexcept {
+		return engine.static_friction;
+	}
+	void ManagedEngine::set_kinetic_friction(float friction) {
+		engine.kinetic_friction = friction;
+	}
+	float ManagedEngine::get_kinetic_friction() const noexcept {
+		return engine.kinetic_friction;
+	}
+
+	void ManagedEngine::set_timestep(float dt) {
+		engine.dt = dt;
+	}
+	float ManagedEngine::get_timestep() const noexcept {
+		return engine.dt;
 	}
 }

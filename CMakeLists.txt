@@ -41,11 +41,14 @@ add_library(pbd STATIC
 
 	"src/engine/Engine.cpp"
 	"src/engine/ManagedEngine.cpp"
-	"src/engine/Particles.cpp"
+	
 	"src/engine/ObjectMap.cpp"
 	"src/engine/ObjectQueue.cpp"
 	"src/engine/ConstraintRef.cpp"
+
+	"src/engine/ParticleList.cpp"
 	"src/engine/ConstraintList.cpp"
+	"src/engine/TrackerList.cpp"
 
 	"src/engine/constraint/Distance.cpp"
 	"src/engine/constraint/TetraVolume.cpp"

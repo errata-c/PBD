@@ -1,4 +1,4 @@
-#include <pbd/engine/Particles.hpp>
+#include <pbd/engine/ParticleList.hpp>
 #include <pbd/prefab/PrefabParticle.hpp>
 #include <limits>
 #include <cassert>
@@ -6,7 +6,7 @@
 namespace pbd {
 	static constexpr size_t ParticleLimit = std::numeric_limits<int32_t>::max();
 
-	int32_t Particles::add(const glm::vec3& _pos, const glm::vec3& _vel, float _imass, float _radius, uint32_t _flags) {
+	int32_t ParticleList::add(const glm::vec3& _pos, const glm::vec3& _vel, float _imass, float _radius, uint32_t _flags) {
 		assert(size() < ParticleLimit);
 		int32_t id = static_cast<int32_t>(size());
 		pos.push_back(_pos);
@@ -19,13 +19,13 @@ namespace pbd {
 
 		return id;
 	}
-	int32_t Particles::add(const glm::vec3& _pos, float _imass, float _radius, uint32_t _flags) {
+	int32_t ParticleList::add(const glm::vec3& _pos, float _imass, float _radius, uint32_t _flags) {
 		return add(_pos, glm::vec3(0.f), _imass, _radius, _flags);
 	}
-	int32_t Particles::add(const PrefabParticle& particle) {
+	int32_t ParticleList::add(const PrefabParticle& particle) {
 		return add(particle.position, particle.velocity, particle.imass, particle.radius, particle.flags);
 	}
-	int32_t Particles::add(const PrefabParticle& particle, const Transform3& form) {
+	int32_t ParticleList::add(const PrefabParticle& particle, const Transform3& form) {
 		return add(
 			form.toWorld(particle.position), 
 			form.toWorldVector(particle.velocity), 
@@ -35,10 +35,10 @@ namespace pbd {
 		);
 	}
 
-	size_t Particles::size() const noexcept {
+	size_t ParticleList::size() const noexcept {
 		return pos.size();
 	}
-	bool Particles::empty() const noexcept {
+	bool ParticleList::empty() const noexcept {
 		return pos.empty();
 	}
 
@@ -52,7 +52,7 @@ namespace pbd {
 		}
 	}
 
-	void Particles::shift(int32_t first, int32_t last, int32_t amount) {
+	void ParticleList::shift(int32_t first, int32_t last, int32_t amount) {
 		assert(first <= last);
 		assert(first + amount >= 0);
 		assert(last + amount < size());
@@ -70,7 +70,7 @@ namespace pbd {
 		container.erase(container.end() - amount, container.end());
 	}
 
-	void Particles::pop(int32_t amount) {
+	void ParticleList::pop(int32_t amount) {
 		erase_back(pos, amount);
 		erase_back(prevPos, amount);
 		erase_back(velocity, amount);
@@ -80,7 +80,7 @@ namespace pbd {
 		erase_back(flags, amount);
 	}
 
-	void Particles::clear() {
+	void ParticleList::clear() {
 		pos.clear();
 		prevPos.clear();
 		velocity.clear();
@@ -90,7 +90,7 @@ namespace pbd {
 		flags.clear();
 	}
 
-	void Particles::reserve(int32_t amount) {
+	void ParticleList::reserve(int32_t amount) {
 		assert(amount < ParticleLimit);
 
 		pos.reserve(amount);

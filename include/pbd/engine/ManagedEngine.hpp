@@ -28,6 +28,10 @@ namespace pbd {
 		size_t num_constraints() const noexcept;
 		size_t num_objects() const noexcept;
 
+		const ParticleList& particles() const;
+		const TrackerList & trackers() const;
+		const ConstraintList& constraints() const;
+
 		void solve();
 
 		const glm::vec3 & get_gravity() const noexcept;
@@ -35,10 +39,22 @@ namespace pbd {
 		void set_substeps(int count);
 		int get_substeps() const noexcept;
 
+		void set_static_friction(float friction);
+		float get_static_friction() const noexcept;
+		void set_kinetic_friction(float friction);
+		float get_kinetic_friction() const noexcept;
+
+		void set_timestep(float dt);
+		float get_timestep() const noexcept;
+
+		template<typename T>
+		int64_t add_constraint(const T& cval) {
+			return engine.add_constraint(cval);
+		}
 	private:
 		Engine engine;
 		ObjectMap map;
 		ObjectQueue queue;
-		TrackerList trackers;
+		TrackerList mtrackers;
 	};
 }

@@ -9,10 +9,9 @@ namespace godot {
 	class PrefabRef : public Reference {
 		GODOT_CLASS(PrefabRef, Reference)
 
-	private:
+	public:
 		pbd::Prefab prefab;
 
-	public:
 		static void _register_methods();
 
 		void _init(); // our initializer called by Godot
