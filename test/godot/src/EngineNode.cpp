@@ -24,14 +24,11 @@ namespace godot {
 		register_method("set_kinetic_friction", &EngineNode::set_kinetic_friction);
 		register_method("num_particles", &EngineNode::num_particles);
 		
-		register_method("add_plane_collide", &EngineNode::add_plane_collide);
-
-		register_method("add_plane_collide", &EngineNode::add_plane_collide);
 		register_method("update_mesh", &EngineNode::update_mesh);
 		register_method("solve", &EngineNode::solve);
 
-		//register_method("set_tracker", &EngineNode::set_tracker);
-		//register_method("get_tracker_transform", &EngineNode::get_tracker_transform);
+		register_method("set_tracker", &EngineNode::set_tracker);
+		register_method("get_tracker_transform", &EngineNode::get_tracker_transform);
 
 		register_method("create_empty_prefab", &EngineNode::create_empty_prefab);
 		register_method("instance_prefab", &EngineNode::instance_prefab);
@@ -116,7 +113,18 @@ namespace godot {
 	}
 
 	uint64_t EngineNode::instance_prefab(PrefabRef* ref) {
-		pbd::ObjectID id = engine.create(ref->prefab);
+		pbd::Prefab copy = ref->prefab;
+
+		glm::vec3
+			origin{ 0,0,0 },
+			normal{ 0,1,0 };
+
+		int32_t count = copy.num_particles();
+		for (int32_t i = 0; i < count; ++i) {
+			copy.add_constraint(pbd::CollidePlane{ i, origin, normal });
+		}
+		
+		pbd::ObjectID id = engine.create(copy);
 		return static_cast<uint64_t>(id);
 	}
 	void EngineNode::destroy_prefab(uint64_t _id) {
@@ -124,28 +132,14 @@ namespace godot {
 		engine.queue_destroy(id);
 	}
 	void EngineNode::destroy_queued() {
+		int32_t first = engine.num_particles();
 		engine.destroy_queued();
+		int32_t last = engine.num_particles();
 	}
 
 	int64_t EngineNode::num_particles() const {
 		return engine.num_particles();
 	}
-
-	void EngineNode::add_plane_collide(int id, Vector3 o, Vector3 n) {
-		glm::vec3 origin{
-			o.x,
-			o.y,
-			o.z
-		},
-		normal{
-			n.x,
-			n.y,
-			n.z
-		};
-
-		//engine.add_constraint(pbd::CollidePlane{ id, origin, normal });
-	}
-
 
 	void EngineNode::update_mesh() {
 		assert(mminst);

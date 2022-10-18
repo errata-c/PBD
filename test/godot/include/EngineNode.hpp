@@ -51,8 +51,6 @@ namespace godot {
 		void destroy_prefab(uint64_t id);
 		void destroy_queued();
 
-		void add_plane_collide(int id, Vector3 origin, Vector3 normal);
-
 		void set_multi_mesh_instance(MultiMeshInstance* node);
 		void update_mesh();
 		void solve();

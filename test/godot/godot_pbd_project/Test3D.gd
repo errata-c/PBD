@@ -17,6 +17,8 @@ var drag_interp: float
 var drag_force: float = 3.0
 var drag_prior: Vector2
 
+var prefab
+
 var skeleton
 
 # Called when the node enters the scene tree for the first time.
@@ -31,6 +33,8 @@ func _ready():
 	engine.set_static_friction(0.1)
 	engine.set_kinetic_friction(0.2)
 	
+	prefab = engine.create_empty_prefab()
+	
 	var tets = [
 		[0,1,2,3],
 		[0,1,2,4]
@@ -44,26 +48,17 @@ func _ready():
 	var imass = len(p) / tot_mass
 	
 	for x in p:
-		engine.add_particle(
+		prefab.add_particle(
 			x,
 			imass,
 			radius)
 	
 	var compliance = 1e-3
 	
-	#engine.add_distance_constraint(0,1, compliance)
-	#engine.add_distance_constraint(0,2, compliance)
-	#engine.add_distance_constraint(0,3, compliance)
-	#engine.add_distance_constraint(1,2, compliance)
-	#engine.add_distance_constraint(1,3, compliance)
-	#engine.add_distance_constraint(2,3, compliance)
-	
-	#engine.add_tetra_volume_constraint(0,1,2,3, compliance)
-	
 	# 0,1,2,3  1,0,2,3  1,2,3,0
 	
 	for tet in tets:
-		engine.add_nh_tetra_volume_constraint(
+		prefab.add_nh_tetra_volume_constraint(
 			tet[0], 
 			tet[1], 
 			tet[2], 
@@ -71,24 +66,7 @@ func _ready():
 			1e-3, # Hydrostatic (volume)
 			1e-3) # Deviatoric (shear)
 	
-	var origins = [
-		Vector3(0,0,0),
-		#Vector3(10,0,0),
-		#Vector3(-10,0,0),
-		#Vector3(0,0,10),
-		#Vector3(0,0,-10)
-	]
-	var normals = [
-		Vector3(0,1,0),
-		#Vector3(-1,0,0),
-		#Vector3(1,0,0),
-		#Vector3(0,0,-1),
-		#Vector3(0,0,1)
-	]
-	
-	for i in range(len(origins)):
-		for id in range(len(p)):
-			engine.add_plane_collide(id, origins[i], normals[i])
+	engine.instance_prefab(prefab)
 	
 	engine.update_mesh()
 	
