@@ -9,13 +9,7 @@ namespace pbd {
 	int32_t ParticleList::add(const glm::vec3& _pos, const glm::vec3& _vel, float _imass, float _radius, uint32_t _group, uint32_t _mask) {
 		assert(size() < ParticleLimit);
 		int32_t id = static_cast<int32_t>(size());
-		pos.push_back(_pos);
-		prevPos.push_back(_pos);
-		velocity.push_back(_vel);
-		invMass.push_back(_imass);
-		radius.push_back(_radius);
-		force.push_back(glm::vec3(0));
-		collision.push_back({_group, _mask});
+		data.push_back(Particle{_pos, _vel, _imass, _radius, _group, _mask});
 
 		return id;
 	}
@@ -37,10 +31,10 @@ namespace pbd {
 	}
 
 	size_t ParticleList::size() const noexcept {
-		return pos.size();
+		return data.size();
 	}
 	bool ParticleList::empty() const noexcept {
-		return pos.empty();
+		return data.empty();
 	}
 
 	template<typename T>
@@ -58,13 +52,7 @@ namespace pbd {
 		assert(first + amount >= 0);
 		assert(last + amount < size());
 
-		shift_back(pos, first, last, amount);
-		shift_back(prevPos, first, last, amount);
-		shift_back(velocity, first, last, amount);
-		shift_back(force, first, last, amount);
-		shift_back(invMass, first, last, amount);
-		shift_back(radius, first, last, amount);
-		shift_back(collision, first, last, amount);
+		shift_back(data, first, last, amount);
 	}
 	template<typename T>
 	void erase_back(T& container, int32_t amount) {
@@ -72,34 +60,31 @@ namespace pbd {
 	}
 
 	void ParticleList::pop(int32_t amount) {
-		erase_back(pos, amount);
-		erase_back(prevPos, amount);
-		erase_back(velocity, amount);
-		erase_back(force, amount);
-		erase_back(invMass, amount);
-		erase_back(radius, amount);
-		erase_back(collision, amount);
+		erase_back(data, amount);
 	}
 
 	void ParticleList::clear() {
-		pos.clear();
-		prevPos.clear();
-		velocity.clear();
-		force.clear();
-		invMass.clear();
-		radius.clear();
-		collision.clear();
+		data.clear();
 	}
 
 	void ParticleList::reserve(int32_t amount) {
 		assert(amount < ParticleLimit);
 
-		pos.reserve(amount);
-		prevPos.reserve(amount);
-		velocity.reserve(amount);
-		force.reserve(amount);
-		invMass.reserve(amount);
-		radius.reserve(amount);
-		collision.reserve(amount);
+		data.reserve(amount);
+	}
+
+	particle_span ParticleList::get_particles(int32_t first, int32_t last) {
+		assert(first < last);
+		assert(last < data.size());
+		assert(first >= 0);
+
+		return particle_span{&data[first], static_cast<size_t>(last - first) };
+	}
+
+	Particle& ParticleList::operator[](size_t i) noexcept {
+		return data[i];
+	}
+	const Particle& ParticleList::operator[](size_t i) const noexcept {
+		return data[i];
 	}
 }

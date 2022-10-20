@@ -5,23 +5,23 @@
 
 namespace pbd {
 	void ConstraintTetraVolume::eval(Engine & engine, float rdt2) const {
-		std::array<glm::vec3*, 4> x;
+		std::array<Particle*, 4> p;
 		// Fetch the addresses of the positions
 		for (int i = 0; i < ids.size(); ++i) {
-			x[i] = &engine.particles.pos[ids[i]];
+			p[i] = &engine.particles[ids[i]];
 		}
 
 		std::array<glm::vec3, 4> grads;
 
 		float w = 0;
 		for (int i = 0; i < 4; ++i) {
-			glm::vec3 t0 = *x[faceOrder[i][1]] - *x[faceOrder[i][0]];
-			glm::vec3 t1 = *x[faceOrder[i][2]] - *x[faceOrder[i][0]];
+			glm::vec3 t0 = p[faceOrder[i][1]]->position - p[faceOrder[i][0]]->position;
+			glm::vec3 t1 = p[faceOrder[i][2]]->position - p[faceOrder[i][0]]->position;
 
 			grads[i] = glm::cross(t0, t1);
 			grads[i] *= (1.0 / 6.0);
 
-			w += engine.particles.invMass[ids[i]] * glm::dot(grads[i], grads[i]);
+			w += p[i]->imass * glm::dot(grads[i], grads[i]);
 		}
 
 		w += compliance * rdt2;
@@ -34,9 +34,9 @@ namespace pbd {
 		// Calculate the volume
 		float currentVolume = 0;
 		{
-			glm::vec3 t0 = *x[1] - *x[0];
-			glm::vec3 t1 = *x[2] - *x[0];
-			glm::vec3 t2 = *x[3] - *x[0];
+			glm::vec3 t0 = p[1]->position - p[0]->position;
+			glm::vec3 t1 = p[2]->position - p[0]->position;
+			glm::vec3 t2 = p[3]->position - p[0]->position;
 
 			glm::vec3 t3 = glm::cross(t0, t1);
 			currentVolume = glm::dot(t3, t2) / 6.0;
@@ -45,7 +45,7 @@ namespace pbd {
 		// Apply the deltas
 		float lambda = -(currentVolume - volume) / w;
 		for (int i = 0; i < 4; ++i) {
-			*x[i] += lambda * engine.particles.invMass[ids[i]] * grads[i];
+			p[i]->position += lambda * p[i]->imass * grads[i];
 		}
 	}
 

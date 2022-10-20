@@ -1,5 +1,6 @@
 #pragma once
 #include <cinttypes>
+#include <array>
 #include <pbd/common/Types.hpp>
 
 namespace pbd {
@@ -9,7 +10,7 @@ namespace pbd {
 	struct CollideParticle {
 		static constexpr Constraint Kind = Constraint::CollideParticle;
 
-		int32_t p0, p1;
+		std::array<int32_t, 2> ids;
 
 		void eval(Engine& engine, float rdt2) const;
 

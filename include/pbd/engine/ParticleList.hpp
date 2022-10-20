@@ -4,12 +4,27 @@
 #include <glm/vec3.hpp>
 #include <pbd/common/Types.hpp>
 #include <pbd/common/Transform.hpp>
+#include <pbd/common/Span.hpp>
 
 namespace pbd {
 	class PrefabParticle;
+	struct Particle {
+		glm::vec3 position, velocity;
+		float imass, radius;
+
+		uint32_t collision_groups, collision_mask;
+	};
+	using particle_span = Span<Particle*>;
+	using force_span = Span<glm::vec3*>;
 
 	class ParticleList {
 	public:
+		using container_t = std::vector<Particle>;
+		using iterator = container_t::iterator;
+		using const_iterator = container_t::const_iterator;
+		using reverse_iterator = container_t::reverse_iterator;
+		using const_reverse_iterator = container_t::const_reverse_iterator;
+
 		~ParticleList() = default;
 		ParticleList() = default;
 		ParticleList(ParticleList&&) noexcept = default;
@@ -30,19 +45,39 @@ namespace pbd {
 		void clear();
 		void reserve(int32_t amount);
 
-		// Force should be kept separate, it is only accessed in a special pass. 
+		particle_span get_particles(int32_t first, int32_t last);
 
-		// Position and invMass are needed for all the constraints.
+		Particle& operator[](size_t i) noexcept;
+		const Particle& operator[](size_t i) const noexcept;
 
-		// Previous position and radius are needed for all the particle collision constraints
+		iterator begin() noexcept {
+			return data.begin();
+		}
+		iterator end() noexcept {
+			return data.end();
+		}
 
-		// Collision data is only needed during the setup phase.
-		struct CollisionData {
-			uint32_t groups, mask;
-		};
+		const_iterator begin() const noexcept {
+			return data.begin();
+		}
+		const_iterator end() const noexcept {
+			return data.end();
+		}
 
-		std::vector<glm::vec3> pos, prevPos, velocity, force;
-		std::vector<float> invMass, radius;
-		std::vector<CollisionData> collision;
+		reverse_iterator rbegin() noexcept {
+			return data.rbegin();
+		}
+		reverse_iterator rend() noexcept {
+			return data.rend();
+		}
+
+		const_reverse_iterator rbegin() const noexcept {
+			return data.rbegin();
+		}
+		const_reverse_iterator rend() const noexcept {
+			return data.rend();
+		}
+	private:
+		container_t data;
 	};
 }

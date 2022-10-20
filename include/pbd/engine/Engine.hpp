@@ -20,8 +20,12 @@ namespace pbd {
 		float kinetic_friction;
 		float static_friction;
 
-		// The particles, and their execution data
+		// The particles data and their execution data
 		ParticleList particles;
+
+		// The forces and previous positions of the particles
+		std::vector<glm::vec3> forces, prevPos;
+
 		// The constraints and their execution data
 		ConstraintList constraints;
 
@@ -34,5 +38,8 @@ namespace pbd {
 		void predictPositions(float sdt);
 		void applyConstraints(float sdt);
 		void updateParticles(float sdt);
+
+		void clear_forces();
+		void save_positions();
 	};
 }

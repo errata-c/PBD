@@ -6,20 +6,22 @@
 
 namespace pbd {
 	void CollidePlane::eval(Engine& engine, float rdt2) const {
+		Particle & part = engine.particles[id];
+
 		// C(x0) = dot((x0 - origin), normal) - x0.radius >= 0
 		// grad(C wrt x0) = normal
 
 		// >= 0 constraint means we only project the particle when C(x0) < 0
 
-		glm::vec3& x0 = engine.particles.pos[id];
-		float w0 = engine.particles.invMass[id];
+		glm::vec3& x0 = part.position;
+		float w0 = part.imass;
 		if (w0 < 1e-5f) {
 			// inverse mass of zero means the particle is infinitely massive, will not move.
 			return;
 		}
 
 		// Calculate the constraint value
-		float C = glm::dot(x0 - origin, normal) - engine.particles.radius[id];
+		float C = glm::dot(x0 - origin, normal) - part.radius;
 		if (C >= 0.f) {
 			// Constraint does not apply.
 			return;
@@ -36,7 +38,7 @@ namespace pbd {
 		// Mass not needed for a static plane collision.
 
 		// The total delta over step
-		glm::vec3 pdelta = x0 - engine.particles.prevPos[id];
+		glm::vec3 pdelta = x0 - engine.prevPos[id];
 
 		// Find the perpendicular element of that motion.
 		glm::vec3 perp = perpendicular(pdelta, normal);

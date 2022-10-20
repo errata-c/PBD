@@ -71,9 +71,9 @@ namespace godot {
 		int32_t nearest = -1;
 		float ndist = 1e10;
 		for (size_t i = 0, count = engine.num_particles(); i < count; ++i) {
-			glm::vec3 d = engine.particles().pos[i] - o;
+			glm::vec3 d = engine.particles()[i].position - o;
 			float t = glm::dot(d, n);
-			float dist = glm::length2(engine.particles().pos[i] - (n * t + o));
+			float dist = glm::length2(engine.particles()[i].position - (n * t + o));
 
 			if (dist < ndist) {
 				nearest = static_cast<int32_t>(i);
@@ -88,7 +88,7 @@ namespace godot {
 		if (id < 0 || id  >= engine.num_particles()) {
 			return Vector3(0,0,0);
 		}
-		const glm::vec3 & p = engine.particles().pos[id];
+		const glm::vec3 & p = engine.particles()[id].position;
 		return Vector3(p.x, p.y, p.z);
 	}
 
@@ -166,7 +166,7 @@ namespace godot {
 
 			float* data = write.ptr();
 			for (int i = 0; i < engine.num_particles(); ++i) {
-				glm::vec3 pos = particles.pos[i];
+				glm::vec3 pos = particles[i].position;
 				form[3] = pos.x;
 				form[7] = pos.y;
 				form[11] = pos.z;
@@ -182,7 +182,7 @@ namespace godot {
 			once++;
 			if (once == 480) {
 				for (int i = 0; i < engine.num_particles(); ++i) {
-					glm::vec3 p = particles.pos[i];
+					glm::vec3 p = particles[i].position;
 					String text = "pos: {0}, {1}, {2}";
 					Godot::print(text.format(Array::make(p.x, p.y, p.z)));
 				}
@@ -209,10 +209,10 @@ namespace godot {
 		}
 		
 		const glm::vec3 
-			& p0 = engine.particles().pos[id0],
-			& p1 = engine.particles().pos[id1],
-			& p2 = engine.particles().pos[id2],
-			& p3 = engine.particles().pos[id3];
+			& p0 = engine.particles()[id0].position,
+			& p1 = engine.particles()[id1].position,
+			& p2 = engine.particles()[id2].position,
+			& p3 = engine.particles()[id3].position;
 
 		glm::mat3 tmp{
 			p1 - p0,

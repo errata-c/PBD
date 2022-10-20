@@ -40,9 +40,7 @@ namespace pbd {
 	}
 
 	static void apply(
-		const ConstraintNHTetraVolume & tet, 
-		Engine & engine, 
-		std::array<glm::vec3*, 4> & x, 
+		std::array<Particle*, 4> & p, 
 		std::array<glm::vec3, 4> & grads, 
 		float C, 
 		float rdt2,
@@ -56,7 +54,7 @@ namespace pbd {
 
 		float w = 0.f;
 		for (int i = 0; i < 4; ++i) {
-			w += glm::length2(grads[i]) * engine.particles.invMass[tet.ids[i]];
+			w += glm::length2(grads[i]) * p[i]->imass;
 		}
 
 		if (std::abs(w) < 1e-4f) {
@@ -65,7 +63,7 @@ namespace pbd {
 
 		float lambda = -C / (w + compliance * rdt2);
 		for (int i = 0; i < 4; ++i) {
-			*x[i] += grads[i] * lambda * engine.particles.invMass[tet.ids[i]];
+			p[i]->position += grads[i] * lambda * p[i]->imass;
 		}
 	}
 	static float matIJ(const glm::mat3& mat, int i, int j) {
@@ -73,16 +71,15 @@ namespace pbd {
 	}
 
 	void ConstraintNHTetraVolume::eval(Engine& engine, float rdt2) const {
-		std::array<glm::vec3*, 4> x;
-		// Fetch the addresses of the positions
+		std::array<Particle*, 4> p;
 		for (int i = 0; i < ids.size(); ++i) {
-			x[i] = &engine.particles.pos[ids[i]];
+			p[i] = &engine.particles[ids[i]];
 		}
 
-		glm::mat3 P{
-			(*x[1]) - (*x[0]),
-			(*x[2]) - (*x[0]),
-			(*x[3]) - (*x[0])
+		glm::mat3 P = glm::mat3{
+			(p[1]->position) - (p[0]->position),
+			(p[2]->position) - (p[0]->position),
+			(p[3]->position) - (p[0]->position)
 		};
 
 		glm::mat3 F = P * inv_rest;
@@ -98,12 +95,13 @@ namespace pbd {
 		
 		float C = glm::length2(F[0]) + glm::length2(F[1]) + glm::length2(F[2]) - 3.f;
 
-		apply(*this, engine, x, grads, C, rdt2, deviatoric_compliance);
+		apply(p, grads, C, rdt2, deviatoric_compliance);
 
-
-		P[0] = (*x[1]) - (*x[0]);
-		P[1] = (*x[2]) - (*x[0]);
-		P[2] = (*x[3]) - (*x[0]);
+		P = glm::mat3{
+		   (p[1]->position) - (p[0]->position),
+		   (p[2]->position) - (p[0]->position),
+		   (p[3]->position) - (p[0]->position)
+		};
 
 		F = P * inv_rest;
 
@@ -126,7 +124,7 @@ namespace pbd {
 
 		C = glm::determinant(F) - 1.f;
 		
-		apply(*this, engine, x, grads, C, rdt2, hydrostatic_compliance);
+		apply(p, grads, C, rdt2, hydrostatic_compliance);
 	}
 
 	void ConstraintNHTetraVolume::remap(int32_t offset) {

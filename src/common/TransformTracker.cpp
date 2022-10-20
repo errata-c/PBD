@@ -36,20 +36,20 @@ namespace pbd {
 		glm::quat q(1.f, 0.f, 0.f, 0.f);
 
 		const glm::vec3
-			& p0 = particles.pos[mids[0]],
-			& p1 = particles.pos[mids[1]],
-			& p2 = particles.pos[mids[2]],
-			& p3 = particles.pos[mids[3]];
+			& p0 = particles[mids[0]].position,
+			& p1 = particles[mids[1]].position,
+			& p2 = particles[mids[2]].position,
+			& p3 = particles[mids[3]].position;
 		mextractor.reset(p0, p1, p2, p3);
 		mposition = p0;// (p0 + p1 + p2 + p3) * 0.25f;
 	}
 
 	void TransformTracker::update(const ParticleList& particles) {
 		const glm::vec3
-			& p0 = particles.pos[mids[0]],
-			& p1 = particles.pos[mids[1]],
-			& p2 = particles.pos[mids[2]],
-			& p3 = particles.pos[mids[3]];
+			& p0 = particles[mids[0]].position,
+			& p1 = particles[mids[1]].position,
+			& p2 = particles[mids[2]].position,
+			& p3 = particles[mids[3]].position;
 		mextractor.update(p0, p1, p2, p3);
 		mposition = p0;//(p0 + p1 + p2 + p3) * 0.25f;
 	}

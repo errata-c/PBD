@@ -23,7 +23,7 @@ The setup for rigid body dynamics requires a few key things to be modified/added
 # Todo:
 
 - [x] Add collision groups
-- [ ] Add collision masks
+- [x] Add collision masks
 - [ ] Use empty collision groups to signify no collide at all, exclude them from the broad phase overlap check.
 - [x] Add compliance to constraints
 - [x] Make it easier to add constraints to the engine.
@@ -75,4 +75,13 @@ The setup for rigid body dynamics requires a few key things to be modified/added
   - [ ] BSP
 
   - [ ] Linear pattern segmentation? (Checkerboard overlapping, set intersections, uniqueness)
-- [ ] 
+- [ ] Test Prefab object initialization in `ManagedEngine`:
+  - [ ] Create object from prefab with desired transformation
+  - [ ] Destroy object
+  - [ ] Multiple create/destroy cycles in one run
+- [ ] Implement random access iteration for the constraint list
+- [ ] Span access for relevant object data:
+  - [ ] Particles
+  - [ ] Particle forces
+  - [ ] Trackers
+  - [ ] Constraints

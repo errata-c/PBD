@@ -20,6 +20,8 @@ namespace pbd {
 
 	// Run one iteration of the solver
 	void Engine::solve() {
+		forces.resize(particles.size(), glm::vec3(0));
+		
 		// Collision constraints would be generated here!
 		// If needed we can predict where the positions will be roughly, then find the collisions.
 
@@ -32,27 +34,24 @@ namespace pbd {
 			updateParticles(sdt);
 		}
 
-		// Clear the external forces
-		for (glm::vec3 & force : particles.force) {
-			force = glm::vec3(0.f);
-		}
+		clear_forces();
 	}
 
 	void Engine::predictPositions(float sdt) {
 		// Store these starting positions for comparison in the constraints.
-		particles.prevPos.assign(particles.pos.begin(), particles.pos.end());
+		save_positions();
 
 		for (int64_t i = 0, count = num_particles(); i < count; ++i) {
-			float imass = particles.invMass[i];
+			float imass = particles[i].imass;
 			if (imass < 1e-5f) {
 				continue;
 			}
 
-			glm::vec3 & velocity = particles.velocity[i];
-			glm::vec3 & position = particles.pos[i];
+			glm::vec3 & velocity = particles[i].velocity;
+			glm::vec3 & position = particles[i].position;
 
 			// External forces
-			const glm::vec3 & force = particles.force[i];
+			const glm::vec3 & force = forces[i];
 			
 			// Simple euler integration
 			velocity = velocity + sdt * (gravity + force * imass);
@@ -70,8 +69,22 @@ namespace pbd {
 	void Engine::updateParticles(float sdt) {
 		sdt = 1.f / sdt;
 
-		for (int64_t i = 0, count = num_particles(); i < count; ++i) {
-			particles.velocity[i] = (particles.pos[i] - particles.prevPos[i]) * sdt;
+		auto pit = prevPos.begin();
+		for (Particle & particle: particles) {
+			particle.velocity = (particle.position - *pit) * sdt;
+			++pit;
+		}
+	}
+
+
+	void Engine::clear_forces() {
+		std::fill(forces.begin(), forces.end(), glm::vec3(0.f));
+	}
+	void Engine::save_positions() {
+		auto it = prevPos.begin();
+		for (const Particle& particle: particles) {
+			*it = particle.position;
+			++it;
 		}
 	}
 }

@@ -28,7 +28,7 @@ namespace pbd {
 			const glm::vec3& p3,
 			float hydro, 
 			float devia);
-
+		
 		std::array<int32_t, 4> ids;
 		glm::mat3 inv_rest;
 		float hydrostatic_compliance, deviatoric_compliance;
