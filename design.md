@@ -1,35 +1,3 @@
-## Engine parameters:
-
-Gravity, 3 float
-
-Time step, 1 float
-
-Substeps, 1 integer
-
-Friction, 1 float (Can be made per-particle)
-
-
-
-## Structural Constraints:
-
-Distance, 2 integers, 1 float
-
-Tetrahedral Volume, 4 integers, 1 float
-
-
-
-## Collision Constraints:
-
-Plane, origin 3 float, normal 3 float.
-
-Particle, 2 integers, 1 float.
-
-## Particle data:
-
-Position 3 float, previous position 3 float, velocity 3 float, inverse mass 1 float.
-
-
-
 ## Collision detection:
 
 Spatial hashing works extremely well for particles of the same size, so long as the world space is subdivided properly. However, it does not handle particles of variable size at all.
@@ -42,47 +10,95 @@ One implementation breaks everything into blocks, then creates a secondary hash.
 
 ## Other things:
 
-It may be possible to implement rigid body physics for larger objects (like boxes, capsules, meshes) by emulating multiple particles. Compute center of mass of object, create tetrahedron of virtual particles around the origin. Then in theory all we need to do is compute a limited set of constraints to get the emergent behavior.
-
 It might be worthwhile to give the particles and other collision objects their own friction values. The number of values we have to store per-particle is already pretty high, but I don't think running out of memory is the biggest concern facing the performance.
-
-Damping could also be added into the mix. We have to option of implementing multiple forms of the constraints such that something like damping can be optional. As of right now, it does not seem necessary.
-
-Compliance could be added to the collision constraints as well, if desired. This would in effect make the collisions a bit softer. That could be a desirable effect. Just like the damping, this could also be made optional.
 
 XPBD makes mention of the Lagrange multiplier being accumulated over multiple constraint iterations. This is only needed when we process each constraint multiple times per substep. I might try this in another branch to see if it actually improves performance or accuracy.
 
+## Extension for rigid body dynamics:
+
+Rigid body dynamics is possible to implement on top of the current particle based system. This addition would allow for a lot of useful physics simulation capabilities. Right now this is not a priority for implementation.
+
+The setup for rigid body dynamics requires a few key things to be modified/added to the engine. The main update loop will have to be changed to incorporate the new constraints and interactions. The collision detection will have to be modified to enable finding collisions between all the different rigid bodies and the particles. The rigid bodies will need to have a method of finding the nearest point on their surface to another point, and a signed distance field for calculating friction. This is simple for convex surfaces, but much harder for concave ones. 
+
 # Todo:
 
-- [ ] Design a simple library for R/W of physics objects.
-- [ ] Add collision groups
+- [x] Add collision groups
+
+- [ ] Add collision masks
+
+- [ ] Use empty collision groups to signify no collide at all, exclude them from the broad phase overlap check.
+
 - [x] Add compliance to constraints
+
 - [x] Make it easier to add constraints to the engine.
+
 - [x] Make it easier to add particles to the engine
+
 - [x] Provide a mechanism to add forces to particles
+
 - [x] Implement constraint variant, store all constraints in single buffer
+
 - [x] Provide method to reorder constraint ids
-- [ ] Implement a reusable constraint list
+
+- [x] Implement a reusable constraint list
   - [x] Constraint references
   - [x] Constraint id array access
   - [x] erase method for ranges of constraints with remapping
-  - [ ] Combined erase method for efficiently erasing multiple ranges of constraints?
   - [x] Append from another constraint list
   - [x] Add to the engine class
   - [x] Test it in the Godot project
+  
 - [x] Implement a object prefab class, containing a list of particles and constraints
   - [x] Simple particle object, position, velocity, inverse mass, collision flags, radius.
   - [x] Constraint list, local ids
+  
 - [x] Implement a rotation tracker class, containing the list of ids to extract rotations from
+
 - [x] Implement spatial hashing for collision detection
+
 - [x] Find collisions using the spatial hashing, 
+
 - [x] Implement rotational extraction methods
+
 - [x] Object map with ID generation
   - [x] ID type, 64 bits
   - [x] Mapping from ID to particle range and constraint range
   - [x] Update ID mapping as needed
   - [x] Creating new IDs as needed
-- [ ] Add trackers to the managed engine
-- [ ] Add the object map to the managed engine
-- [ ] Add a method to create an instance from a prefab
-- [ ] 
+  
+- [x] Add trackers to the managed engine
+
+- [x] Add the object map to the managed engine
+
+- [x] Add a method to create an instance from a prefab
+
+- [ ] Create damped variants of the main constraints
+
+  - [ ] Tetra
+  - [ ] Neo-Hookean Tetra
+  - [ ] Distance
+
+- [ ] Create simple prefab data for each constraint
+  - [ ] Tetra
+  - [ ] Neo-Hookean Tetra
+  - [ ] Distance
+
+- [ ] Add world bounds to the managed engine, find an efficient means of enforcing those bounds.
+
+- [x] Create a generic slice class for accessing mutable data, but not adding or removing data.
+
+  - [x] Consider `mdspan` from `c++23` as the foundation
+  - [x] Use the iterators from a container as the bounds of the slice
+
+- [ ] Determine if we need dynamic particles and constraints (like emitters)
+
+- [ ] Design some different broad phase algorithms, test them for performance
+  - [ ] BVH
+
+  - [ ] Oct-tree
+
+  - [ ] BSP
+
+  - [ ] Linear pattern segmentation? (Checkerboard overlapping, set intersections, uniqueness)
+
+    

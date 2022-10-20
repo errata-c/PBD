@@ -15,7 +15,7 @@ namespace pbd {
 	This class stores a number of particles and constraints for them.
 	At runtime the object can then be instanced into the scene as needed.
 
-	Additionally, can store a list of bones to extract rotations from
+	Additionally, can store a list of bones to extract rotations from.
 	*/
 	class Prefab {
 	public:

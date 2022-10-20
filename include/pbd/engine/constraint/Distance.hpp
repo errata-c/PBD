@@ -7,6 +7,9 @@ namespace pbd {
 	class Engine;
 
 	struct ConstraintDistance {
+		static void serialize(const ConstraintDistance& in, std::string& output);
+		static const char* deserialize(const char* first, const char* last, ConstraintDistance& out);
+
 		static constexpr Constraint Kind = Constraint::Distance;
 
 		void eval(Engine& engine, float rdt2) const;

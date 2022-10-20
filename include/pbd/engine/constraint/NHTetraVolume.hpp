@@ -1,6 +1,7 @@
 #pragma once
 #include <cinttypes>
 #include <array>
+#include <string>
 #include <pbd/common/Types.hpp>
 #include <pbd/common/Transform.hpp>
 
@@ -13,6 +14,9 @@ namespace pbd {
 	// Technically two constraints in one, we could allow for two compliance values.
 	// Hydrostatic constraint is volume, Deviatoric constraint is essentially shear.
 	struct ConstraintNHTetraVolume {
+		static void serialize(const ConstraintNHTetraVolume& in, std::string& output);
+		static const char* deserialize(const char* first, const char* last, ConstraintNHTetraVolume& out);
+
 		static constexpr Constraint Kind = Constraint::NHTetraVolume;
 
 		ConstraintNHTetraVolume();

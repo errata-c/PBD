@@ -1,6 +1,7 @@
 #pragma once
 #include <cinttypes>
 #include <array>
+#include <string>
 #include <pbd/common/Types.hpp>
 #include <pbd/common/Transform.hpp>
 
@@ -8,6 +9,9 @@ namespace pbd {
 	class Engine;
 
 	struct ConstraintTetraVolume {
+		static void serialize(const ConstraintTetraVolume& in, std::string& output);
+		static const char* deserialize(const char* first, const char* last, ConstraintTetraVolume& out);
+
 		static constexpr Constraint Kind = Constraint::TetraVolume;
 		static constexpr std::array<std::array<int32_t, 3>, 4> faceOrder{ {
 			{0,1,3},
