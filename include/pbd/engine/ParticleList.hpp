@@ -20,8 +20,8 @@ namespace pbd {
 		size_t size() const noexcept;
 		bool empty() const noexcept;
 
-		int32_t add(const glm::vec3& position, const glm::vec3& velocity, float invMass, float radius, uint32_t _flags = 0u);
-		int32_t add(const glm::vec3& position, float invMass, float radius, uint32_t _flags = 0u);
+		int32_t add(const glm::vec3& position, const glm::vec3& velocity, float invMass, float radius, uint32_t _group = 0u, uint32_t _mask = 0u);
+		int32_t add(const glm::vec3& position, float invMass, float radius, uint32_t _group = 0u, uint32_t _mask = 0u);
 		int32_t add(const PrefabParticle& particle);
 		int32_t add(const PrefabParticle& particle, const Transform3& form);
 
@@ -30,8 +30,19 @@ namespace pbd {
 		void clear();
 		void reserve(int32_t amount);
 
+		// Force should be kept separate, it is only accessed in a special pass. 
+
+		// Position and invMass are needed for all the constraints.
+
+		// Previous position and radius are needed for all the particle collision constraints
+
+		// Collision data is only needed during the setup phase.
+		struct CollisionData {
+			uint32_t groups, mask;
+		};
+
 		std::vector<glm::vec3> pos, prevPos, velocity, force;
 		std::vector<float> invMass, radius;
-		std::vector<uint32_t> flags;
+		std::vector<CollisionData> collision;
 	};
 }

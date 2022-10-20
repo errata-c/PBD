@@ -1,7 +1,7 @@
 find_package(Catch2 CONFIG REQUIRED)
 
 add_executable(pbd_basic_test 
-	"mdspan.cpp"
+	"span.cpp"
 	"tet_volume.cpp"
 	"perpendicular.cpp"
 )

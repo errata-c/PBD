@@ -56,8 +56,8 @@ namespace pbd {
 		return mkind;
 	}
 
-	ConstraintDataRange ConstraintRef::ids() const noexcept {
-		return ConstraintDataRange{data(), data() + NumIds(type())};
+	IdSpan ConstraintRef::ids() const noexcept {
+		return IdSpan{data(), NumIds(type())};
 	}
 
 	int32_t* ConstraintRef::data() const noexcept {
@@ -81,8 +81,8 @@ namespace pbd {
 		return ref.type();
 	}
 
-	ConstConstraintDataRange ConstConstraintRef::ids() const noexcept {
-		return ConstConstraintDataRange{ data(), data() + NumIds(type()) };
+	ConstIdSpan ConstConstraintRef::ids() const noexcept {
+		return ConstIdSpan{ data(), NumIds(type()) };
 	}
 
 	const int32_t* ConstConstraintRef::data() const noexcept {

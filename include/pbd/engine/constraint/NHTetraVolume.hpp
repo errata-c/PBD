@@ -11,7 +11,6 @@ namespace pbd {
 	class Engine;
 
 	// More costly than the other Tetra constraint, but does not require distance constraints.
-	// Technically two constraints in one, we could allow for two compliance values.
 	// Hydrostatic constraint is volume, Deviatoric constraint is essentially shear.
 	struct ConstraintNHTetraVolume {
 		static void serialize(const ConstraintNHTetraVolume& in, std::string& output);

@@ -1,7 +1,7 @@
 #include <vector>
 #include <deque>
 #include <memory>
-#include <pbd/common/MDSpan.hpp>
+#include <pbd/common/Span.hpp>
 
 #include <cppitertools/itertools.hpp>
 
@@ -9,10 +9,10 @@
 
 using namespace pbd;
 
-TEST_CASE("MDSpan vector") {
+TEST_CASE("Span vector") {
 	using container_t = std::vector<int>;
 	using iterator = container_t::iterator;
-	using span_t = MDSpan<iterator>;
+	using span_t = Span<iterator>;
 
 	container_t data;
 
@@ -72,10 +72,10 @@ TEST_CASE("MDSpan vector") {
 	REQUIRE(test == other);
 }
 
-TEST_CASE("MDSpan deque") {
+TEST_CASE("Span deque") {
 	using container_t = std::deque<int>;
 	using iterator = container_t::iterator;
-	using span_t = MDSpan<iterator>;
+	using span_t = Span<iterator>;
 
 	container_t data;
 
@@ -135,10 +135,10 @@ TEST_CASE("MDSpan deque") {
 	REQUIRE(test == other);
 }
 
-TEST_CASE("MDSpan pointer") {
+TEST_CASE("Span pointer") {
 	std::unique_ptr<int[]> data(new int[32]);
 	using iterator = int*;
-	using span_t = MDSpan<iterator>;
+	using span_t = Span<iterator>;
 
 	size_t size = 32;
 	iterator begin = data.get();

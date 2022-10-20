@@ -29,7 +29,7 @@ namespace godot {
 	}
 
 	int PrefabRef::add_particle(Vector3 pos, float mass, float radius) {
-		return prefab.add_particle(glm::vec3(pos[0], pos[1], pos[2]), 1.f / mass, radius, 0u);
+		return prefab.add_particle(glm::vec3(pos[0], pos[1], pos[2]), 1.f / mass, radius, 0u, 0u);
 	}
 
 	void PrefabRef::add_distance_constraint(int id0, int id1, float compliance) {

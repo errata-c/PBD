@@ -25,7 +25,7 @@ namespace pbd {
 	}
 
 	enum class ObjectID : uint64_t {
-		Invalid = ~uint64_t(0)
+		Invalid = uint64_t(-1)
 	};
 }
 

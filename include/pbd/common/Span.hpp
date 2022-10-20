@@ -31,12 +31,12 @@ namespace pbd {
 	}
 
 	template<typename Iter>
-	class MDSpan {
+	class Span {
 	public:
 		using traits_t = std::iterator_traits<Iter>;
 		using tag_t = typename traits_t::iterator_category;
 
-		static_assert(std::is_same_v<tag_t, std::random_access_iterator_tag>, "Must be a random access iterator for pbd::MDSpan to work!");
+		static_assert(std::is_same_v<tag_t, std::random_access_iterator_tag>, "Must be a random access iterator for pbd::Span to work!");
 
 		using iterator = Iter;
 		using const_iterator = iterator;
@@ -50,15 +50,15 @@ namespace pbd {
 		
 		static constexpr size_t npos = size_t(-1);
 		
-		MDSpan() = default;
-		~MDSpan() = default;
-		MDSpan(const MDSpan &) noexcept = default;
-		MDSpan& operator=(const MDSpan&) noexcept = default;
+		Span() = default;
+		~Span() = default;
+		Span(const Span &) noexcept = default;
+		Span& operator=(const Span&) noexcept = default;
 
-		MDSpan(iterator _first, size_t count) 
-			: MDSpan(_first, _first + count)
+		Span(iterator _first, size_t count) 
+			: Span(_first, _first + count)
 		{}
-		MDSpan(iterator _first, iterator _last)
+		Span(iterator _first, iterator _last)
 			: first(_first)
 			, last(_last)
 		{}
@@ -69,7 +69,7 @@ namespace pbd {
 		}
 		reference at(size_t i) const {
 			if (i >= size()) {
-				throw std::out_of_range{"pbd::MDSpan out_of_range exception!"};
+				throw std::out_of_range{"pbd::Span out_of_range exception!"};
 			}
 			return first[i];
 		}
@@ -83,7 +83,7 @@ namespace pbd {
 			return *(last -1);
 		}
 
-		void swap(MDSpan& other) noexcept {
+		void swap(Span& other) noexcept {
 			std::swap(first, other.first);
 			std::swap(last, other.last);
 		}
@@ -95,9 +95,9 @@ namespace pbd {
 			assert(n <= size());
 			last -= n;
 		}
-		MDSpan subspan(size_t pos = 0, size_t count = npos) const {
+		Span subspan(size_t pos = 0, size_t count = npos) const {
 			if (pos > size()) {
-				throw std::out_of_range{ "pbd::MDSpan out_of_range exception!" };
+				throw std::out_of_range{ "pbd::Span out_of_range exception!" };
 			}
 			// Subtraction is necessary here! Using addition with npos (default argument) WILL overflow.
 			size_t rcount = std::min(static_cast<size_t>(size() - pos), count);
@@ -144,7 +144,7 @@ namespace pbd {
 		/// Operators will only be defined IF the operator is also defined for the value_type.
 
 		template<typename K = value_type, typename = std::enable_if_t<(intern::eq_exists_v<K>)>>
-		bool operator==(const MDSpan<K>& other) const noexcept {
+		bool operator==(const Span<K>& other) const noexcept {
 			if (size() != other.size()) {
 				return false;
 			}
@@ -161,7 +161,7 @@ namespace pbd {
 			}
 		}
 		template<typename K = value_type, typename = std::enable_if_t<(intern::neq_exists_v<K>)>>
-		bool operator!=(const MDSpan<K>& other) const noexcept {
+		bool operator!=(const Span<K>& other) const noexcept {
 			if (size() != other.size()) {
 				return false;
 			}

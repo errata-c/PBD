@@ -11,11 +11,11 @@ namespace pbd {
 		static const char* deserialize(const char* first, const char* last, PrefabParticle& particle);
 
 		PrefabParticle();
-		PrefabParticle(const glm::vec3 & _pos, float _imass, float _radius, uint32_t _flags);
-		PrefabParticle(const glm::vec3& _pos, const glm::vec3& _vel, float _imass, float _radius, uint32_t _flags);
+		PrefabParticle(const glm::vec3 & _pos, float _imass, float _radius, uint32_t _cgroups, uint32_t _cmask);
+		PrefabParticle(const glm::vec3& _pos, const glm::vec3& _vel, float _imass, float _radius, uint32_t _cgroups, uint32_t _cmask);
 		
 		glm::vec3 position, velocity;
 		float imass, radius;
-		uint32_t flags;
+		uint32_t collision_groups, collision_mask;
 	};
 }

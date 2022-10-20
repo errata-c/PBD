@@ -2,29 +2,13 @@
 #include <cinttypes>
 #include <pbd/common/Types.hpp>
 #include <pbd/common/Transform.hpp>
+#include <pbd/common/Span.hpp>
 
 namespace pbd {
 	class Engine;
-	struct ConstraintDataRange {
-		int32_t *first, *last;
-
-		int32_t* begin() const noexcept {
-			return first;
-		}
-		int32_t* end() const noexcept {
-			return last;
-		}
-	};
-	struct ConstConstraintDataRange {
-		const int32_t* first, * last;
-
-		const int32_t* begin() const noexcept {
-			return first;
-		}
-		const int32_t* end() const noexcept {
-			return last;
-		}
-	};
+	
+	using IdSpan = Span<int32_t*>;
+	using ConstIdSpan = Span<const int32_t*>;
 
 	class ConstraintRef {
 	public:
@@ -40,7 +24,7 @@ namespace pbd {
 
 		Constraint type() const noexcept;
 
-		ConstraintDataRange ids() const noexcept;
+		IdSpan ids() const noexcept;
 
 		int32_t * data() const noexcept;
 	private:
@@ -60,7 +44,7 @@ namespace pbd {
 
 		Constraint type() const noexcept;
 
-		ConstConstraintDataRange ids() const noexcept;
+		ConstIdSpan ids() const noexcept;
 
 		const int32_t* data() const noexcept;
 	private:
