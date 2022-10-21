@@ -5,11 +5,54 @@
 #include <ez/serialize.hpp>
 #include <ez/deserialize.hpp>
 
+#include <cppitertools/itertools.hpp>
+
+#include <xxhash.h>
+
+static uint64_t hash(std::string_view text) {
+	return static_cast<uint64_t>(XXH3_64bits(text.data(), text.length()));
+}
+static uint64_t hash(std::string_view text, uint64_t seed) {
+	return static_cast<uint64_t>(XXH64(text.data(), text.length(), seed));
+}
+
+static uint64_t hash(std::string_view text0, std::string_view text1) {
+	return hash(text1, hash(text0));
+}
+
 namespace pbd {
 	using const_iterator = PrefabDatabase::const_iterator;
 
+	struct EntryName {
+		EntryName(std::string_view group, std::string_view name)
+		{
+			uint64_t id = hash(group, name);
+			ez::serialize::u64(id, data.data(), data.data() + data.size());
+		}
+		EntryName(const PrefabDatabase::Entry & entry)
+			: EntryName(*entry.group, *entry.name)
+		{}
+		operator std::string_view() noexcept {
+			return std::string_view(data.data(), data.size());
+		}
+
+		std::array<char, 8> data;
+	};
+
+	static constexpr std::string_view 
+		file_kind("pbd_prefab"),
+		name_prefix("nm_"),
+		group_prefix("gp_"),
+		entry_prefix("en_");
+
+	PrefabDatabase::~PrefabDatabase() {
+		close();
+	}
+
 	void PrefabDatabase::swap(PrefabDatabase& other) noexcept {
 		store.swap(other.store);
+		entries.swap(other.entries);
+		groups.swap(other.groups);
 	}
 
 	bool PrefabDatabase::isOpen() const noexcept {
@@ -18,32 +61,7 @@ namespace pbd {
 
 	bool PrefabDatabase::create(const std::filesystem::path& path, bool overwrite) {
 		if (store.create(path, overwrite)) {
-			if (!store.setKind("pbd")) {
-				return false;
-			}
-
-			std::string ogtable;
-			if (!store.getTable(ogtable)) {
-				return false;
-			}
-			
-			if (!store.createTable("prefab_names")) {
-				return false;
-			}
-			if (!store.createTable("prefab_data")) {
-				return false;
-			}
-			if (!store.setDefaultTable("prefab_names")) {
-				return false;
-			}
-			if (!store.setTable("prefab_names")) {
-				return false;
-			}
-
-			if (!store.eraseTable(ogtable)) {
-				return false;
-			}
-
+			store.setKind(file_kind);
 			return true;
 		}
 		else {
@@ -52,149 +70,209 @@ namespace pbd {
 	}
 	bool PrefabDatabase::open(const std::filesystem::path& path, bool readonly) {
 		if (!store.open(path, readonly)) {
-			std::string kind;
-			if (!store.getKind(kind)) {
-				return false;
-			}
-			if (kind != "pbd") {
-				return false;
-			}
-
-			// Iterate the elements of the table
-			for (auto element : store) {
-				prefabNames.push_back(element.key);
-			}
-			bool res = store.setTable("prefab_data");
-			assert(res);
-
-
-
-			return true;
-		}
-		else {
 			return false;
 		}
+
+		if (store.getKind() != file_kind) {
+			store.close();
+			return false;
+		}
+
+		load_entries();
+
+		return true;
 	}
 	void PrefabDatabase::close() {
-		store.close();
-		prefabNames.clear();
+		if (isOpen()) {
+			save_entries();
+			store.close();
+		}
+		groups.clear();
+		entries.clear();
 	}
 
-	size_t PrefabDatabase::numPrefabs() const {
-		return prefabNames.size();
+	size_t PrefabDatabase::num_prefabs() const {
+		return entries.size();
+	}
+	size_t PrefabDatabase::num_groups() const {
+		return groups.size();
 	}
 
 	bool PrefabDatabase::load(const_iterator it, Prefab& prefab) const {
-		return load(*it, prefab);
+		assert(isOpen());
+		return load(*it->group, *it->name, prefab);
 	}
-	bool PrefabDatabase::load(std::string_view name, Prefab& prefab) const {
+	bool PrefabDatabase::load(std::string_view group, std::string_view name, Prefab& prefab) const {
 		if (!isOpen()) {
 			return false;
 		}
-		if (!contains(name)) {
+		if (!contains(group, name)) {
 			return false;
 		}
 
 		std::string data;
-		bool result = store.get(name, data);
-		assert(result);
+		bool res = store.get(name, data);
+		assert(res);
 
-		uint64_t numParticles = 0, numConstraints = 0, numTrackers = 0;
-		
-		const char* read = data.data();
-		const char* last = read + data.size();
-
-		read = ez::deserialize::u64(read, last, numParticles);
-		read = ez::deserialize::u64(read, last, numConstraints);
-		read = ez::deserialize::u64(read, last, numTrackers);
-
-		prefab.particles.reserve(numParticles);
-		prefab.trackers.reserve(numTrackers);
-
-		// Load all the particles
-		for (uint64_t i = 0; i < numParticles; ++i) {
-			PrefabParticle particle;
-
-			read = PrefabParticle::deserialize(read, last, particle);
-
-			prefab.particles.push_back(particle);
-		}
-
-		// Load all the constraints
-		read = ConstraintList::deserialize(read, last, prefab.constraints);
-
-		// Load all the trackers
-		for (uint64_t i = 0; i < numParticles; ++i) {
-			PrefabTracker tracker;
-
-			read = PrefabTracker::deserialize(read, last, tracker);
-
-			prefab.trackers.push_back(tracker);
-		}
+		Prefab::deserialize(data.data(), data.data() + data.size(), prefab);
 
 		return true;
 	}
-	bool PrefabDatabase::save(std::string_view name, const Prefab& prefab) {
+	bool PrefabDatabase::save(std::string_view group, std::string_view name, const Prefab& prefab) {
+		assert(isOpen());
 		if (!isOpen()) {
 			return false;
 		}
 
 		std::string data;
-		uint64_t 
-			numParticles = prefab.particles.size(),
-			numConstraints = prefab.constraints.size(),
-			numTrackers = prefab.trackers.size();
+		Prefab::serialize(prefab, data);
 
-		ez::serialize::u64(numParticles, data);
-		ez::serialize::u64(numConstraints, data);
-		ez::serialize::u64(numTrackers, data);
+		EntryName ename(group, name);
+		if (!store.contains(ename)) {
+			uint64_t grp = hash(group);
+			auto it = groups.find(grp);
+			if (it == groups.end()) {
+				auto tmp = groups.insert(std::make_pair(grp, std::make_shared<std::string>(group)));
+				it = tmp.first;
+			}
 
-		for (uint64_t i = 0; i < numParticles; ++i) {
-			PrefabParticle::serialize(prefab.particles[i], data);
+			entries.push_back(Entry{it->second, std::make_shared<std::string>(name)});
 		}
 
-		ConstraintList::serialize(prefab.constraints, data);
-
-		for (uint64_t i = 0; i < numTrackers; ++i) {
-			PrefabTracker::serialize(prefab.trackers[i], data);
-		}
-
-		if (!contains(name)) {
-			prefabNames.push_back(std::string(name));
-		}
-
-		bool result = store.set(name, data);
-		assert(result);
+		bool res = store.set(ename, data);
+		assert(res);
 
 		return true;
 	}
 
-
-	const_iterator PrefabDatabase::find(std::string_view name) const {
-		return std::find(prefabNames.begin(), prefabNames.end(), name);
+	// Done
+	const_iterator PrefabDatabase::find(std::string_view group, std::string_view name) const {
+		const_iterator it = begin();
+		for (const_iterator last = end(); it != last; ++it) {
+			if (*it->group == group && *it->name == name) {
+				return it;
+			}
+		}
+		return end();
 	}
 
-	bool PrefabDatabase::contains(std::string_view name) const {
-		return find(name) != prefabNames.end();
+	//Done
+	bool PrefabDatabase::contains(std::string_view group, std::string_view name) const {
+		EntryName ename(group, name);
+		return store.contains(ename);
 	}
 
+	// Done
 	const_iterator PrefabDatabase::begin() const {
-		return prefabNames.begin();
+		return entries.begin();
 	}
 	const_iterator PrefabDatabase::end() const {
-		return prefabNames.end();
+		return entries.end();
 	}
 
-	bool PrefabDatabase::erase(std::string_view name) {
-		if (!contains(name)) {
+	// Done
+	bool PrefabDatabase::erase(std::string_view group, std::string_view name) {
+		const_iterator it = find(group, name);
+		if (it == end()) {
 			return false;
 		}
-
-		return false;
+		
+		erase(it);
+		return true;
 	}
+
+	// Done
 	const_iterator PrefabDatabase::erase(const_iterator it) {
 		assert(it < end());
 
-		return end();
+		auto git = groups.find(hash(*it->group));
+		// The iterator should be valid, and from THIS database
+		assert(git != groups.end());
+		
+		EntryName ename(*it);
+		bool res = store.erase(ename);
+		assert(res);
+
+		const_iterator result = entries.erase(it);
+
+		if (git->second.use_count() == 1) {
+			groups.erase(git);
+		}
+
+		return result;
+	}
+
+	void PrefabDatabase::load_entries() {
+		std::string group_list, name_list;
+		bool res = store.get("groups", group_list);
+		assert(res);
+
+		res = store.get("names", group_list);
+		assert(res);
+
+		entries.clear();
+		groups.clear();
+
+		uint64_t ngroups = 0;
+		{
+			const char * read = group_list.data();
+			const char * last = read + group_list.size();
+
+			read = ez::deserialize::u64(read, last, ngroups);
+			for (uint64_t _: iter::range(ngroups)) {
+				std::shared_ptr<std::string> name(new std::string{});
+
+				read = ez::deserialize::string(read, last, *name);
+				uint64_t id = hash(*name);
+
+				groups.insert(std::make_pair(id, std::move(name)));
+			}
+		}
+		uint64_t nnames = 0;
+		{
+			const char* read = name_list.data();
+			const char* last = read + name_list.size();
+
+			read = ez::deserialize::u64(read, last, nnames);
+			for (uint64_t _ : iter::range(nnames)) {
+				uint64_t grp = 0;
+				std::shared_ptr<std::string> name(new std::string{});
+
+				// Get the associated group id
+				read = ez::deserialize::u64(read, last, grp);
+
+				// Get the actual name string
+				read = ez::deserialize::string(read, last, *name);
+
+				// Create the entry, linking to the pre-existing group name.
+				entries.push_back(Entry{groups[grp], std::move(name)});
+			}
+		}
+	}
+	void PrefabDatabase::save_entries() {
+		std::string group_list, name_list;
+
+		ez::serialize::u64(groups.size(), group_list);
+		for (auto& group : groups) {
+			ez::serialize::string(*group.second, group_list);
+		}
+
+		ez::serialize::u64(entries.size(), name_list);
+		for (auto & entry: entries) {
+			uint64_t grhv = hash(*entry.group);
+			uint64_t enhv = hash(*entry.name, grhv);
+
+			// Store the group id
+			ez::serialize::u64(grhv, name_list);
+
+			// Store the name
+			ez::serialize::string(*entry.name, name_list);
+		}
+
+		bool res = store.set("groups", group_list);
+		assert(res);
+
+		res = store.set("names", name_list);
+		assert(res);
 	}
 }

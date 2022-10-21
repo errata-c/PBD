@@ -73,14 +73,6 @@ namespace pbd {
 		data.reserve(amount);
 	}
 
-	particle_span ParticleList::get_particles(int32_t first, int32_t last) {
-		assert(first < last);
-		assert(last < data.size());
-		assert(first >= 0);
-
-		return particle_span{&data[first], static_cast<size_t>(last - first) };
-	}
-
 	Particle& ParticleList::operator[](size_t i) noexcept {
 		return data[i];
 	}

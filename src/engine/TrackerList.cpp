@@ -51,4 +51,11 @@ namespace pbd {
 	const_iterator TrackerList::end() const noexcept {
 		return trackers.end();
 	}
+
+	TransformTracker& TrackerList::operator[](size_t i) noexcept {
+		return trackers[i];
+	}
+	const TransformTracker& TrackerList::operator[](size_t i) const noexcept {
+		return trackers[i];
+	}
 }

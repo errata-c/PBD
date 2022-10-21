@@ -4,6 +4,62 @@ namespace pbd {
 	ManagedEngine::ManagedEngine()
 	{}
 
+	particle_span ManagedEngine::get_particles(ObjectID id) {
+		auto it = map.find(id);
+		if (it == map.end()) {
+			return {};
+		}
+		else {
+			return particle_span(&engine.particles[it->particles().first], it->particles().size());
+		}
+	}
+	force_span ManagedEngine::get_forces(ObjectID id) {
+		auto it = map.find(id);
+		if (it == map.end()) {
+			return {};
+		}
+		else {
+			return force_span(&engine.forces[it->particles().first], it->particles().size());
+		}
+	}
+	tracker_span ManagedEngine::get_trackers(ObjectID id) {
+		auto it = map.find(id);
+		if (it == map.end()) {
+			return {};
+		}
+		else {
+			return tracker_span(&mtrackers[it->trackers().first], it->trackers().size());
+		}
+	}
+
+	const_particle_span ManagedEngine::get_particles(ObjectID id) const {
+		auto it = map.find(id);
+		if (it == map.end()) {
+			return {};
+		}
+		else {
+			return const_particle_span(&engine.particles[it->particles().first], it->particles().size());
+		}
+	}
+	const_force_span ManagedEngine::get_forces(ObjectID id) const {
+		auto it = map.find(id);
+		if (it == map.end()) {
+			return {};
+		}
+		else {
+			return const_force_span(&engine.forces[it->particles().first], it->particles().size());
+		}
+	}
+	const_tracker_span ManagedEngine::get_trackers(ObjectID id) const {
+		auto it = map.find(id);
+		if (it == map.end()) {
+			return {};
+		}
+		else {
+			return const_tracker_span(&mtrackers[it->trackers().first], it->trackers().size());
+		}
+	}
+
 	ObjectID ManagedEngine::create(const Prefab& prefab) {
 		return create(prefab, Transform3());
 	}

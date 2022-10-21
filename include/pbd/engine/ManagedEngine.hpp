@@ -6,8 +6,18 @@
 #include <pbd/engine/ObjectMap.hpp>
 #include <pbd/engine/TrackerList.hpp>
 #include <pbd/prefab/Prefab.hpp>
+#include <pbd/common/Span.hpp>
 
 namespace pbd {
+	using particle_span = Span<Particle*>;
+	using force_span = Span<glm::vec3*>;
+	using tracker_span = Span<TransformTracker*>;
+	// Cannot implement the constraint span until the constraint list has a random access iterator.
+
+	using const_particle_span = Span<const Particle*>;
+	using const_force_span = Span<const glm::vec3*>;
+	using const_tracker_span = Span<const TransformTracker*>;
+
 	// Engine class that handles the creation and deletion of objects as collections of particles and constraints.
 	class ManagedEngine {
 	public:
@@ -15,6 +25,14 @@ namespace pbd {
 		ManagedEngine& operator=(ManagedEngine&&) noexcept = default;
 
 		ManagedEngine();
+
+		particle_span get_particles(ObjectID id);
+		force_span get_forces(ObjectID id);
+		tracker_span get_trackers(ObjectID id);
+
+		const_particle_span get_particles(ObjectID id) const;
+		const_force_span get_forces(ObjectID id) const;
+		const_tracker_span get_trackers(ObjectID id) const;
 
 		ObjectID create(const Prefab& prefab);
 		ObjectID create(const Prefab& prefab, const Transform3 & transform);

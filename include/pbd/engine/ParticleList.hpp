@@ -14,8 +14,6 @@ namespace pbd {
 
 		uint32_t collision_groups, collision_mask;
 	};
-	using particle_span = Span<Particle*>;
-	using force_span = Span<glm::vec3*>;
 
 	class ParticleList {
 	public:
@@ -45,7 +43,6 @@ namespace pbd {
 		void clear();
 		void reserve(int32_t amount);
 
-		particle_span get_particles(int32_t first, int32_t last);
 
 		Particle& operator[](size_t i) noexcept;
 		const Particle& operator[](size_t i) const noexcept;

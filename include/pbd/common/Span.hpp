@@ -7,27 +7,27 @@
 
 namespace pbd {
 	namespace intern {
-		template<typename T, typename = int>
+		template<typename T, typename O = T, typename = int>
 		struct eq_exists
 			: std::false_type {};
 
-		template<typename T>
-		struct eq_exists<T, decltype(std::declval<T>() == std::declval<T>(), 0)>
+		template<typename T, typename O>
+		struct eq_exists<T, O, decltype(std::declval<T>() == std::declval<O>(), 0)>
 			: std::true_type {};
 		
-		template<typename T>
-		static constexpr bool eq_exists_v = eq_exists<T>::value;
+		template<typename T, typename O = T>
+		static constexpr bool eq_exists_v = eq_exists<T, O>::value;
 
-		template<typename T, typename = int>
+		template<typename T, typename O = T, typename = int>
 		struct neq_exists
 			: std::false_type {};
 
-		template<typename T>
-		struct neq_exists<T, decltype(std::declval<T>() != std::declval<T>(), 0)>
+		template<typename T, typename O>
+		struct neq_exists<T, O, decltype(std::declval<T>() != std::declval<O>(), 0)>
 			: std::true_type {};
 
-		template<typename T>
-		static constexpr bool neq_exists_v = neq_exists<T>::value;
+		template<typename T, typename O = T>
+		static constexpr bool neq_exists_v = neq_exists<T, O>::value;
 	}
 
 	template<typename Iter>
@@ -56,12 +56,36 @@ namespace pbd {
 		Span& operator=(const Span&) noexcept = default;
 
 		Span(iterator _first, size_t count) 
-			: Span(_first, _first + count)
+			: first(_first)
+			, last(_first + count)
 		{}
 		Span(iterator _first, iterator _last)
 			: first(_first)
 			, last(_last)
 		{}
+
+		template<typename OIter, typename = std::enable_if_t<std::is_nothrow_constructible_v<Iter, const OIter&>>>
+		Span(const OIter& _first, const OIter& _last)
+			: first(_first)
+			, last(_last)
+		{}
+		template<typename OIter, typename = std::enable_if_t<std::is_nothrow_constructible_v<Iter, const OIter&>>>
+		Span(const OIter& _first, size_t count)
+			: first(_first)
+			, last(_first + count)
+		{}
+
+		template<typename OIter, typename = std::enable_if_t<std::is_nothrow_constructible_v<Iter, const OIter&>>>
+		Span(const Span<OIter> & other)
+			: first(other.begin())
+			, last(other.end())
+		{}
+		template<typename OIter, typename = std::enable_if_t<std::is_nothrow_constructible_v<Iter, const OIter&>>>
+		Span& operator=(const Span<OIter>& other) {
+			first = other.begin();
+			last = other.end();
+			return *this;
+		}
 
 		reference operator[](size_t i) const noexcept {
 			assert(i < size());
@@ -143,13 +167,14 @@ namespace pbd {
 
 		/// Operators will only be defined IF the operator is also defined for the value_type.
 
-		template<typename K = value_type, typename = std::enable_if_t<(intern::eq_exists_v<K>)>>
+		template<typename K, typename = std::enable_if_t<(intern::eq_exists_v<value_type, Span<K>::value_type>)>>
 		bool operator==(const Span<K>& other) const noexcept {
 			if (size() != other.size()) {
 				return false;
 			}
 			else {
-				iterator a = first, b = other.first;
+				iterator a = begin();
+				Span<K>::iterator b = other.begin();
 				while (a != last) {
 					if (!(*a == *b)) {
 						return false;
@@ -160,13 +185,14 @@ namespace pbd {
 				return true;
 			}
 		}
-		template<typename K = value_type, typename = std::enable_if_t<(intern::neq_exists_v<K>)>>
+		template<typename K, typename = std::enable_if_t<(intern::neq_exists_v<value_type, Span<K>::value_type>)>>
 		bool operator!=(const Span<K>& other) const noexcept {
 			if (size() != other.size()) {
 				return false;
 			}
 			else {
-				iterator a = first, b = other.first;
+				iterator a = begin();
+				Span<K>::iterator b = other.begin();
 				while (a != last) {
 					if (*a != *b) {
 						return false;

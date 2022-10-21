@@ -28,7 +28,10 @@ namespace pbd {
 
 		const_iterator begin() const noexcept;
 		const_iterator end() const noexcept;
+
+		TransformTracker& operator[](size_t i) noexcept;
+		const TransformTracker& operator[](size_t i) const noexcept;
 	private:
-		std::vector<TransformTracker> trackers;
+		container_t trackers;
 	};
 }

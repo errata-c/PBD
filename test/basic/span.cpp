@@ -13,6 +13,7 @@ TEST_CASE("Span vector") {
 	using container_t = std::vector<int>;
 	using iterator = container_t::iterator;
 	using span_t = Span<iterator>;
+	using cspan_t = Span<container_t::const_iterator>;
 
 	container_t data;
 
@@ -196,6 +197,71 @@ TEST_CASE("Span pointer") {
 
 	test = test.subspan(0, 10);
 	other = span_t(begin, 10);
+
+	REQUIRE(test == other);
+}
+
+
+TEST_CASE("Constant Span vector") {
+	using container_t = std::vector<int>;
+	using iterator = container_t::iterator;
+	using span_t = Span<iterator>;
+	using cspan_t = Span<container_t::const_iterator>;
+
+	container_t data;
+
+	for (int i : iter::range(32)) {
+		data.push_back(i);
+	}
+
+	cspan_t test;
+	REQUIRE(test.empty());
+	REQUIRE(test.size() == 0);
+
+	auto init_offset = GENERATE(false, true);
+	CAPTURE(init_offset);
+
+	if (init_offset) {
+		test = span_t(data.begin(), data.size());
+	}
+	else {
+		test = span_t(data.begin(), data.end());
+	}
+
+	REQUIRE(test.size() == data.size());
+	REQUIRE(!test.empty());
+	REQUIRE(test.begin() == data.begin());
+	REQUIRE(test.end() == data.end());
+
+	for (int i : iter::range(test.size())) {
+		CAPTURE(i);
+		REQUIRE(test[i] == data[i]);
+	}
+
+	for (int i : iter::range(test.size())) {
+		CAPTURE(i);
+		REQUIRE(test.at(i) == data[i]);
+	}
+
+	REQUIRE_THROWS(test.at(data.size() + 1));
+
+	REQUIRE(test.front() == data.front());
+	REQUIRE(test.back() == data.back());
+
+	{
+		int v = data.size() - 1;
+		for (int i : iter::reversed(test)) {
+			CAPTURE(i, v);
+			REQUIRE(i == v);
+			--v;
+		}
+	}
+
+	span_t other(data.begin(), data.end());
+	REQUIRE(test == other);
+
+	test = test.subspan(0, 10);
+	other = span_t(data.begin(), 10);
 
 	REQUIRE(test == other);
 }

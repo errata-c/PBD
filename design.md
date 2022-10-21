@@ -81,7 +81,13 @@ The setup for rigid body dynamics requires a few key things to be modified/added
   - [ ] Multiple create/destroy cycles in one run
 - [ ] Implement random access iteration for the constraint list
 - [ ] Span access for relevant object data:
-  - [ ] Particles
-  - [ ] Particle forces
-  - [ ] Trackers
-  - [ ] Constraints
+  - [x] Particles
+  - [x] Particle forces
+  - [x] Trackers
+  - [ ] Constraints (Needs random access!)
+- [ ] Design a simple way to get rigid body components from the basic particles (Like arm and leg bones)
+- [ ] Setup the prefab database:
+  - [x] Prefabs must be in a group.
+  - [x] Prefabs must have unique names within their group.
+  - [x] Provide a mechanism to update prefabs within the database
+  - [ ] Test the save and load of prefabs

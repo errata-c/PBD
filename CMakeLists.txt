@@ -21,7 +21,7 @@ find_package(ez-kvstore CONFIG REQUIRED)
 find_package(ez-serialize CONFIG REQUIRED)
 find_package(ez-math CONFIG REQUIRED)
 find_package(cppitertools CONFIG REQUIRED)
-
+find_package(xxHash CONFIG REQUIRED)
 find_package(pbd-hashing CONFIG REQUIRED)
 
 find_path(PHMAP_HEADERS "parallel_hashmap/phmap.h")
@@ -78,6 +78,8 @@ target_link_libraries(pbd PUBLIC
 	ez::kvstore
 	ez::serialize
 	ez::math
+
+	xxHash::xxhash
 
 	pbd::hashing
 )
