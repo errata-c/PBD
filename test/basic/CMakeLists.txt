@@ -4,6 +4,7 @@ add_executable(pbd_basic_test
 	"span.cpp"
 	"tet_volume.cpp"
 	"perpendicular.cpp"
+	"sdf.cpp"
 )
 target_link_libraries(pbd_basic_test
 PRIVATE 

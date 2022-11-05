@@ -3,6 +3,7 @@
 #include <string>
 #include <cinttypes>
 
+#include <pbd/common/Utils.hpp>
 #include <pbd/common/Transform.hpp>
 
 #include <pbd/engine/collide/Particle.hpp>
@@ -18,12 +19,55 @@ namespace pbd {
 	class Engine;
 
 	class ConstraintList {
+		struct CVariant {
+			Constraint kind;
+			int64_t index;
+		};
+		class data_iterator : public std::vector<CVariant>::iterator {
+		public:
+			using parent_t = std::vector<CVariant>::iterator;
+			int32_t* data;
+
+			data_iterator()
+				: data(nullptr)
+			{}
+			data_iterator(int32_t* _data, const parent_t& _it)
+				: parent_t(_it)
+				, data(_data)
+			{}
+		};
+		class const_data_iterator : public std::vector<CVariant>::const_iterator {
+		public:
+			using parent_t = std::vector<CVariant>::const_iterator;
+			const int32_t* data;
+
+			const_data_iterator()
+				: data(nullptr)
+			{}
+			const_data_iterator(const int32_t* _data, const parent_t& _it)
+				: parent_t(_it)
+				, data(_data)
+			{}
+			const_data_iterator(const data_iterator& _it)
+				: parent_t(_it)
+				, data(_it.data)
+			{}
+		};
+
+		struct IterAdapt {
+			static ConstraintRef adapt(const data_iterator& it) {
+				return ConstraintRef(it->kind, it.data + it->index);
+			}
+			static ConstConstraintRef adapt(const const_data_iterator& it) {
+				return ConstConstraintRef(it->kind, it.data + it->index);
+			}
+		};
 	public:
+		using iterator = iterator_adaptor<data_iterator, IterAdapt>;
+		using const_iterator = iterator_adaptor<const_data_iterator, IterAdapt>;
+
 		static void serialize(const ConstraintList & clist, std::string& output);
 		static const char* deserialize(const char * first, const char * last, ConstraintList & clist);
-
-		class iterator;
-		class const_iterator;
 
 		ConstraintList() = default;
 		ConstraintList(const ConstraintList&) = default;
@@ -66,116 +110,7 @@ namespace pbd {
 
 		void append(const ConstraintList& other, int32_t offset, const Transform3& form);
 	private:
-		struct CVariant {
-			Constraint kind;
-			int64_t index;
-		};
-
 		std::vector<CVariant> constraints;
 		std::vector<int32_t> cdata;
-
-	private:
-		class iterator {
-		public:
-			using value_type = ConstraintRef;
-			using reference = ConstraintRef;
-			using pointer = ConstraintRef;
-			using difference_type = ptrdiff_t;
-			using iterator_category = std::forward_iterator_tag;
-
-			iterator(const iterator&) = default;
-			iterator& operator=(const iterator&) = default;
-
-			iterator()
-				: data(nullptr)
-			{}
-			iterator(int32_t * _data, const std::vector<CVariant>::iterator &_it)
-				: data(_data)
-				, it(_it)
-			{}
-
-			reference operator*() {
-				return ConstraintRef(it->kind, data + it->index);
-			}
-			reference operator->() {
-				return ConstraintRef(it->kind, data + it->index);
-			}
-
-			iterator& operator++() {
-				++it;
-				return *this;
-			}
-			iterator operator++(int) {
-				iterator copy = *this;
-				++(*this);
-				return copy;
-			}
-
-
-
-			bool operator==(const iterator& other) const noexcept {
-				return it == other.it;
-			}
-			bool operator!=(const iterator& other) const noexcept {
-				return it != other.it;
-			}
-		private:
-			friend class const_iterator;
-			int32_t * data;
-			std::vector<CVariant>::iterator it;
-		};
-
-		class const_iterator {
-		public:
-			using value_type = ConstConstraintRef;
-			using reference = ConstConstraintRef;
-			using pointer = ConstConstraintRef;
-			using difference_type = ptrdiff_t;
-			using iterator_category = std::forward_iterator_tag;
-
-
-			const_iterator(const const_iterator&) = default;
-			const_iterator& operator=(const const_iterator&) = default;
-
-			const_iterator()
-				: data(nullptr)
-			{}
-			const_iterator(const int32_t* _data, const std::vector<CVariant>::const_iterator& _it)
-				: data(_data)
-				, it(_it)
-			{}
-			const_iterator(const iterator & other)
-				: data(other.data)
-				, it(other.it)
-			{}
-
-			reference operator*() {
-				return reference(it->kind, data + it->index);
-			}
-			reference operator->() {
-				return reference(it->kind, data + it->index);
-			}
-
-			const_iterator& operator++() {
-				++it;
-				return *this;
-			}
-			const_iterator operator++(int) {
-				const_iterator copy = *this;
-				++(*this);
-				return copy;
-			}
-
-			bool operator==(const const_iterator& other) const noexcept {
-				return it == other.it;
-			}
-			bool operator!=(const const_iterator& other) const noexcept {
-				return it != other.it;
-			}
-			
-		private:
-			const int32_t* data;
-			std::vector<CVariant>::const_iterator it;
-		};
 	};
 }

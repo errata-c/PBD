@@ -53,6 +53,8 @@ The setup for rigid body dynamics requires a few key things to be modified/added
 - [x] Add trackers to the managed engine
 - [x] Add the object map to the managed engine
 - [x] Add a method to create an instance from a prefab
+- [x] Create a template to generate iterators that wrap other iterators
+- [x] Implement random access iteration for the constraint list
 - [ ] Create damped variants of the main constraints
   - [ ] Tetra
   - [ ] Neo-Hookean Tetra
@@ -79,7 +81,6 @@ The setup for rigid body dynamics requires a few key things to be modified/added
   - [ ] Create object from prefab with desired transformation
   - [ ] Destroy object
   - [ ] Multiple create/destroy cycles in one run
-- [ ] Implement random access iteration for the constraint list
 - [ ] Span access for relevant object data:
   - [x] Particles
   - [x] Particle forces
