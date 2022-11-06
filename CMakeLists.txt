@@ -47,17 +47,18 @@ add_library(pbd STATIC
 	"src/engine/ConstraintRef.cpp"
 
 	"src/engine/ParticleList.cpp"
+	"src/engine/BodyList.cpp"
 	"src/engine/ConstraintList.cpp"
 	"src/engine/TrackerList.cpp"
 
-	"src/engine/constraint/Distance.cpp"
-	"src/engine/constraint/TetraVolume.cpp"
-	"src/engine/constraint/NHTetraVolume.cpp"
+	"src/engine/particle/constraint/Distance.cpp"
+	"src/engine/particle/constraint/TetraVolume.cpp"
+	"src/engine/particle/constraint/NHTetraVolume.cpp"
 
-	"src/engine/collide/Particle.cpp"
-	"src/engine/collide/Plane.cpp"
-	"src/engine/collide/ParticleCompliant.cpp"
-	"src/engine/collide/PlaneCompliant.cpp"
+	"src/engine/particle/collide/Particle.cpp"
+	"src/engine/particle/collide/Plane.cpp"
+	"src/engine/particle/collide/ParticleCompliant.cpp"
+	"src/engine/particle/collide/PlaneCompliant.cpp"
 
 	"src/prefab/Prefab.cpp"
 	"src/prefab/PrefabDatabase.cpp"

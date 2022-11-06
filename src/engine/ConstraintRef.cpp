@@ -1,11 +1,11 @@
 #include <pbd/engine/ConstraintRef.hpp>
 
-#include <pbd/engine/collide/Particle.hpp>
-#include <pbd/engine/collide/Plane.hpp>
+#include <pbd/engine/particle/collide/Particle.hpp>
+#include <pbd/engine/particle/collide/Plane.hpp>
 
-#include <pbd/engine/constraint/Distance.hpp>
-#include <pbd/engine/constraint/TetraVolume.hpp>
-#include <pbd/engine/constraint/NHTetraVolume.hpp>
+#include <pbd/engine/particle/constraint/Distance.hpp>
+#include <pbd/engine/particle/constraint/TetraVolume.hpp>
+#include <pbd/engine/particle/constraint/NHTetraVolume.hpp>
 
 namespace pbd {
 	ConstraintRef::ConstraintRef(Constraint _kind, int32_t* _data) noexcept

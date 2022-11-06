@@ -1,4 +1,4 @@
-#include <pbd/engine/collide/Plane.hpp>
+#include <pbd/engine/particle/collide/Plane.hpp>
 #include <pbd/engine/Engine.hpp>
 
 #include <pbd/common/Utils.hpp>

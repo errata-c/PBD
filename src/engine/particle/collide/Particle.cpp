@@ -1,4 +1,4 @@
-#include <pbd/engine/collide/Particle.hpp>
+#include <pbd/engine/particle/collide/Particle.hpp>
 #include <pbd/engine/Engine.hpp>
 
 #include <pbd/common/Utils.hpp>

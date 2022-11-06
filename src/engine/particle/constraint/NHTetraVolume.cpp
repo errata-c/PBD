@@ -1,5 +1,5 @@
 #pragma once
-#include <pbd/engine/constraint/NHTetraVolume.hpp>
+#include <pbd/engine/particle/constraint/NHTetraVolume.hpp>
 #include <pbd/engine/Engine.hpp>
 
 #include <glm/geometric.hpp>
