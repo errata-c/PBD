@@ -1,5 +1,6 @@
 #pragma once
 #include <cinttypes>
+#include <pbd/common/BBox.hpp>
 
 namespace pbd {
 	// First value is the constraint ID
@@ -15,6 +16,13 @@ namespace pbd {
 
 		CollideParticleCompliant = 5 | (12 << 8) | (2 << 16),
 		CollidePlaneCompliant = 6 | (32 << 8) | (1 << 16),
+
+		Align,
+		AttachBody,
+		AttachParticle,
+		HingeJoint,
+		PrismaticJoint,
+		SphereJoint,
 	};
 
 	constexpr size_t SizeOf(Constraint type) noexcept {
@@ -27,6 +35,9 @@ namespace pbd {
 	enum class ObjectID : uint64_t {
 		Invalid = uint64_t(-1)
 	};
+
+	using BBox2 = BBox<2, float>;
+	using BBox3 = BBox<3, float>;
 }
 
 // Hashing support for phmap

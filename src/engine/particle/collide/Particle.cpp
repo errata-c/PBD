@@ -6,8 +6,8 @@
 namespace pbd {
 	void CollideParticle::eval(Engine& engine, float rdt2) const {
 		std::array<Particle*, 2> p{
-			&engine.particles[ids[0]],
-			&engine.particles[ids[1]]
+			&engine.particles.list[ids[0]],
+			&engine.particles.list[ids[1]]
 		};
 
 		float w0 = p[0]->imass;
@@ -42,8 +42,8 @@ namespace pbd {
 		// [(x0 - prev x0) - (x1 - prev x1)] perpendicular to normal (x0 - x1, see grad above)
 
 		// Current positional deltas for the substep.
-		glm::vec3 px0 = p[0]->position - engine.prevPos[ids[0]];
-		glm::vec3 px1 = p[1]->position - engine.prevPos[ids[1]];
+		glm::vec3 px0 = p[0]->position - engine.particles.prevPos[ids[0]];
+		glm::vec3 px1 = p[1]->position - engine.particles.prevPos[ids[1]];
 
 		// Friction normal is the grad
 		px0 = perpendicular(px0, grad);

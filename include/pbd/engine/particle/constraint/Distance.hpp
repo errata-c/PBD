@@ -6,9 +6,9 @@
 namespace pbd {
 	class Engine;
 
-	struct ConstraintDistance {
-		static void serialize(const ConstraintDistance& in, std::string& output);
-		static const char* deserialize(const char* first, const char* last, ConstraintDistance& out);
+	struct CDistance {
+		static void serialize(const CDistance& in, std::string& output);
+		static const char* deserialize(const char* first, const char* last, CDistance& out);
 
 		static constexpr Constraint Kind = Constraint::Distance;
 
@@ -22,6 +22,6 @@ namespace pbd {
 		float compliance;
 	};
 
-	static_assert(alignof(ConstraintDistance) == alignof(int32_t));
-	static_assert(SizeOf(Constraint::Distance) == sizeof(ConstraintDistance));
+	static_assert(alignof(CDistance) == alignof(int32_t));
+	static_assert(SizeOf(Constraint::Distance) == sizeof(CDistance));
 }

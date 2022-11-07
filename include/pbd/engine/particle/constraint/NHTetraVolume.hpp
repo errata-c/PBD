@@ -12,15 +12,15 @@ namespace pbd {
 
 	// More costly than the other Tetra constraint, but does not require distance constraints.
 	// Hydrostatic constraint is volume, Deviatoric constraint is essentially shear.
-	struct ConstraintNHTetraVolume {
-		static void serialize(const ConstraintNHTetraVolume& in, std::string& output);
-		static const char* deserialize(const char* first, const char* last, ConstraintNHTetraVolume& out);
+	struct CNHTetraVolume {
+		static void serialize(const CNHTetraVolume& in, std::string& output);
+		static const char* deserialize(const char* first, const char* last, CNHTetraVolume& out);
 
 		static constexpr Constraint Kind = Constraint::NHTetraVolume;
 
-		ConstraintNHTetraVolume();
-		ConstraintNHTetraVolume(const std::array<int32_t, 4> _ids, const glm::mat3& _irest, float hydro, float devia);
-		ConstraintNHTetraVolume(
+		CNHTetraVolume();
+		CNHTetraVolume(const std::array<int32_t, 4> _ids, const glm::mat3& _irest, float hydro, float devia);
+		CNHTetraVolume(
 			const std::array<int32_t, 4> _ids, 
 			const glm::vec3& p0,
 			const glm::vec3& p1,
@@ -39,6 +39,6 @@ namespace pbd {
 		void transform(const Transform3& form);
 	};
 
-	static_assert(alignof(ConstraintNHTetraVolume) == alignof(int32_t));
-	static_assert(SizeOf(Constraint::NHTetraVolume) == sizeof(ConstraintNHTetraVolume));
+	static_assert(alignof(CNHTetraVolume) == alignof(int32_t));
+	static_assert(SizeOf(Constraint::NHTetraVolume) == sizeof(CNHTetraVolume));
 }

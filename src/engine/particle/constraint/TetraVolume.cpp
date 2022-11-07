@@ -4,11 +4,11 @@
 #include <glm/geometric.hpp>
 
 namespace pbd {
-	void ConstraintTetraVolume::eval(Engine & engine, float rdt2) const {
+	void CTetraVolume::eval(Engine & engine, float rdt2) const {
 		std::array<Particle*, 4> p;
 		// Fetch the addresses of the positions
 		for (int i = 0; i < ids.size(); ++i) {
-			p[i] = &engine.particles[ids[i]];
+			p[i] = &engine.particles.list[ids[i]];
 		}
 
 		std::array<glm::vec3, 4> grads;
@@ -49,12 +49,12 @@ namespace pbd {
 		}
 	}
 
-	void ConstraintTetraVolume::remap(int32_t offset) {
+	void CTetraVolume::remap(int32_t offset) {
 		for (int32_t& id : ids) {
 			id += offset;
 		}
 	}
-	void ConstraintTetraVolume::transform(const Transform3& form) {
+	void CTetraVolume::transform(const Transform3& form) {
 		volume *= form.size;
 	}
 }

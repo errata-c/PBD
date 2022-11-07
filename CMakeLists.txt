@@ -51,6 +51,12 @@ add_library(pbd STATIC
 	"src/engine/ConstraintList.cpp"
 	"src/engine/TrackerList.cpp"
 
+	"src/prefab/Prefab.cpp"
+	"src/prefab/PrefabDatabase.cpp"
+	"src/prefab/PrefabParticle.cpp"
+	"src/prefab/PrefabTracker.cpp"
+
+	# Particle constraints
 	"src/engine/particle/constraint/Distance.cpp"
 	"src/engine/particle/constraint/TetraVolume.cpp"
 	"src/engine/particle/constraint/NHTetraVolume.cpp"
@@ -60,10 +66,26 @@ add_library(pbd STATIC
 	"src/engine/particle/collide/ParticleCompliant.cpp"
 	"src/engine/particle/collide/PlaneCompliant.cpp"
 
-	"src/prefab/Prefab.cpp"
-	"src/prefab/PrefabDatabase.cpp"
-	"src/prefab/PrefabParticle.cpp"
-	"src/prefab/PrefabTracker.cpp"
+	# Rigid body and Rigid body constraints
+	"src/engine/body/RigidBody.cpp"
+	"src/engine/body/Utils.cpp"
+
+	"src/engine/body/collide/CapsuleCapsule.cpp"
+	"src/engine/body/collide/CapsuleCylinder.cpp"
+	"src/engine/body/collide/CapsuleOBB.cpp"
+	"src/engine/body/collide/CapsuleSphere.cpp"
+	"src/engine/body/collide/CylinderCylinder.cpp"
+	"src/engine/body/collide/CylinderOBB.cpp"
+	"src/engine/body/collide/CylinderSphere.cpp"
+	"src/engine/body/collide/OBBOBB.cpp"
+	"src/engine/body/collide/OBBSphere.cpp"
+	"src/engine/body/collide/SphereSphere.cpp"
+
+	"src/engine/body/constraint/Align.cpp"
+	"src/engine/body/constraint/HingeJoint.cpp"
+	"src/engine/body/constraint/PrismaticJoint.cpp"
+	"src/engine/body/constraint/SphereJoint.cpp"
+
 )
 target_include_directories(pbd PUBLIC
 	$<INSTALL_INTERFACE:include>

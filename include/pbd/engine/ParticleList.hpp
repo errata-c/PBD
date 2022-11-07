@@ -6,14 +6,10 @@
 #include <pbd/common/Transform.hpp>
 #include <pbd/common/Span.hpp>
 
+#include <pbd/engine/particle/Particle.hpp>
+
 namespace pbd {
 	class PrefabParticle;
-	struct Particle {
-		glm::vec3 position, velocity;
-		float imass, radius;
-
-		uint32_t collision_groups, collision_mask;
-	};
 
 	class ParticleList {
 	public:

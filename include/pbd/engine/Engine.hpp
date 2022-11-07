@@ -6,6 +6,7 @@
 #include <pbd/common/Types.hpp>
 #include <pbd/engine/ConstraintList.hpp>
 #include <pbd/engine/ParticleList.hpp>
+#include <pbd/engine/BodyList.hpp>
 
 namespace pbd {
 	class Engine {
@@ -20,11 +21,22 @@ namespace pbd {
 		float kinetic_friction;
 		float static_friction;
 
-		// The particles data and their execution data
-		ParticleList particles;
 
-		// The forces and previous positions of the particles
-		std::vector<glm::vec3> forces, prevPos;
+		struct Particles {
+			// The particles data and their execution data
+			ParticleList list;
+
+			// The forces and previous positions of the particles
+			std::vector<glm::vec3> forces, prevPos;
+		} particles;
+		
+		struct Bodies {
+			BodyList list;
+
+			std::vector<glm::vec3> forces, prevPos;
+			std::vector<glm::vec3> torques, prevOrientation;
+
+		} bodies;
 
 		// The constraints and their execution data
 		ConstraintList constraints;

@@ -37,7 +37,7 @@ namespace godot {
 			p0 = prefab.particles[id0].position,
 			p1 = prefab.particles[id1].position;
 
-		prefab.add_constraint(pbd::ConstraintDistance{ id0, id1, glm::length(p1 - p0), compliance });
+		prefab.add_constraint(pbd::CDistance{ id0, id1, glm::length(p1 - p0), compliance });
 	}
 	void PrefabRef::add_tetra_volume_constraint(int id0, int id1, int id2, int id3, float compliance) {
 		glm::vec3
@@ -53,7 +53,7 @@ namespace godot {
 
 		glm::vec3 t4 = glm::cross(t0, t1);
 
-		prefab.add_constraint(pbd::ConstraintTetraVolume{
+		prefab.add_constraint(pbd::CTetraVolume{
 			{id0, id1, id2, id3},
 			glm::dot(t3, t4) / 6.f,
 			compliance
@@ -73,7 +73,7 @@ namespace godot {
 
 		restPose = glm::inverse(restPose);
 
-		prefab.add_constraint(pbd::ConstraintNHTetraVolume{
+		prefab.add_constraint(pbd::CNHTetraVolume{
 			{id0, id1, id2, id3},
 			restPose,
 			hydrostatic_compliance,

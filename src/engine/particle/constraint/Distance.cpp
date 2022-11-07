@@ -4,9 +4,9 @@
 #include <glm/geometric.hpp>
 
 namespace pbd {
-	void ConstraintDistance::eval(Engine& engine, float rdt2) const {
-		Particle& part0 = engine.particles[p0];
-		Particle& part1 = engine.particles[p1];
+	void CDistance::eval(Engine& engine, float rdt2) const {
+		Particle& part0 = engine.particles.list[p0];
+		Particle& part1 = engine.particles.list[p1];
 
 		float w0 = part0.imass;
 		float w1 = part1.imass;
@@ -40,11 +40,11 @@ namespace pbd {
 		x1 += lambda * w1 * grad;
 	}
 
-	void ConstraintDistance::remap(int32_t offset) {
+	void CDistance::remap(int32_t offset) {
 		p0 += offset;
 		p1 += offset;
 	}
-	void ConstraintDistance::transform(const Transform3& form) {
+	void CDistance::transform(const Transform3& form) {
 		length *= form.size;
 	}
 }

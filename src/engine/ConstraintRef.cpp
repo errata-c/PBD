@@ -8,6 +8,8 @@
 #include <pbd/engine/particle/constraint/NHTetraVolume.hpp>
 
 namespace pbd {
+	
+
 	ConstraintRef::ConstraintRef(Constraint _kind, int32_t* _data) noexcept
 		: mkind(_kind)
 		, mdata(_data)
@@ -16,13 +18,13 @@ namespace pbd {
 	void ConstraintRef::eval(Engine& engine, float rdt2) const {
 		switch (type()) {
 		case Constraint::Distance:
-			((ConstraintDistance*)mdata)->eval(engine, rdt2);
+			((CDistance*)mdata)->eval(engine, rdt2);
 			break;
 		case Constraint::TetraVolume:
-			((ConstraintTetraVolume*)mdata)->eval(engine, rdt2);
+			((CTetraVolume*)mdata)->eval(engine, rdt2);
 			break;
 		case Constraint::NHTetraVolume:
-			((ConstraintNHTetraVolume*)mdata)->eval(engine, rdt2);
+			((CNHTetraVolume*)mdata)->eval(engine, rdt2);
 			break;
 		case Constraint::CollideParticle:
 			((CollideParticle*)mdata)->eval(engine, rdt2);
@@ -30,7 +32,7 @@ namespace pbd {
 		case Constraint::CollidePlane:
 			((CollidePlane*)mdata)->eval(engine, rdt2);
 			break;
-		}	
+		}
 	}
 
 	void ConstraintRef::remap(int32_t offset) {
@@ -41,13 +43,13 @@ namespace pbd {
 	void ConstraintRef::transform(const Transform3& form) {
 		switch (type()) {
 		case Constraint::Distance:
-			((ConstraintDistance*)mdata)->transform(form);
+			((CDistance*)mdata)->transform(form);
 			break;
 		case Constraint::TetraVolume:
-			((ConstraintTetraVolume*)mdata)->transform(form);
+			((CTetraVolume*)mdata)->transform(form);
 			break;
 		case Constraint::NHTetraVolume:
-			((ConstraintNHTetraVolume*)mdata)->transform(form);
+			((CNHTetraVolume*)mdata)->transform(form);
 			break;
 		}
 	}

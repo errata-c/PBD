@@ -5,6 +5,7 @@ add_executable(pbd_basic_test
 	"tet_volume.cpp"
 	"perpendicular.cpp"
 	"sdf.cpp"
+	"rigid_body_transform.cpp"
 )
 target_link_libraries(pbd_basic_test
 PRIVATE 

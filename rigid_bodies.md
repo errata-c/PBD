@@ -1,36 +1,20 @@
+## Joint types and methods to create them:
+
+There are a number of different kinds of rigid body joints that can be created. The most important ones are going to be the hinge joint and the sphere joint. Additionally, the joints need to be capable of having limits of some kind. Instead of implementing a new class for each kind of joint/limit combination, it would be better to create a more dynamic setup. Have a basic joint constraint class, then have the secondary components follow directly after in memory. Those secondary components will be referenced and driven by the base class, a sentinel value will be present to signify that the secondary components are present. The base class and secondary components will be allocated together as a unit.
+
+The secondary components will be a angle limiter or an angle driver. The angle driver pushes the angle of the base constraint towards some target. The sentinel values will be a single bit field to signify the presence or absence of secondary components. The components will always appear in the order they are referred to in the bit field. We will add a special method to the constraint list to allow for easy creation of joints and secondary components.
+
+Alternatively, the constraint type enumeration can be augmented to act in place of the bit field. This would mean that the base class would not need to have a bit field in it at all. This would have the advantage of being simpler internally, but it would mean the data for the class was less encapsulated. This I think makes it an inferior solution.
+
+
+
 ## Body types:
 
 - Oriented Bounding Box (OBB)
 - Capsule
 - Cylinder
 
-## Body information:
-
-- OBB
-  - Half extents (3d vector)
-  - Margin?
-  - Transform
-- Capsule
-  - Radius
-  - Height
-  - Margin?
-  - Transform
-- Cylinder
-  - Radius
-  - Height
-  - Margin?
-  - Transform
-
-## Collision pairings:
-
-Define an enumeration for the different bodies, then to create a collision pairing sort the enumerations of the two bodies to get the final pairing order. The order could be Capsule, Cylinder, OBB.
-
-- Capsule to Capsule
-- Capsule to Cylinder
-- Capsule to OBB
-- Cylinder to Cylinder
-- Cylinder to OBB
-- OBB to OBB
+- Sphere
 
 ## Collision algorithms:
 

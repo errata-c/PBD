@@ -6,7 +6,7 @@
 
 namespace pbd {
 	void CollidePlane::eval(Engine& engine, float rdt2) const {
-		Particle & part = engine.particles[id];
+		Particle & part = engine.particles.list[id];
 
 		// C(x0) = dot((x0 - origin), normal) - x0.radius >= 0
 		// grad(C wrt x0) = normal
@@ -38,7 +38,7 @@ namespace pbd {
 		// Mass not needed for a static plane collision.
 
 		// The total delta over step
-		glm::vec3 pdelta = x0 - engine.prevPos[id];
+		glm::vec3 pdelta = x0 - engine.particles.prevPos[id];
 
 		// Find the perpendicular element of that motion.
 		glm::vec3 perp = perpendicular(pdelta, normal);

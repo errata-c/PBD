@@ -10,7 +10,7 @@ namespace pbd {
 			return {};
 		}
 		else {
-			return particle_span(&engine.particles[it->particles().first], it->particles().size());
+			return particle_span(&engine.particles.list[it->particles().first], it->particles().size());
 		}
 	}
 	force_span ManagedEngine::get_forces(ObjectID id) {
@@ -19,7 +19,7 @@ namespace pbd {
 			return {};
 		}
 		else {
-			return force_span(&engine.forces[it->particles().first], it->particles().size());
+			return force_span(&engine.particles.forces[it->particles().first], it->particles().size());
 		}
 	}
 	tracker_span ManagedEngine::get_trackers(ObjectID id) {
@@ -38,7 +38,7 @@ namespace pbd {
 			return {};
 		}
 		else {
-			return const_particle_span(&engine.particles[it->particles().first], it->particles().size());
+			return const_particle_span(&engine.particles.list[it->particles().first], it->particles().size());
 		}
 	}
 	const_force_span ManagedEngine::get_forces(ObjectID id) const {
@@ -47,7 +47,7 @@ namespace pbd {
 			return {};
 		}
 		else {
-			return const_force_span(&engine.forces[it->particles().first], it->particles().size());
+			return const_force_span(&engine.particles.forces[it->particles().first], it->particles().size());
 		}
 	}
 	const_tracker_span ManagedEngine::get_trackers(ObjectID id) const {
@@ -81,12 +81,12 @@ namespace pbd {
 		ObjectID id = map.create(IndexRange(pfirst, plast), IndexRange(cfirst, clast), IndexRange(tfirst, tlast));
 
 		for (const PrefabParticle & part: prefab.particles) {
-			engine.particles.add(part, form);
+			engine.particles.list.add(part, form);
 		}
 
 		// Trackers reference particles, so offset by the first particle index.
 		for (const PrefabTracker & tracker: prefab.trackers) {
-			mtrackers.add(tracker, engine.particles, pfirst);
+			mtrackers.add(tracker, engine.particles.list, pfirst);
 		}
 
 		// Constraints reference particles, so offset by the first particle index.
@@ -114,7 +114,7 @@ namespace pbd {
 			}
 			else {
 				// Shift everything down.
-				engine.particles.shift(obj.particles().first, obj.particles().last, wp - obj.particles().first);
+				engine.particles.list.shift(obj.particles().first, obj.particles().last, wp - obj.particles().first);
 				engine.constraints.shift(obj.constraints().first, obj.constraints().last, wc - obj.constraints().first);
 				mtrackers.shift(obj.trackers().first, obj.trackers().last, wt - obj.trackers().first);
 
@@ -129,8 +129,8 @@ namespace pbd {
 		map.destroy(queue);
 		
 		// Finish up by erasing the unused back elements.
-		if (engine.particles.size() > wp) {
-			engine.particles.pop(engine.particles.size() - wp);
+		if (engine.particles.list.size() > wp) {
+			engine.particles.list.pop(engine.particles.list.size() - wp);
 		}
 		if (engine.constraints.size() > wc) {
 			engine.constraints.pop(engine.constraints.size() - wc);
@@ -151,7 +151,7 @@ namespace pbd {
 	}
 
 	const ParticleList& ManagedEngine::particles() const {
-		return engine.particles;
+		return engine.particles.list;
 	}
 	const TrackerList& ManagedEngine::trackers() const {
 		return mtrackers;
