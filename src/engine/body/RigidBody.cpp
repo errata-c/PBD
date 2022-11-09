@@ -95,4 +95,8 @@ namespace pbd {
 	glm::vec3 RigidBody::to_world(const glm::vec3& v) const noexcept {
 		return to_world_vector(v) + position;
 	}
+
+	Transform3 RigidBody::transform() const noexcept {
+		return Transform3(position, orientation);
+	}
 }

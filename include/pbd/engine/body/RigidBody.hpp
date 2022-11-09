@@ -4,6 +4,7 @@
 #include <glm/gtc/quaternion.hpp>
 #include <glm/gtx/quaternion.hpp>
 #include <pbd/common/Types.hpp>
+#include <pbd/common/Transform.hpp>
 
 namespace pbd {
 	enum class Shape {
@@ -43,6 +44,6 @@ namespace pbd {
 		glm::vec3 to_local(const glm::vec3& v) const noexcept;
 		glm::vec3 to_world(const glm::vec3& v) const noexcept;
 
-
+		Transform3 transform() const noexcept;
 	};
 }

@@ -6,7 +6,9 @@ The secondary components will be a angle limiter or an angle driver. The angle d
 
 Alternatively, the constraint type enumeration can be augmented to act in place of the bit field. This would mean that the base class would not need to have a bit field in it at all. This would have the advantage of being simpler internally, but it would mean the data for the class was less encapsulated. This I think makes it an inferior solution.
 
+The final alternative is the simplest, just include all the data in the base class directly, and only use it if they are enabled. This is the most wasteful in terms of memory, but the safest and simplest in terms of implementation.
 
+Since these joints are composed of a fair amount of complex information, constructing them is a little difficult.
 
 ## Body types:
 
