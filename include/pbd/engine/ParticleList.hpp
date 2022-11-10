@@ -6,7 +6,7 @@
 #include <pbd/common/Transform.hpp>
 #include <pbd/common/Span.hpp>
 
-#include <pbd/engine/particle/Particle.hpp>
+#include <pbd/engine/Particle.hpp>
 
 namespace pbd {
 	class PrefabParticle;

@@ -5,6 +5,7 @@ add_library(pbd_godot_test SHARED
 	"src/gdnativelib.cpp"
 
 	"src/EngineNode.cpp"
+	"src/ManagedEngineNode.cpp"
 	"src/PrefabRef.cpp"
 )
 target_include_directories(pbd_godot_test PRIVATE

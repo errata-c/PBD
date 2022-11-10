@@ -4,7 +4,7 @@
 #include <glm/vec3.hpp>
 
 #include <pbd/common/Types.hpp>
-#include <pbd/engine/ConstraintList.hpp>
+#include <pbd/engine/constraint/ConstraintList.hpp>
 #include <pbd/engine/ParticleList.hpp>
 #include <pbd/engine/BodyList.hpp>
 
@@ -33,8 +33,8 @@ namespace pbd {
 		struct Bodies {
 			BodyList list;
 
-			std::vector<glm::vec3> forces, prevPos;
-			std::vector<glm::vec3> torques, prevOrientation;
+			std::vector<glm::vec3> forces, torques, prevPos;
+			std::vector<glm::quat> prevOrientation;
 
 		} bodies;
 
@@ -43,15 +43,18 @@ namespace pbd {
 
 		//void reserve(int64_t count);
 		size_t num_particles() const noexcept;
+		size_t num_bodies() const noexcept;
 		size_t num_constraints() const noexcept;
 
 		void solve();
 	private:
-		void predictPositions(float sdt);
-		void applyConstraints(float sdt);
-		void updateParticles(float sdt);
+		void prepare_round();
+
+		void integrate_changes(float sdt);
+		void apply_constraints(float sdt);
+		void update_states(float sdt);
 
 		void clear_forces();
-		void save_positions();
+		void save_previous();
 	};
 }

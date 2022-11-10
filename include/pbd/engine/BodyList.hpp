@@ -2,7 +2,7 @@
 #include <vector>
 #include <cinttypes>
 #include <pbd/common/Transform.hpp>
-#include <pbd/engine/body/RigidBody.hpp>
+#include <pbd/engine/RigidBody.hpp>
 
 namespace pbd {
 	class PrefabBody;

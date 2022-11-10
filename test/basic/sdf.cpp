@@ -9,6 +9,8 @@
 #include <glm/common.hpp>
 #include <glm/geometric.hpp>
 
+using Catch::Approx;
+
 using vec2 = glm::vec2;
 using mat2 = glm::mat2;
 
@@ -33,10 +35,6 @@ float sdOrientedBox(const vec2& p, const vec2& a, const vec2& b, float th)
 }
 
 TEST_CASE("sdf") {
-	// Just trying out a method for finding overlaps or intersections with SDF functions.
-
-	// We know for certain that if the distance of the origin of a circle to a SDF if greater than radius, they overlap.
-
 	vec2 a(std::sqrt(0.5)), b(std::sqrt(0.5));
 	a.x = -a.x;
 
@@ -47,5 +45,7 @@ TEST_CASE("sdf") {
 	float d0 = sdBox(p, b);
 	float d1 = sdOrientedBox(vec2(0, 0), p + a, p - a, 2.0);
 
-	fmt::print("d = {}, d0 = {}, d1 = {}\n", d, d0, d1);
+	REQUIRE(d == Approx(2));
+	REQUIRE(d0 == Approx(1));
+	REQUIRE(d1 == Approx(1));
 }

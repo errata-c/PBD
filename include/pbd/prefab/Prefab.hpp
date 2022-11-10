@@ -6,7 +6,7 @@
 
 #include <glm/vec3.hpp>
 
-#include <pbd/engine/ConstraintList.hpp>
+#include <pbd/engine/constraint/ConstraintList.hpp>
 #include <pbd/prefab/PrefabParticle.hpp>
 #include <pbd/prefab/PrefabTracker.hpp>
 

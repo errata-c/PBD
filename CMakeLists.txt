@@ -36,6 +36,7 @@ endif()
 
 add_library(pbd STATIC
 	"src/common/Utils.cpp"
+	"src/common/Types.cpp"
 	"src/common/TransformTracker.cpp"
 	"src/common/RotationExtractor.cpp"
 
@@ -44,48 +45,48 @@ add_library(pbd STATIC
 	
 	"src/engine/ObjectMap.cpp"
 	"src/engine/ObjectQueue.cpp"
-	"src/engine/ConstraintRef.cpp"
+	
 
 	"src/engine/ParticleList.cpp"
 	"src/engine/BodyList.cpp"
-	"src/engine/ConstraintList.cpp"
+	
 	"src/engine/TrackerList.cpp"
+	"src/engine/RigidBody.cpp"
 
 	"src/prefab/Prefab.cpp"
 	"src/prefab/PrefabDatabase.cpp"
 	"src/prefab/PrefabParticle.cpp"
 	"src/prefab/PrefabTracker.cpp"
 
-	# Particle constraints
-	"src/engine/particle/constraint/Distance.cpp"
-	"src/engine/particle/constraint/TetraVolume.cpp"
-	"src/engine/particle/constraint/NHTetraVolume.cpp"
+	# Constraints
+	"src/engine/constraint/ConstraintList.cpp"
+	"src/engine/constraint/ConstraintRef.cpp"
 
-	"src/engine/particle/collide/Particle.cpp"
-	"src/engine/particle/collide/Plane.cpp"
-	"src/engine/particle/collide/ParticleCompliant.cpp"
-	"src/engine/particle/collide/PlaneCompliant.cpp"
+	"src/engine/constraint/particle/Distance.cpp"
+	"src/engine/constraint/particle/TetraVolume.cpp"
+	"src/engine/constraint/particle/NHTetraVolume.cpp"
 
-	# Rigid body and Rigid body constraints
-	"src/engine/body/RigidBody.cpp"
-	"src/engine/body/Utils.cpp"
+	"src/engine/constraint/body/Align.cpp"
+	"src/engine/constraint/body/HingeJoint.cpp"
+	"src/engine/constraint/body/PrismaticJoint.cpp"
+	"src/engine/constraint/body/SphereJoint.cpp"
 
-	"src/engine/body/collide/CapsuleCapsule.cpp"
-	"src/engine/body/collide/CapsuleCylinder.cpp"
-	"src/engine/body/collide/CapsuleOBB.cpp"
-	"src/engine/body/collide/CapsuleSphere.cpp"
-	"src/engine/body/collide/CylinderCylinder.cpp"
-	"src/engine/body/collide/CylinderOBB.cpp"
-	"src/engine/body/collide/CylinderSphere.cpp"
-	"src/engine/body/collide/OBBOBB.cpp"
-	"src/engine/body/collide/OBBSphere.cpp"
-	"src/engine/body/collide/SphereSphere.cpp"
+	"src/engine/constraint/body/Utils.cpp"
 
-	"src/engine/body/constraint/Align.cpp"
-	"src/engine/body/constraint/HingeJoint.cpp"
-	"src/engine/body/constraint/PrismaticJoint.cpp"
-	"src/engine/body/constraint/SphereJoint.cpp"
+	# Colliders
+	"src/engine/collider/particle/Particle.cpp"
+	"src/engine/collider/particle/Plane.cpp"
 
+	"src/engine/collider/body/CapsuleCapsule.cpp"
+	"src/engine/collider/body/CapsuleCylinder.cpp"
+	"src/engine/collider/body/CapsuleOBB.cpp"
+	"src/engine/collider/body/CapsuleSphere.cpp"
+	"src/engine/collider/body/CylinderCylinder.cpp"
+	"src/engine/collider/body/CylinderOBB.cpp"
+	"src/engine/collider/body/CylinderSphere.cpp"
+	"src/engine/collider/body/OBBOBB.cpp"
+	"src/engine/collider/body/OBBSphere.cpp"
+	"src/engine/collider/body/SphereSphere.cpp"
 )
 target_include_directories(pbd PUBLIC
 	$<INSTALL_INTERFACE:include>

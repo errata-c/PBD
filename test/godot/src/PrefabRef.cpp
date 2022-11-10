@@ -1,4 +1,5 @@
 #include <PrefabRef.hpp>
+#include <pbd/engine/constraint/AllConstraints.hpp>
 
 namespace godot {
 	void PrefabRef::_register_methods() {
@@ -53,7 +54,7 @@ namespace godot {
 
 		glm::vec3 t4 = glm::cross(t0, t1);
 
-		prefab.add_constraint(pbd::CTetraVolume{
+		prefab.add_constraint(pbd::CTetra{
 			{id0, id1, id2, id3},
 			glm::dot(t3, t4) / 6.f,
 			compliance
@@ -73,7 +74,7 @@ namespace godot {
 
 		restPose = glm::inverse(restPose);
 
-		prefab.add_constraint(pbd::CNHTetraVolume{
+		prefab.add_constraint(pbd::CNHTetra{
 			{id0, id1, id2, id3},
 			restPose,
 			hydrostatic_compliance,

@@ -3,19 +3,32 @@
 #include <pbd/common/BBox.hpp>
 
 namespace pbd {
-	// First value is the constraint ID
-	// Second is the size of the class
-	// Third is the number of ids referenced
+	enum class CollideType : uint32_t {
+		ParticleParticle,
+
+		CapsuleCapsule,
+		CapsuleCylinder,
+		CapsuleOBB,
+		CapsuleSphere,
+		CylinderCylinder,
+		CylinderOBB,
+		CylinderSphere,
+		OBBOBB,
+		OBBSphere,
+		SphereSphere,
+
+		CapsuleParticle,
+		CylinderParticle,
+		OBBParticle,
+		SphereParticle,
+	};
+
 	enum class Constraint: uint32_t {
-		Distance = 0 | (16 << 8) | (2 << 16),
-		TetraVolume = 1 | (24 << 8) | (4 << 16),
-		NHTetraVolume = 2 | (60 << 8) | (4 << 16),
+		// Constraints with one id:
+		CollidePlane,
 
-		CollideParticle = 3 | (8 << 8) | (2 << 16),
-		CollidePlane = 4 | (28 << 8) | (1 << 16),
-
-		CollideParticleCompliant = 5 | (12 << 8) | (2 << 16),
-		CollidePlaneCompliant = 6 | (32 << 8) | (1 << 16),
+		// Constraints with two ids:
+		Distance,
 
 		Align,
 		AttachBody,
@@ -23,13 +36,21 @@ namespace pbd {
 		HingeJoint,
 		PrismaticJoint,
 		SphereJoint,
+
+		// Constraints with four ids:
+		Tetra,
+		NHTetra,
+
+		// Make sure to update these when needed!
+		_Last1ID = CollidePlane,
+		_Last2ID = SphereJoint,
+		_Last4ID = NHTetra,
 	};
 
-	constexpr size_t SizeOf(Constraint type) noexcept {
-		return (static_cast<uint32_t>(type) >> 8) & 0xFF;
-	}
+	size_t SizeOf(Constraint type) noexcept;
 	constexpr size_t NumIds(Constraint type) noexcept {
-		return (static_cast<uint32_t>(type) >> 16) & 0xFF;
+		return (static_cast<uint32_t>(type) <= static_cast<uint32_t>(Constraint::_Last1ID)) ? 1: 
+			((static_cast<uint32_t>(type) <= static_cast<uint32_t>(Constraint::_Last2ID)) ? 2: 4);
 	}
 
 	enum class ObjectID : uint64_t {

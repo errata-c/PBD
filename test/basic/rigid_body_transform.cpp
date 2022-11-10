@@ -2,7 +2,7 @@
 #include <deque>
 #include <memory>
 #include <pbd/common/Span.hpp>
-#include <pbd/engine/body/RigidBody.hpp>
+#include <pbd/engine/RigidBody.hpp>
 
 #include <fmt/format.h>
 
