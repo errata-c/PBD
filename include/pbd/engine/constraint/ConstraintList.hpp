@@ -13,7 +13,7 @@ namespace pbd {
 
 	class ConstraintList {
 		struct CVariant {
-			Constraint kind;
+			ConstraintType kind;
 			int64_t index;
 		};
 		class data_iterator : public std::vector<CVariant>::iterator {
@@ -71,7 +71,7 @@ namespace pbd {
 		template<typename T>
 		int64_t add(const T& cval) {
 			int64_t index = cdata.size();
-			Constraint kind = T::Kind;
+			ConstraintType kind = T::Kind;
 
 			const int32_t* ival = (const int32_t*)&cval;
 			for (size_t i = 0; i < (sizeof(T) / sizeof(int32_t)); ++i) {

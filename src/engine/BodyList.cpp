@@ -19,16 +19,18 @@ namespace pbd {
 		uint32_t _mask
 	) {
 		return add(RigidBody{
-			Shape::Sphere,
+			_group,
+			_mask,
+			
 			form.origin,
 			velocity,
 			imass,
-			_group,
-			_mask,
+			dims,
+
 			form.rotation,
 			angular_velocity,
 			glm::vec3(0),
-			dims
+			Shape::Sphere,
 		});
 	}
 	int32_t BodyList::add(
@@ -50,16 +52,18 @@ namespace pbd {
 		uint32_t _mask
 	) {
 		return add(RigidBody{
-			Shape::Sphere, 
+			_group,
+			_mask,
+			
 			form.origin, 
 			velocity, 
 			imass, 
-			_group, 
-			_mask, 
+			glm::vec3(radius),
+
 			form.rotation, 
 			angular_velocity, 
 			glm::vec3(0), 
-			glm::vec3(radius)
+			Shape::Sphere,
 		});
 	}
 	int32_t BodyList::add_capsule(
@@ -73,16 +77,18 @@ namespace pbd {
 		uint32_t _mask
 	) {
 		return add(RigidBody{
-			Shape::Capsule,
+			_group,
+			_mask,
+			
 			form.origin,
 			velocity,
 			imass,
-			_group,
-			_mask,
+			glm::vec3(radius, height, height),
+		
 			form.rotation,
 			angular_velocity,
 			glm::vec3(0),
-			glm::vec3(radius, height, height)
+			Shape::Capsule,
 		});
 	}
 	int32_t BodyList::add_cylinder(
@@ -96,16 +102,18 @@ namespace pbd {
 		uint32_t _mask
 	) {
 		return add(RigidBody{
-			Shape::Cylinder,
+			_group,
+			_mask,
+
 			form.origin,
 			velocity,
 			imass,
-			_group,
-			_mask,
+			glm::vec3(radius, height, height),
+
 			form.rotation,
 			angular_velocity,
 			glm::vec3(0),
-			glm::vec3(radius, height, height)
+			Shape::Cylinder,
 			});
 	}
 	int32_t BodyList::add_box(
@@ -118,16 +126,18 @@ namespace pbd {
 		uint32_t _mask
 	) {
 		return add(RigidBody{
-			Shape::OBB,
+			_group,
+			_mask,
+
 			form.origin,
 			velocity,
 			imass,
-			_group,
-			_mask,
+			dims,
+
 			form.rotation,
 			angular_velocity,
 			glm::vec3(0),
-			dims
+			Shape::OBB,
 		});
 	}
 

@@ -61,12 +61,15 @@ add_library(pbd STATIC
 	# Constraints
 	"src/engine/constraint/ConstraintList.cpp"
 	"src/engine/constraint/ConstraintRef.cpp"
+	"src/engine/constraint/ConstraintType.cpp"
 
 	"src/engine/constraint/particle/Distance.cpp"
 	"src/engine/constraint/particle/TetraVolume.cpp"
 	"src/engine/constraint/particle/NHTetraVolume.cpp"
 
 	"src/engine/constraint/body/Align.cpp"
+	"src/engine/constraint/body/AttachBody.cpp"
+	"src/engine/constraint/body/AttachParticle.cpp"
 	"src/engine/constraint/body/HingeJoint.cpp"
 	"src/engine/constraint/body/PrismaticJoint.cpp"
 	"src/engine/constraint/body/SphereJoint.cpp"
@@ -74,6 +77,10 @@ add_library(pbd STATIC
 	"src/engine/constraint/body/Utils.cpp"
 
 	# Colliders
+	"src/engine/collider/ColliderType.cpp"
+	
+	"src/engine/collider/BodyParticleCollide.cpp"
+
 	"src/engine/collider/particle/Particle.cpp"
 	"src/engine/collider/particle/Plane.cpp"
 

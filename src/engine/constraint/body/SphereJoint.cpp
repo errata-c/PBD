@@ -3,15 +3,18 @@
 
 #include <pbd/engine/constraint/body/Utils.hpp>
 
-#include <pbd/engine/RigidBody.hpp>
-
 #include <cppitertools/itertools.hpp>
 
+#include <ez/serialize.hpp>
+#include <ez/deserialize.hpp>
+
 namespace pbd {
-	static constexpr uint32_t
-		TargetBit = 1,
-		TwistLimitBit = 2,
-		SwingLimitBit = 4;
+	void CSphereJoint::serialize(const CSphereJoint& in, std::string& output) {
+
+	}
+	const char* CSphereJoint::deserialize(const char* first, const char* last, CSphereJoint& out) {
+
+	}
 
 	void CSphereJoint::eval(Engine& engine, float rdt2) const {
 		// First calculate the positional correction.

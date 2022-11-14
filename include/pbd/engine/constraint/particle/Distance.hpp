@@ -3,6 +3,8 @@
 #include <pbd/common/Types.hpp>
 #include <pbd/common/Transform.hpp>
 
+#include <pbd/engine/constraint/ConstraintType.hpp>
+
 namespace pbd {
 	class Engine;
 
@@ -10,7 +12,7 @@ namespace pbd {
 		static void serialize(const CDistance& in, std::string& output);
 		static const char* deserialize(const char* first, const char* last, CDistance& out);
 
-		static constexpr Constraint Kind = Constraint::Distance;
+		static constexpr ConstraintType Kind = ConstraintType::Distance;
 
 		void eval(Engine& engine, float rdt2) const;
 		

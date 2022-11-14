@@ -5,7 +5,42 @@
 #include <glm/common.hpp>
 #include <glm/gtx/norm.hpp>
 
+#include <ez/serialize.hpp>
+#include <ez/deserialize.hpp>
+
 namespace pbd {
+	void CNHTetra::serialize(const CNHTetra& in, std::string& output) {
+		ez::serialize::i32(in.ids[0], output);
+		ez::serialize::i32(in.ids[1], output);
+		ez::serialize::i32(in.ids[2], output);
+		ez::serialize::i32(in.ids[3], output);
+
+		for (int c = 0; c < 3; ++c) {
+			for (int r = 0; r < 3; ++r) {
+				ez::serialize::f32(in.inv_rest[c][r], output);
+			}
+		}
+		
+		ez::serialize::f32(in.hydrostatic_compliance, output);
+		ez::serialize::f32(in.deviatoric_compliance, output);
+	}
+	const char* CNHTetra::deserialize(const char* first, const char* last, CNHTetra& out) {
+		first = ez::deserialize::i32(first, last, out.ids[0]);
+		first = ez::deserialize::i32(first, last, out.ids[1]);
+		first = ez::deserialize::i32(first, last, out.ids[2]);
+		first = ez::deserialize::i32(first, last, out.ids[3]);
+
+		for (int c = 0; c < 3; ++c) {
+			for (int r = 0; r < 3; ++r) {
+				first = ez::deserialize::f32(first, last, out.inv_rest[c][r]);
+			}
+		}
+
+		first = ez::deserialize::f32(first, last, out.hydrostatic_compliance);
+		first = ez::deserialize::f32(first, last, out.deviatoric_compliance);
+		return first;
+	}
+
 	CNHTetra::CNHTetra()
 		: ids{0,0,0,0}
 		, hydrostatic_compliance(1.f)

@@ -5,10 +5,16 @@
 
 #include <cppitertools/itertools.hpp>
 
+#include <ez/serialize.hpp>
+#include <ez/deserialize.hpp>
+
 namespace pbd {
-	static constexpr uint32_t 
-		TargetBit = 1,
-		LimitBit = 2;
+	void CHingeJoint::serialize(const CHingeJoint& in, std::string& output) {
+		
+	}
+	const char* CHingeJoint::deserialize(const char* first, const char* last, CHingeJoint& out) {
+
+	}
 
 	void CHingeJoint::eval(Engine& engine, float rdt2) const {
 		// First calculate the positional correction.

@@ -3,3 +3,4 @@ out
 CMakeSettings.json
 CMakePresets.json
 build
+ignore*.md

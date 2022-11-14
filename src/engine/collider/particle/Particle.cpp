@@ -1,11 +1,39 @@
-#include <pbd/engine/collider/particle/Particle.hpp>
+#include <pbd/engine/collider/ParticleParticleCollision.hpp>
 #include <pbd/engine/Engine.hpp>
 
+#include <pbd/engine/Particle.hpp>
 #include <pbd/common/Utils.hpp>
 
 namespace pbd {
-	void CollideParticle::eval(Engine& engine, float rdt2) const {
-		std::array<Particle*, 2> p{
+	std::optional<Collision> particle_particle_collide(const Particle & p0, const Particle& p1) {
+		float threshold = p0.radius + p1.radius;
+		threshold = threshold * threshold;
+
+		glm::vec3 normal = p1.position - p0.position;
+		float dist = glm::dot(normal, normal);
+
+		if (dist < threshold) {
+			dist = std::sqrt(dist);
+			if (dist < 1e-5f) {
+				return std::nullopt;
+			}
+			normal /= dist;
+
+			Collision collide;
+			collide.normal = normal;
+			collide.contacts[0] = normal * p0.radius;
+			collide.contacts[1] = -normal * p1.radius;
+
+			return collide;
+		}
+		else {
+			return std::nullopt;
+		}
+	}
+}
+
+/*
+std::array<Particle*, 2> p{
 			&engine.particles.list[ids[0]],
 			&engine.particles.list[ids[1]]
 		};
@@ -54,10 +82,4 @@ namespace pbd {
 
 		p[0]->position += w0 * w * px0;
 		p[1]->position += w1 * w * px1;
-	}
-
-	void CollideParticle::remap(int32_t offset) {
-		ids[0] += offset;
-		ids[1] += offset;
-	}
-}
+*/

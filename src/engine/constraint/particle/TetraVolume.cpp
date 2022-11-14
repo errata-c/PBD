@@ -3,7 +3,30 @@
 
 #include <glm/geometric.hpp>
 
+#include <ez/serialize.hpp>
+#include <ez/deserialize.hpp>
+
 namespace pbd {
+	void CTetra::serialize(const CTetra& in, std::string& output) {
+		ez::serialize::i32(in.ids[0], output);
+		ez::serialize::i32(in.ids[1], output);
+		ez::serialize::i32(in.ids[2], output);
+		ez::serialize::i32(in.ids[3], output);
+
+		ez::serialize::f32(in.volume, output);
+		ez::serialize::f32(in.compliance, output);
+	}
+	const char* CTetra::deserialize(const char* first, const char* last, CTetra& out) {
+		first = ez::deserialize::i32(first, last, out.ids[0]);
+		first = ez::deserialize::i32(first, last, out.ids[1]);
+		first = ez::deserialize::i32(first, last, out.ids[2]);
+		first = ez::deserialize::i32(first, last, out.ids[3]);
+
+		first = ez::deserialize::f32(first, last, out.volume);
+		first = ez::deserialize::f32(first, last, out.compliance);
+		return first;
+	}
+
 	void CTetra::eval(Engine & engine, float rdt2) const {
 		std::array<Particle*, 4> p;
 		// Fetch the addresses of the positions

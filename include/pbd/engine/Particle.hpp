@@ -7,9 +7,9 @@ namespace pbd {
 	// Particle data for runtime.
 	class Particle {
 	public:
+		uint32_t collision_groups, collision_mask;
+
 		glm::vec3 position, velocity;
 		float imass, radius;
-
-		uint32_t collision_groups, collision_mask;
 	};
 }

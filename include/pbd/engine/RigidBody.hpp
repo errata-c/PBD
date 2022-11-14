@@ -7,6 +7,9 @@
 #include <pbd/common/Transform.hpp>
 
 namespace pbd {
+	glm::vec3 rotate(const glm::quat & rot, const glm::vec3& vec);
+	glm::vec3 reverse_rotate(const glm::quat& rot, const glm::vec3& vec);
+
 	enum class Shape {
 		Capsule,
 		OBB,
@@ -14,26 +17,41 @@ namespace pbd {
 		Sphere
 	};
 
+	/*
+	This class overlaps completely with the Particle class, 
+	with the following data members being in the same order and size as Particle:
+		collision_groups, collision_mask, position, velocity, imass, and the first element of dims (radius)
+	*/
 	class RigidBody {
-	public:
-		Shape shape;
+	public:	
+		uint32_t collision_groups, collision_mask;
 
 		glm::vec3 position, velocity;
 
 		float imass;
 
-		uint32_t collision_groups, collision_mask;
+		// Sphere uses first dim as radius
+		// Cylinder and Capsule use first as radius, and second as height
+		// OBB uses dims as the half extents of the box
+		glm::vec3 dims;
 
 		glm::quat orientation;
 		glm::vec3 angular_velocity;
 
 		// This is the inverse of the inertial tensor!
 		glm::vec3 inertia;
+		
+		Shape shape;
 
-		// Sphere uses first dim as radius
-		// Cylinder and Capsule use first as radius, and second as height
-		// OBB uses dims as the half extents of the box
-		glm::vec3 dims;
+
+		float& width() noexcept;
+		const float& width() const noexcept;
+		float& radius() noexcept;
+		const float& radius() const noexcept;
+		float& height() noexcept;
+		const float& height() const noexcept;
+		float& depth() noexcept;
+		const float& depth() const noexcept;
 
 		BBox3 bounds() const noexcept;
 		BBox3 skewed_bounds(float delta) const noexcept;

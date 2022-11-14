@@ -4,6 +4,8 @@
 #include <pbd/common/Transform.hpp>
 #include <pbd/common/Span.hpp>
 
+#include <pbd/engine/constraint/ConstraintType.hpp>
+
 namespace pbd {
 	class Engine;
 	
@@ -15,20 +17,20 @@ namespace pbd {
 		ConstraintRef(const ConstraintRef&) noexcept = default;
 		ConstraintRef& operator=(const ConstraintRef&) noexcept = default;
 
-		ConstraintRef(Constraint _kind, int32_t* _data) noexcept;
+		ConstraintRef(ConstraintType _kind, int32_t* _data) noexcept;
 
 		void eval(Engine& engine, float rdt2) const;
 
 		void remap(int32_t offset);
 		void transform(const Transform3& form);
 
-		Constraint type() const noexcept;
+		ConstraintType type() const noexcept;
 
 		IdSpan ids() const noexcept;
 
 		int32_t * data() const noexcept;
 	private:
-		Constraint mkind;
+		ConstraintType mkind;
 		int32_t* mdata;
 	};
 
@@ -38,11 +40,11 @@ namespace pbd {
 		ConstConstraintRef& operator=(const ConstConstraintRef&) noexcept = default;
 
 		ConstConstraintRef(const ConstraintRef & other) noexcept;
-		ConstConstraintRef(Constraint _kind, int32_t const* _data) noexcept;
+		ConstConstraintRef(ConstraintType _kind, int32_t const* _data) noexcept;
 
 		void eval(Engine& engine, float rdt2) const;
 
-		Constraint type() const noexcept;
+		ConstraintType type() const noexcept;
 
 		ConstIdSpan ids() const noexcept;
 

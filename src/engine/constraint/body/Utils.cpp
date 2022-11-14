@@ -50,6 +50,50 @@ namespace pbd {
 		// Should we renormalized the orientations here?
 	}
 
+	void apply_positional_correction(
+		RigidBody* b,
+		Particle* p,
+		const glm::vec3* r,
+		glm::vec3 n,
+		float alpha
+	) {
+		float c = glm::length(n);
+
+		// Only apply the positional correction if magnitude is large enough (avoid divide by zero)
+		if (c < 1e-5f) {
+			return;
+		}
+
+		n /= c;
+
+		std::array<float, 2> w;
+		glm::vec3 pn, crn;
+
+		// Calculate the generalized inverse masses (w)
+		{
+			// Project 'n' into the rest state of the body
+			pn = b->to_local_vector(n);
+			crn = glm::cross(*r, pn);
+
+			w[0] = b->imass + glm::dot(crn * b->inertia, crn);
+		}
+		w[1] = p->imass;
+
+		// Calculate the lagrange multiplier delta
+		float dlambda = -c / (w[0] + w[1] + alpha);
+
+		// Update the state of the body:
+		{
+			b->position += dlambda * pn * b->imass;
+
+			// Conservation angular momentum?
+			glm::vec3 tmp = dlambda * crn * b->inertia;
+
+			b->orientation += 0.5f * glm::quat(0.f, tmp.x, tmp.y, tmp.z) * b->orientation;
+		}
+		p->position -= dlambda * n * w[1];
+	}
+
 	void apply_angular_correction(
 		std::array<RigidBody*, 2> b,
 		glm::vec3 n,

@@ -1,6 +1,42 @@
 #include <pbd/engine/RigidBody.hpp>
 
 namespace pbd {
+	glm::vec3 rotate(const glm::quat& orientation, const glm::vec3& v) {
+		glm::quat tmp(0.f, v.x, v.y, v.z);
+		tmp = orientation * tmp * glm::conjugate(orientation);
+		return glm::vec3{ tmp.x, tmp.y, tmp.z };
+	}
+	glm::vec3 reverse_rotate(const glm::quat& orientation, const glm::vec3& v) {
+		glm::quat tmp(0.f, v.x, v.y, v.z);
+		tmp = glm::conjugate(orientation) * tmp * orientation;
+		return glm::vec3{ tmp.x, tmp.y, tmp.z };
+	}
+
+	float& RigidBody::width() noexcept {
+		return dims[0];
+	}
+	const float& RigidBody::width() const noexcept {
+		return dims[0];
+	}
+	float& RigidBody::radius() noexcept {
+		return dims[0];
+	}
+	const float& RigidBody::radius() const noexcept {
+		return dims[0];
+	}
+	float& RigidBody::height() noexcept {
+		return dims[1];
+	}
+	const float& RigidBody::height() const noexcept {
+		return dims[1];
+	}
+	float& RigidBody::depth() noexcept {
+		return dims[2];
+	}
+	const float& RigidBody::depth() const noexcept {
+		return dims[2];
+	}
+
 	BBox3 RigidBody::bounds() const noexcept {
 		glm::vec3 min, max;
 
@@ -78,14 +114,10 @@ namespace pbd {
 
 	// Assume normalized orientation quaternion!
 	glm::vec3 RigidBody::to_local_vector(const glm::vec3& v) const noexcept {
-		glm::quat tmp(0.f, v.x, v.y, v.z);
-		tmp = glm::conjugate(orientation) * tmp * orientation;
-		return glm::vec3{ tmp.x, tmp.y, tmp.z };
+		return pbd::reverse_rotate(orientation, v);
 	}
 	glm::vec3 RigidBody::to_world_vector(const glm::vec3& v) const noexcept {
-		glm::quat tmp(0.f, v.x, v.y, v.z);
-		tmp = orientation * tmp * glm::conjugate(orientation);
-		return glm::vec3{ tmp.x, tmp.y, tmp.z };
+		return pbd::rotate(orientation, v);
 	}
 	glm::vec3 RigidBody::to_local(const glm::vec3& v) const noexcept {
 		return to_local_vector(v - position);

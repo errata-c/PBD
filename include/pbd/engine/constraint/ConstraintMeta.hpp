@@ -1,32 +1,33 @@
 #pragma once
 #include <stdexcept>
+#include <pbd/engine/constraint/ConstraintType.hpp>
 #include <pbd/engine/constraint/AllConstraints.hpp>
 
 namespace pbd {
 	template<template<typename> typename Functor, typename ...Args>
-	decltype(auto) constraint_visitor(Constraint type, Args&&... args) {
+	decltype(auto) constraint_visitor(ConstraintType type, Args&&... args) {
 		switch (type) {
-		case Constraint::Distance:
+		case ConstraintType::Distance:
 			return Functor<CDistance>{}(std::forward<Args>(args)...);
 
-		case Constraint::Align:
+		case ConstraintType::Align:
 			return Functor<CAlign>{}(std::forward<Args>(args)...);
-		case Constraint::AttachBody:
+		case ConstraintType::AttachBody:
 			throw std::logic_error("Unimplemented!");
 			//return Functor<CollidePlane>{}(std::forward<Args>(args)...);
-		case Constraint::AttachParticle:
+		case ConstraintType::AttachParticle:
 			throw std::logic_error("Unimplemented!");
 			//return Functor<CollidePlane>{}(std::forward<Args>(args)...);
-		case Constraint::HingeJoint:
+		case ConstraintType::HingeJoint:
 			return Functor<CHingeJoint>{}(std::forward<Args>(args)...);
-		case Constraint::PrismaticJoint:
+		case ConstraintType::PrismaticJoint:
 			return Functor<CPrismaticJoint>{}(std::forward<Args>(args)...);
-		case Constraint::SphereJoint:
+		case ConstraintType::SphereJoint:
 			return Functor<CSphereJoint>{}(std::forward<Args>(args)...);
 
-		case Constraint::Tetra:
+		case ConstraintType::Tetra:
 			return Functor<CTetra>{}(std::forward<Args>(args)...);
-		case Constraint::NHTetra:
+		case ConstraintType::NHTetra:
 			return Functor<CNHTetra>{}(std::forward<Args>(args)...);
 		default:
 			throw std::logic_error("Unimplemented!");

@@ -9,7 +9,7 @@ namespace pbd {
 	int32_t ParticleList::add(const glm::vec3& _pos, const glm::vec3& _vel, float _imass, float _radius, uint32_t _group, uint32_t _mask) {
 		assert(size() < ParticleLimit);
 		int32_t id = static_cast<int32_t>(size());
-		data.push_back(Particle{_pos, _vel, _imass, _radius, _group, _mask});
+		data.push_back(Particle{ _group, _mask, _pos, _vel, _imass, _radius, });
 
 		return id;
 	}

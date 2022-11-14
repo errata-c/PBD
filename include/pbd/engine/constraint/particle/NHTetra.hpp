@@ -5,6 +5,8 @@
 #include <pbd/common/Types.hpp>
 #include <pbd/common/Transform.hpp>
 
+#include <pbd/engine/constraint/ConstraintType.hpp>
+
 #include <glm/mat3x3.hpp>
 
 namespace pbd {
@@ -16,7 +18,7 @@ namespace pbd {
 		static void serialize(const CNHTetra& in, std::string& output);
 		static const char* deserialize(const char* first, const char* last, CNHTetra& out);
 
-		static constexpr Constraint Kind = Constraint::NHTetra;
+		static constexpr ConstraintType Kind = ConstraintType::NHTetra;
 
 		CNHTetra();
 		CNHTetra(const std::array<int32_t, 4> _ids, const glm::mat3& _irest, float hydro, float devia);

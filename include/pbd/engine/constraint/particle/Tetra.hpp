@@ -5,6 +5,8 @@
 #include <pbd/common/Types.hpp>
 #include <pbd/common/Transform.hpp>
 
+#include <pbd/engine/constraint/ConstraintType.hpp>
+
 namespace pbd {
 	class Engine;
 
@@ -12,7 +14,7 @@ namespace pbd {
 		static void serialize(const CTetra& in, std::string& output);
 		static const char* deserialize(const char* first, const char* last, CTetra& out);
 
-		static constexpr Constraint Kind = Constraint::Tetra;
+		static constexpr ConstraintType Kind = ConstraintType::Tetra;
 		static constexpr std::array<std::array<int32_t, 3>, 4> faceOrder{ {
 			{0,1,3},
 			{0,2,3},

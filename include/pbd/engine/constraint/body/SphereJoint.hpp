@@ -5,28 +5,34 @@
 #include <pbd/common/Types.hpp>
 #include <pbd/common/Transform.hpp>
 
+#include <pbd/engine/constraint/ConstraintType.hpp>
+
 namespace pbd {
 	class Engine;
 
-	struct CTwistLimit {
-		float min_angle, max_angle;
-		float compliance;
-	};
-	struct CSwingLimit {
-		float min_angle, max_angle;
-		float compliance;
-	};
-	struct CSphereTarget {
-		glm::quat orientation;
-		float compliance;
-	};
-
 	// Swing and twist are defined in terms of the second body relative to the first body.
 	struct CSphereJoint {
+		struct TwistLimit {
+			float min_angle, max_angle;
+			float compliance;
+		};
+		struct SwingLimit {
+			float min_angle, max_angle;
+			float compliance;
+		};
+		struct Target {
+			glm::quat orientation;
+			float compliance;
+		};
+		static constexpr uint32_t
+			TargetBit = 4,
+			TwistLimitBit = 2,
+			SwingLimitBit = 1;
+
 		static void serialize(const CSphereJoint& in, std::string& output);
 		static const char* deserialize(const char* first, const char* last, CSphereJoint& out);
 
-		static constexpr Constraint Kind = Constraint::SphereJoint;
+		static constexpr ConstraintType Kind = ConstraintType::SphereJoint;
 
 		void eval(Engine& engine, float rdt2) const;
 
@@ -44,9 +50,9 @@ namespace pbd {
 		float compliance;
 
 		uint32_t components;
-
-		CSphereTarget target;
-		CTwistLimit twist_limit;
-		CSwingLimit swing_limit;
+		
+		TwistLimit twist_limit;
+		SwingLimit swing_limit;
+		Target target;
 	};
 }

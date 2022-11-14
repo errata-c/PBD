@@ -6,7 +6,7 @@
 namespace pbd {
 	class Engine;
 	struct CollidePlane {
-		static constexpr Constraint Kind = Constraint::CollidePlane;
+		//static constexpr Constraint Kind = Constraint::CollidePlane;
 
 		int32_t id;
 		glm::vec3 origin, normal;

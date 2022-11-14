@@ -3,7 +3,23 @@
 
 #include <glm/geometric.hpp>
 
+#include <ez/serialize.hpp>
+#include <ez/deserialize.hpp>
+
 namespace pbd {
+	void CDistance::serialize(const CDistance& in, std::string& output) {
+		ez::serialize::i32(in.p0, output);
+		ez::serialize::i32(in.p1, output);
+		ez::serialize::f32(in.length, output);
+		ez::serialize::f32(in.compliance, output);
+	}
+	const char* CDistance::deserialize(const char* first, const char* last, CDistance& out) {
+		first = ez::deserialize::i32(first, last, out.p0);
+		first = ez::deserialize::i32(first, last, out.p1);
+		first = ez::deserialize::f32(first, last, out.length);
+		return ez::deserialize::f32(first, last, out.compliance);
+	}
+
 	void CDistance::eval(Engine& engine, float rdt2) const {
 		Particle& part0 = engine.particles.list[p0];
 		Particle& part1 = engine.particles.list[p1];

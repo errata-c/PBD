@@ -4,12 +4,21 @@
 #include <pbd/common/Types.hpp>
 #include <pbd/common/Transform.hpp>
 #include <pbd/engine/RigidBody.hpp>
+#include <pbd/engine/Particle.hpp>
 
 namespace pbd {
 	// Can't make an array of references, so pointers are necessary
 	void apply_positional_correction(
 		std::array<RigidBody*, 2> b,
 		std::array<const glm::vec3*, 2> r,
+		glm::vec3 n,
+		float alpha
+	);
+	// Positional correction involving a rigid body and a particle.
+	void apply_positional_correction(
+		RigidBody* b,
+		Particle* p,
+		const glm::vec3* r,
 		glm::vec3 n,
 		float alpha
 	);

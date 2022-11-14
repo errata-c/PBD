@@ -5,6 +5,8 @@
 #include <pbd/common/Types.hpp>
 #include <pbd/common/Transform.hpp>
 
+#include <pbd/engine/constraint/ConstraintType.hpp>
+
 namespace pbd {
 	class Engine;
 
@@ -16,7 +18,7 @@ namespace pbd {
 		static void serialize(const CAlign& in, std::string& output);
 		static const char* deserialize(const char* first, const char* last, CAlign& out);
 
-		static constexpr Constraint Kind = Constraint::Align;
+		static constexpr ConstraintType Kind = ConstraintType::Align;
 
 		void eval(Engine& engine, float rdt2) const;
 
@@ -30,10 +32,11 @@ namespace pbd {
 			glm::vec3 r;
 		};
 
-		// The relative rotation from the first body to the second body.
+		std::array<BodyInfo, 2> info;
+
+		// The relative rotation from the first body to the second body's desired orientation.
 		glm::quat alignment;
 
-		std::array<BodyInfo, 2> info;
 		float compliance;
 	};
 }
