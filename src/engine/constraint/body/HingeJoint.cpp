@@ -13,7 +13,7 @@ namespace pbd {
 		
 	}
 	const char* CHingeJoint::deserialize(const char* first, const char* last, CHingeJoint& out) {
-
+		return first;
 	}
 
 	void CHingeJoint::eval(Engine& engine, float rdt2) const {

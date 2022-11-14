@@ -13,11 +13,9 @@ namespace pbd {
 		case ConstraintType::Align:
 			return Functor<CAlign>{}(std::forward<Args>(args)...);
 		case ConstraintType::AttachBody:
-			throw std::logic_error("Unimplemented!");
-			//return Functor<CollidePlane>{}(std::forward<Args>(args)...);
+			return Functor<CAttachBody>{}(std::forward<Args>(args)...);
 		case ConstraintType::AttachParticle:
-			throw std::logic_error("Unimplemented!");
-			//return Functor<CollidePlane>{}(std::forward<Args>(args)...);
+			return Functor<CAttachParticle>{}(std::forward<Args>(args)...);
 		case ConstraintType::HingeJoint:
 			return Functor<CHingeJoint>{}(std::forward<Args>(args)...);
 		case ConstraintType::PrismaticJoint:

@@ -14,7 +14,7 @@ namespace pbd {
 
 	}
 	const char* CPrismaticJoint::deserialize(const char* first, const char* last, CPrismaticJoint& out) {
-
+		return first;
 	}
 
 	void CPrismaticJoint::eval(Engine& engine, float rdt2) const {

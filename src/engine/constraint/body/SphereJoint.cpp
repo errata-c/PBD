@@ -13,7 +13,7 @@ namespace pbd {
 
 	}
 	const char* CSphereJoint::deserialize(const char* first, const char* last, CSphereJoint& out) {
-
+		return first;
 	}
 
 	void CSphereJoint::eval(Engine& engine, float rdt2) const {

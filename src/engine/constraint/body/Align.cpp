@@ -18,7 +18,7 @@ namespace pbd {
 		
 	}
 	const char* CAlign::deserialize(const char* first, const char* last, CAlign& out) {
-		
+		return first;
 	}
 
 	void CAlign::eval(Engine& engine, float rdt2) const {
