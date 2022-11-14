@@ -16,6 +16,12 @@ namespace pbd {
 			ez::serialize::f32(in.info[i].r[2], output);
 		}
 		
+		ez::serialize::f32(in.alignment[0], output);
+		ez::serialize::f32(in.alignment[1], output);
+		ez::serialize::f32(in.alignment[2], output);
+		ez::serialize::f32(in.alignment[3], output);
+
+		ez::serialize::f32(in.compliance, output);
 	}
 	const char* CAlign::deserialize(const char* first, const char* last, CAlign& out) {
 		return first;

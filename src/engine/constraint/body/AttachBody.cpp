@@ -8,6 +8,29 @@
 #include <ez/deserialize.hpp>
 
 namespace pbd {
+	void CAttachBody::serialize(const CAttachBody& in, std::string& output) {
+		for (int i: iter::range(2)) {
+			ez::serialize::i32(in.info[i].id, output);
+			ez::serialize::f32(in.info[i].r[0], output);
+			ez::serialize::f32(in.info[i].r[1], output);
+			ez::serialize::f32(in.info[i].r[2], output);
+		}
+
+		ez::serialize::f32(in.compliance, output);
+	}
+	const char* CAttachBody::deserialize(const char* first, const char* last, CAttachBody& out) {
+		for (int i : iter::range(2)) {
+			first = ez::deserialize::i32(first, last, out.info[i].id);
+			first = ez::deserialize::f32(first, last, out.info[i].r[0]);
+			first = ez::deserialize::f32(first, last, out.info[i].r[1]);
+			first = ez::deserialize::f32(first, last, out.info[i].r[2]);
+		}
+
+		first = ez::deserialize::f32(first, last, out.compliance);
+
+		return first;
+	}
+
 	void CAttachBody::eval(Engine& engine, float rdt2) const {
 		float alpha = (compliance * rdt2);
 

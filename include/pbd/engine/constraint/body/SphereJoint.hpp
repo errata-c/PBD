@@ -12,6 +12,17 @@ namespace pbd {
 
 	// Swing and twist are defined in terms of the second body relative to the first body.
 	struct CSphereJoint {
+		static void serialize(const CSphereJoint& in, std::string& output);
+		static const char* deserialize(const char* first, const char* last, CSphereJoint& out);
+
+		static constexpr ConstraintType Kind = ConstraintType::SphereJoint;
+
+		void eval(Engine& engine, float rdt2) const;
+
+		void remap(int32_t offset);
+		void transform(const Transform3& form);
+
+
 		struct TwistLimit {
 			float min_angle, max_angle;
 			float compliance;
@@ -28,16 +39,6 @@ namespace pbd {
 			TargetBit = 4,
 			TwistLimitBit = 2,
 			SwingLimitBit = 1;
-
-		static void serialize(const CSphereJoint& in, std::string& output);
-		static const char* deserialize(const char* first, const char* last, CSphereJoint& out);
-
-		static constexpr ConstraintType Kind = ConstraintType::SphereJoint;
-
-		void eval(Engine& engine, float rdt2) const;
-
-		void remap(int32_t offset);
-		void transform(const Transform3& form);
 
 		struct BodyInfo {
 			int32_t id;

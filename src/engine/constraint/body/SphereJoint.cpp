@@ -10,9 +10,81 @@
 
 namespace pbd {
 	void CSphereJoint::serialize(const CSphereJoint& in, std::string& output) {
+		for (int i: iter::range(2)) {
+			ez::serialize::i32(in.info[i].id, output);
+			ez::serialize::f32(in.info[i].r[0], output);
+			ez::serialize::f32(in.info[i].r[1], output);
+			ez::serialize::f32(in.info[i].r[2], output);
 
+			ez::serialize::f32(in.info[i].a[0], output);
+			ez::serialize::f32(in.info[i].a[1], output);
+			ez::serialize::f32(in.info[i].a[2], output);
+
+			ez::serialize::f32(in.info[i].b[0], output);
+			ez::serialize::f32(in.info[i].b[1], output);
+			ez::serialize::f32(in.info[i].b[2], output);
+		}
+
+		ez::serialize::f32(in.compliance, output);
+		ez::serialize::u8(static_cast<uint8_t>(in.components), output);
+		if (in.components & TargetBit) {
+			ez::serialize::f32(in.target.orientation[0], output);
+			ez::serialize::f32(in.target.orientation[1], output);
+			ez::serialize::f32(in.target.orientation[2], output);
+			ez::serialize::f32(in.target.orientation[3], output);
+
+			ez::serialize::f32(in.target.compliance, output);
+		}
+		if (in.components & TwistLimitBit) {
+			ez::serialize::f32(in.twist_limit.min_angle, output);
+			ez::serialize::f32(in.twist_limit.max_angle, output);
+			ez::serialize::f32(in.twist_limit.compliance, output);
+		}
+		if (in.components & SwingLimitBit) {
+			ez::serialize::f32(in.swing_limit.min_angle, output);
+			ez::serialize::f32(in.swing_limit.max_angle, output);
+			ez::serialize::f32(in.swing_limit.compliance, output);
+		}
 	}
 	const char* CSphereJoint::deserialize(const char* first, const char* last, CSphereJoint& out) {
+		for (int i : iter::range(2)) {
+			first = ez::deserialize::i32(first, last, out.info[i].id);
+			first = ez::deserialize::f32(first, last, out.info[i].r[0]);
+			first = ez::deserialize::f32(first, last, out.info[i].r[1]);
+			first = ez::deserialize::f32(first, last, out.info[i].r[2]);
+
+			first = ez::deserialize::f32(first, last, out.info[i].a[0]);
+			first = ez::deserialize::f32(first, last, out.info[i].a[1]);
+			first = ez::deserialize::f32(first, last, out.info[i].a[2]);
+
+			first = ez::deserialize::f32(first, last, out.info[i].b[0]);
+			first = ez::deserialize::f32(first, last, out.info[i].b[1]);
+			first = ez::deserialize::f32(first, last, out.info[i].b[2]);
+		}
+
+		first = ez::deserialize::f32(first, last, out.compliance);
+		uint8_t bits = 0;
+		first = ez::deserialize::u8(first, last, bits);
+		out.components = bits;
+		if (bits & TargetBit) {
+			first = ez::deserialize::f32(first, last, out.target.orientation[0]);
+			first = ez::deserialize::f32(first, last, out.target.orientation[1]);
+			first = ez::deserialize::f32(first, last, out.target.orientation[2]);
+			first = ez::deserialize::f32(first, last, out.target.orientation[3]);
+
+			first = ez::deserialize::f32(first, last, out.target.compliance);
+		}
+		if (bits & TwistLimitBit) {
+			first = ez::deserialize::f32(first, last, out.twist_limit.min_angle);
+			first = ez::deserialize::f32(first, last, out.twist_limit.max_angle);
+			first = ez::deserialize::f32(first, last, out.twist_limit.compliance);
+		}
+		if (bits & SwingLimitBit) {
+			first = ez::deserialize::f32(first, last, out.swing_limit.min_angle);
+			first = ez::deserialize::f32(first, last, out.swing_limit.max_angle);
+			first = ez::deserialize::f32(first, last, out.swing_limit.compliance);
+		}
+
 		return first;
 	}
 

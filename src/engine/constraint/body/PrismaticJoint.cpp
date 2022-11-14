@@ -11,7 +11,7 @@
 
 namespace pbd {
 	void CPrismaticJoint::serialize(const CPrismaticJoint& in, std::string& output) {
-
+		
 	}
 	const char* CPrismaticJoint::deserialize(const char* first, const char* last, CPrismaticJoint& out) {
 		return first;

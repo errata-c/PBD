@@ -10,9 +10,61 @@
 
 namespace pbd {
 	void CHingeJoint::serialize(const CHingeJoint& in, std::string& output) {
-		
+		for (int i: iter::range(2)) {
+			ez::serialize::i32(in.info[i].id, output);
+
+			
+			ez::serialize::f32(in.info[i].a[0], output);
+			ez::serialize::f32(in.info[i].a[1], output);
+			ez::serialize::f32(in.info[i].a[2], output);
+
+			ez::serialize::f32(in.info[i].b[0], output);
+			ez::serialize::f32(in.info[i].b[1], output);
+			ez::serialize::f32(in.info[i].b[2], output);
+		}
+
+		ez::serialize::f32(in.positional_compliance, output);
+		ez::serialize::f32(in.angular_compliance, output);
+
+		ez::serialize::u8(static_cast<uint8_t>(in.components), output);
+		if (in.has_target()) {
+			ez::serialize::f32(in.target.angle, output);
+			ez::serialize::f32(in.target.compliance, output);
+		}
+		if (in.has_limit()) {
+			ez::serialize::f32(in.limit.min_angle, output);
+			ez::serialize::f32(in.limit.max_angle, output);
+			ez::serialize::f32(in.limit.compliance, output);
+		}
 	}
 	const char* CHingeJoint::deserialize(const char* first, const char* last, CHingeJoint& out) {
+		for (int i : iter::range(2)) {
+			first = ez::deserialize::i32(first, last, out.info[i].id);
+
+			first = ez::deserialize::f32(first, last, out.info[i].a[0]);
+			first = ez::deserialize::f32(first, last, out.info[i].a[1]);
+			first = ez::deserialize::f32(first, last, out.info[i].a[2]);
+
+			first = ez::deserialize::f32(first, last, out.info[i].b[0]);
+			first = ez::deserialize::f32(first, last, out.info[i].b[1]);
+			first = ez::deserialize::f32(first, last, out.info[i].b[2]);
+		}
+
+		first = ez::deserialize::f32(first, last, out.positional_compliance);
+		first = ez::deserialize::f32(first, last, out.angular_compliance);
+
+		uint8_t bits = 0;
+		first = ez::deserialize::u8(first, last, bits);
+		if (bits & TargetBit) {
+			first = ez::deserialize::f32(first, last, out.target.angle);
+			first = ez::deserialize::f32(first, last, out.target.compliance);
+		}
+		if (bits & LimitBit) {
+			first = ez::deserialize::f32(first, last, out.limit.min_angle);
+			first = ez::deserialize::f32(first, last, out.limit.max_angle);
+			first = ez::deserialize::f32(first, last, out.limit.compliance);
+		}
+
 		return first;
 	}
 
