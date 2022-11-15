@@ -42,8 +42,9 @@ namespace pbd {
 		apply_positional_correction(b, { &info[0].r, &info[1].r }, b[1]->to_world(info[1].r) - b[0]->to_world(info[0].r), alpha);
 	}
 
-	void CAttachBody::remap(int32_t offset) {
-		
+	void CAttachBody::remap(int32_t particle_offset, int32_t body_offset) {
+		info[0].id += body_offset;
+		info[1].id += body_offset;
 	}
 	void CAttachBody::transform(const Transform3& form) {
 

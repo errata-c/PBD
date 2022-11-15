@@ -42,9 +42,9 @@ namespace pbd {
 		apply_angular_correction(b, 2.f * glm::vec3(tmp.x, tmp.y, tmp.z), alpha);
 	}
 
-	void CAlign::remap(int32_t offset) {
-		info[0].id += offset;
-		info[1].id += offset;
+	void CAlign::remap(int32_t particle_offset, int32_t body_offset) {
+		info[0].id += body_offset;
+		info[1].id += body_offset;
 	}
 	void CAlign::transform(const Transform3& form) {
 		

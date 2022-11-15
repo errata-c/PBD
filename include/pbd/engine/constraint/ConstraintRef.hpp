@@ -21,7 +21,7 @@ namespace pbd {
 
 		void eval(Engine& engine, float rdt2) const;
 
-		void remap(int32_t offset);
+		void remap(int32_t particle_offset, int32_t body_offset);
 		void transform(const Transform3& form);
 
 		ConstraintType type() const noexcept;

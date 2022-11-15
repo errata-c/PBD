@@ -124,8 +124,9 @@ namespace pbd {
 		}
 	}
 
-	void CSphereJoint::remap(int32_t offset) {
-
+	void CSphereJoint::remap(int32_t particle_offset, int32_t body_offset) {
+		info[0].id += body_offset;
+		info[1].id += body_offset;
 	}
 	void CSphereJoint::transform(const Transform3& form) {
 

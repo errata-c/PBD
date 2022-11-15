@@ -56,9 +56,9 @@ namespace pbd {
 		x1 += lambda * w1 * grad;
 	}
 
-	void CDistance::remap(int32_t offset) {
-		p0 += offset;
-		p1 += offset;
+	void CDistance::remap(int32_t particle_offset, int32_t body_offset) {
+		p0 += particle_offset;
+		p1 += particle_offset;
 	}
 	void CDistance::transform(const Transform3& form) {
 		length *= form.size;

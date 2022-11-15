@@ -72,9 +72,9 @@ namespace pbd {
 		}
 	}
 
-	void CTetra::remap(int32_t offset) {
+	void CTetra::remap(int32_t particle_offset, int32_t body_offset) {
 		for (int32_t& id : ids) {
-			id += offset;
+			id += particle_offset;
 		}
 	}
 	void CTetra::transform(const Transform3& form) {

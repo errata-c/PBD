@@ -161,9 +161,9 @@ namespace pbd {
 		apply(p, grads, C, rdt2, hydrostatic_compliance);
 	}
 
-	void CNHTetra::remap(int32_t offset) {
+	void CNHTetra::remap(int32_t particle_offset, int32_t body_offset) {
 		for (int32_t& id : ids) {
-			id += offset;
+			id += particle_offset;
 		}
 	}
 	void CNHTetra::transform(const Transform3& form) {

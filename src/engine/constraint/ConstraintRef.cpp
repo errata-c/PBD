@@ -19,10 +19,14 @@ namespace pbd {
 		constraint_visitor<CEvalFunctor>(mkind, mdata, engine, rdt2);
 	}
 
-	void ConstraintRef::remap(int32_t offset) {
-		for (int32_t & id: ids()) {
-			id += offset;
+	template<typename T>
+	struct CRemapFunctor {
+		void operator()(void* mdata, int32_t particle_offset, int32_t body_offset) {
+			((T*)mdata)->remap(particle_offset, body_offset);
 		}
+	};
+	void ConstraintRef::remap(int32_t particle_offset, int32_t body_offset) {
+		constraint_visitor<CRemapFunctor>(mkind, mdata, particle_offset, body_offset);
 	}
 
 	template<typename T>

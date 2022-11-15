@@ -45,8 +45,9 @@ namespace pbd {
 		alpha);
 	}
 
-	void CAttachParticle::remap(int32_t offset) {
-		// Oops. What do we do about changing particle and body indices?
+	void CAttachParticle::remap(int32_t particle_offset, int32_t body_offset) {
+		particle_id += particle_offset;
+		body_id += body_offset;
 	}
 	void CAttachParticle::transform(const Transform3& form) {
 
