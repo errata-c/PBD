@@ -1,6 +1,8 @@
 #pragma once
 #include <pbd/engine/collider/ColliderType.hpp>
+#include <pbd/engine/collider/Collision.hpp>
 #include <array>
+#include <optional>
 
 namespace pbd {
 	class RigidBody;
@@ -15,12 +17,14 @@ namespace pbd {
 		Collider& operator=(Collider&&) noexcept = default;
 		~Collider() = default;
 
-		Collider(int32_t i0, int32_t i1, CollideType _type);
+		Collider(int32_t i0, int32_t i1, ColliderType _type);
 		
 		void position_solve(Engine& engine, float dt);
 		void velocity_solve(Engine& engine, float dt);
 		
-		CollideType type;
+		ColliderType type;
 		std::array<int32_t, 2> ids;
+	private:
+		std::optional<Collision> collide(Engine& engine) const;
 	};
 }

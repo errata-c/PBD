@@ -7,8 +7,7 @@
 #include <pbd/common/Transform.hpp>
 
 namespace pbd {
-	glm::vec3 rotate(const glm::quat & rot, const glm::vec3& vec);
-	glm::vec3 reverse_rotate(const glm::quat& rot, const glm::vec3& vec);
+
 
 	enum class Shape {
 		Capsule,

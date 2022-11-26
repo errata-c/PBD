@@ -2,9 +2,16 @@
 #include <iterator>
 #include <cinttypes>
 #include <glm/vec3.hpp>
+#include <glm/gtc/quaternion.hpp>
+#include <glm/gtx/quaternion.hpp>
+
+
 
 namespace pbd {
 	class Engine;
+
+	glm::vec3 rotate(const glm::quat& rot, const glm::vec3& vec);
+	glm::vec3 reverse_rotate(const glm::quat& rot, const glm::vec3& vec);
 
 	glm::vec3 perpendicular(const glm::vec3 & x, const glm::vec3 & n);
 

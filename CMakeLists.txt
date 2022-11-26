@@ -67,6 +67,7 @@ add_library(pbd STATIC
 	"src/engine/constraint/particle/TetraVolume.cpp"
 	"src/engine/constraint/particle/NHTetraVolume.cpp"
 
+	"src/engine/constraint/body/Fixed.cpp"
 	"src/engine/constraint/body/Align.cpp"
 	"src/engine/constraint/body/AttachBody.cpp"
 	"src/engine/constraint/body/AttachParticle.cpp"
@@ -76,8 +77,9 @@ add_library(pbd STATIC
 
 	"src/engine/constraint/body/Utils.cpp"
 
-	# Colliders
+	# Collision stuff
 	"src/engine/collider/ColliderType.cpp"
+	"src/engine/collider/Collider.cpp"
 	
 	"src/engine/collider/BodyParticleCollide.cpp"
 
@@ -94,6 +96,12 @@ add_library(pbd STATIC
 	"src/engine/collider/body/OBBOBB.cpp"
 	"src/engine/collider/body/OBBSphere.cpp"
 	"src/engine/collider/body/SphereSphere.cpp"
+
+	"src/engine/collider/bounds/BoundsCapsule.cpp"
+	"src/engine/collider/bounds/BoundsCylinder.cpp"
+	"src/engine/collider/bounds/BoundsOBB.cpp"
+	"src/engine/collider/bounds/BoundsParticle.cpp"
+	"src/engine/collider/bounds/BoundsSphere.cpp"
 )
 target_include_directories(pbd PUBLIC
 	$<INSTALL_INTERFACE:include>

@@ -1,17 +1,7 @@
 #include <pbd/engine/RigidBody.hpp>
+#include <pbd/common/Utils.hpp>
 
 namespace pbd {
-	glm::vec3 rotate(const glm::quat& orientation, const glm::vec3& v) {
-		glm::quat tmp(0.f, v.x, v.y, v.z);
-		tmp = orientation * tmp * glm::conjugate(orientation);
-		return glm::vec3{ tmp.x, tmp.y, tmp.z };
-	}
-	glm::vec3 reverse_rotate(const glm::quat& orientation, const glm::vec3& v) {
-		glm::quat tmp(0.f, v.x, v.y, v.z);
-		tmp = glm::conjugate(orientation) * tmp * orientation;
-		return glm::vec3{ tmp.x, tmp.y, tmp.z };
-	}
-
 	float& RigidBody::width() noexcept {
 		return dims[0];
 	}

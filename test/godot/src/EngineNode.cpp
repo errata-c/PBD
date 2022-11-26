@@ -214,7 +214,7 @@ namespace godot {
 			}
 
 
-
+			/*
 			static int once = 0;
 			once++;
 			if (once == 480) {
@@ -224,6 +224,7 @@ namespace godot {
 					Godot::print(text.format(Array::make(p.x, p.y, p.z)));
 				}
 			}
+			*/
 		}
 
 		mmesh->set_as_bulk_array(buffer);

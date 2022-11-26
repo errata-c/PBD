@@ -1,4 +1,5 @@
 #pragma once
+
 #include <cinttypes>
 #include <string>
 #include <array>
@@ -10,12 +11,15 @@
 namespace pbd {
 	class Engine;
 
-	// Force two rigid bodies to have aligned orientations
-	struct CAlign {
-		static void serialize(const CAlign& in, std::string& output);
-		static const char* deserialize(const char* first, const char* last, CAlign& out);
+	/*
+	Connect two bodies together, force them to be perfectly aligned.
+	This essentially causes them to act as a unit.
+	*/
+	struct CFixed {
+		static void serialize(const CFixed& in, std::string& output);
+		static const char* deserialize(const char* first, const char* last, CFixed& out);
 
-		static constexpr ConstraintType Kind = ConstraintType::Align;
+		static constexpr ConstraintType Kind = ConstraintType::Fixed;
 
 		void eval(Engine& engine, float rdt2) const;
 
@@ -24,9 +28,9 @@ namespace pbd {
 
 		struct BodyInfo {
 			int32_t id;
-			
+
 			// Relative attachment point
-			//glm::vec3 r;
+			glm::vec3 r;
 		};
 
 		std::array<BodyInfo, 2> info;
@@ -34,6 +38,6 @@ namespace pbd {
 		// The relative rotation from the first body to the second body's desired orientation.
 		glm::quat alignment;
 
-		float compliance;
+		float positional_compliance, angular_compliance;
 	};
 }

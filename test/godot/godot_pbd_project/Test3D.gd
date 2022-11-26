@@ -33,8 +33,6 @@ func _ready():
 	engine.set_static_friction(0.1)
 	engine.set_kinetic_friction(0.2)
 	
-	prefab = engine.create_empty_prefab()
-	
 	var tets = [
 		[0,1,2,3],
 		[0,1,2,4]
@@ -48,7 +46,7 @@ func _ready():
 	var imass = len(p) / tot_mass
 	
 	for x in p:
-		prefab.add_particle(
+		engine.add_particle(
 			x,
 			imass,
 			radius)
@@ -58,7 +56,7 @@ func _ready():
 	# 0,1,2,3  1,0,2,3  1,2,3,0
 	
 	for tet in tets:
-		prefab.add_nh_tetra_volume_constraint(
+		engine.add_nh_tetra_volume_constraint(
 			tet[0], 
 			tet[1], 
 			tet[2], 
@@ -66,14 +64,9 @@ func _ready():
 			1e-3, # Hydrostatic (volume)
 			1e-3) # Deviatoric (shear)
 	
-	engine.instance_prefab(prefab)
-	
 	engine.update_mesh()
 	
-	# The order of the indices matters!
-	# If the order is reversed the rotation extraction bugs out.
-	# We need a method of finding the ideal indices for a tracker...
-	# Has something to do with the handedness of the 3x3 matrix formed.
+	# Ordering of indices doesn't matter anymore, except to determine the origin
 	engine.set_tracker(3, 0, 1, 2)
 
 

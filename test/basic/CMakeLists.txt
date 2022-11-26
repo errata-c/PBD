@@ -6,6 +6,8 @@ add_executable(pbd_basic_test
 	"perpendicular.cpp"
 	"sdf.cpp"
 	"rigid_body_transform.cpp"
+
+	"collisions/obb_obb.cpp"
 )
 target_link_libraries(pbd_basic_test
 PRIVATE 

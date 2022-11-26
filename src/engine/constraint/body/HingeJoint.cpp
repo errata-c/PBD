@@ -83,7 +83,7 @@ namespace pbd {
 
 		std::array<glm::vec3, 2> a;
 		for (int i: iter::range(2)) {
-			a[i] = bodies[i]->to_local_vector(info[i].a);
+			a[i] = bodies[i]->to_world_vector(info[i].a);
 		}
 
 		glm::vec3 n = glm::cross(a[0], a[1]);
@@ -92,7 +92,7 @@ namespace pbd {
 		if (components) {
 			std::array<glm::vec3, 2> b;
 			for (int i: iter::range(2)) {
-				b[i] = bodies[i]->to_local_vector(info[i].b);
+				b[i] = bodies[i]->to_world_vector(info[i].b);
 			}
 
 			// Always apply the target before the limit, so the limit can work properly.

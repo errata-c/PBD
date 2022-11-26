@@ -21,6 +21,12 @@ namespace pbd {
 		OBBOBB,
 		OBBSphere,
 		SphereSphere,
+
+		WorldBoundsParticle,
+		WorldBoundsCapsule,
+		WorldBoundsCylinder,
+		WorldBoundsOBB,
+		WorldBoundsSphere,
 	};
 	
 	ColliderType particle_particle_collider() noexcept;

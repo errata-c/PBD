@@ -31,39 +31,35 @@ namespace pbd {
 		return result;
 	}
 	PointNorm sdBox(const glm::vec3 & p, const glm::vec3 & b) {
-		// Box centered on origin
-		glm::vec3 q = glm::abs(p) - b;
-		float mq = std::max(std::max(q.x, q.y), q.z);
+		glm::vec3 w = glm::abs(p) - b;
+		glm::vec3 s = glm::sign(p);
+
+		// Index of max value
+		int mi = 0;
+		// Max value
+		float g = w.x;
+		for (int i = 1; i < 3; ++i) {
+			if (w[i] > g) {
+				g = w[i];
+				mi = i;
+			}
+		}
+
+		glm::vec3 q = glm::max(w, 0.f);
+		float l = glm::length(q);
 
 		PointNorm result;
-
-		if (mq > 0.f) {
-			// Outside the box
-			float d = glm::length(q);
-			
-			result.normal = q * glm::sign(p);
-			result.distance = d;
-			result.point = p - result.normal;
-			result.normal /= result.distance;
-			return result;
+		if (g >= 0.f) {
+			result.distance = l;
+			result.normal = s * (q / l);
 		}
 		else {
-			// Inside the box?
-			int mi = 0;
-			mq = q[0];
-			for (int i = 1; i < 3; ++i) {
-				if (q[i] > mq) {
-					mq = q[i];
-					mi = i;
-				}
-			}
-
-			result.normal = glm::vec3(0);
-			result.normal[mi] = glm::sign(p[mi]);
-			result.distance = mq;
-			result.point = p - result.normal * result.distance;
-			return result;
+			result.distance = g;
+			result.normal = glm::vec3(0.f);
+			result.normal[mi] = s[mi];
 		}
+		result.point = p - result.normal * result.distance;
+		return result;
 	}
 	PointNorm sdSphere(const glm::vec3 & p, float r) {
 		float l = glm::length(p);

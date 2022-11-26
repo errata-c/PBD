@@ -7,20 +7,23 @@
 #include <pbd/engine/constraint/ConstraintList.hpp>
 #include <pbd/engine/ParticleList.hpp>
 #include <pbd/engine/BodyList.hpp>
+#include <pbd/common/BBox.hpp>
 
 namespace pbd {
 	class Engine {
 	public:
 		Engine();
 
+		BBox3 world_bounds;
+
 		glm::vec3 gravity;
 		float dt;
 		int substeps;
+
 		// Perhaps change the global friction to be a particle specific thing?
 		// The issue is that friction is calculated on a material pairing basis.
 		float kinetic_friction;
 		float static_friction;
-
 
 		struct Particles {
 			// The particles data and their execution data

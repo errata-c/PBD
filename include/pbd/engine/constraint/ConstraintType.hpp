@@ -10,6 +10,7 @@ namespace pbd {
 		// Constraints with two ids:
 		Distance,
 
+		Fixed,
 		Align,
 		AttachBody,
 		AttachParticle,
