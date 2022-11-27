@@ -7,5 +7,6 @@ namespace pbd {
 	struct Collision {
 		std::array<glm::vec3, 2> contacts;
 		glm::vec3 normal;
+		float depth;
 	};
 }

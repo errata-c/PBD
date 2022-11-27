@@ -35,11 +35,16 @@ namespace godot {
 		void check_bid(int id);
 
 		int add_particle(Vector3 pos, float mass, float radius);
-
 		void add_distance_constraint(int id0, int id1, float compliance);
 		void add_tetra_volume_constraint(int id0, int id1, int id2, int id3, float compliance);
 		void add_nh_tetra_volume_constraint(int id0, int id1, int id2, int id3, float hydrostatic_compliance, float deviatoric_compliance);
 
+		int add_capsule(Vector3 pos, Basis basis, float imass, float height, float radius);
+		Transform get_rigid_body_transform(int i);
+		void add_fixed_constraint(int b0, int b1);
+		void add_hinge_joint(int b0, int b1, Vector3 connect, Vector3 axis);
+		void add_sphere_joint(int b0, int b1, Vector3 connect, Vector3 axis);
+		
 		void set_force(int32_t id, Vector3 force);
 		int32_t nearest_point(Vector3 origin, Vector3 normal) const;
 		Vector3 get_position(int32_t id) const;

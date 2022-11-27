@@ -8,7 +8,6 @@
 
 namespace pbd {
 
-
 	enum class Shape {
 		Capsule,
 		OBB,

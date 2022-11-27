@@ -17,9 +17,9 @@ var drag_interp: float
 var drag_force: float = 3.0
 var drag_prior: Vector2
 
-var prefab
-
 var skeleton
+
+var bodies = []
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -43,13 +43,15 @@ func _ready():
 		tot_mass += 0.1 * tet_volume(p[tet[0]],p[tet[1]],p[tet[2]],p[tet[3]])
 	
 	var radius = 0.9
-	var imass = len(p) / tot_mass
+	var imass = 0.0
 	
 	for x in p:
 		engine.add_particle(
 			x,
 			imass,
 			radius)
+		
+		imass = len(p) / tot_mass
 	
 	var compliance = 1e-3
 	
@@ -68,7 +70,26 @@ func _ready():
 	
 	# Ordering of indices doesn't matter anymore, except to determine the origin
 	engine.set_tracker(3, 0, 1, 2)
-
+	
+	
+	bodies.append(engine.add_capsule(
+		$Capsule.transform.origin, 
+		$Capsule.transform.basis,
+		0.0,
+		$Capsule.height,
+		$Capsule.radius 
+	))
+	bodies.append(engine.add_capsule(
+		$Capsule2.transform.origin, 
+		$Capsule2.transform.basis,
+		1.0,
+		$Capsule2.height,
+		$Capsule2.radius 
+	))
+	
+	var joint = $Capsule.translation
+	joint.y = 0.0
+	engine.add_hinge_joint(bodies[0], bodies[1], joint, Vector3(1,0,0))
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _physics_process(delta):
@@ -88,6 +109,9 @@ func _physics_process(delta):
 	
 	var form = engine.get_tracker_transform()
 	skeleton.set_bone_pose(0, form)
+	
+	$Capsule.transform = engine.get_rigid_body_transform(bodies[0])
+	$Capsule2.transform = engine.get_rigid_body_transform(bodies[1])
 
 func _input(event):
 	if event is InputEventMouseButton and event.button_index == 1:

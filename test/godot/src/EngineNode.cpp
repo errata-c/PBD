@@ -36,6 +36,12 @@ namespace godot {
 
 		register_method("set_tracker", &EngineNode::set_tracker);
 		register_method("get_tracker_transform", &EngineNode::get_tracker_transform);
+
+		register_method("add_capsule", &EngineNode::add_capsule);
+		register_method("add_fixed_constraint", &EngineNode::add_fixed_constraint);
+		register_method("add_hinge_joint", &EngineNode::add_hinge_joint);
+		register_method("add_sphere_joint", &EngineNode::add_sphere_joint);
+		register_method("get_rigid_body_transform", &EngineNode::get_rigid_body_transform);
 	}
 
 	EngineNode::EngineNode() 
@@ -112,6 +118,128 @@ namespace godot {
 			deviatoric_compliance
 			});
 	}
+
+
+
+	int EngineNode::add_capsule(Vector3 pos, Basis basis, float imass, float height, float radius) {
+		// Add a rigid body
+		pbd::RigidBody body;
+		body.angular_velocity = glm::vec3(0);
+		body.velocity = glm::vec3(0);
+
+		body.collision_groups = 0;
+		body.collision_mask = 0;
+		body.dims = glm::vec3(radius, height, 0);
+		body.imass = imass;
+		
+		{
+			glm::mat3 tmp;
+			tmp[0] = glm::vec3(basis.x[0], basis.x[1], basis.x[2]);
+			tmp[1] = glm::vec3(basis.y[0], basis.y[1], basis.y[2]);
+			tmp[2] = glm::vec3(basis.z[0], basis.z[1], basis.z[2]);
+
+			body.orientation = glm::quat_cast(tmp);
+			body.position = glm::vec3(pos[0], pos[1], pos[2]);
+		}
+
+		body.shape = pbd::Shape::Capsule;
+		
+		return engine.bodies.list.add(body);
+	}
+	Transform EngineNode::get_rigid_body_transform(int i) {
+		const pbd::RigidBody & body = engine.bodies.list[i];
+		glm::mat3 _basis = glm::transpose(glm::mat3_cast(body.orientation));
+
+		Basis basis(
+			Vector3(_basis[0][0], _basis[0][1], _basis[0][2]),
+			Vector3(_basis[1][0], _basis[1][1], _basis[1][2]),
+			Vector3(_basis[2][0], _basis[2][1], _basis[2][2])
+		);
+
+		Vector3 origin(body.position.x, body.position.y, body.position.z);
+
+		return Transform(basis, origin);
+	}
+	void EngineNode::add_fixed_constraint(int i0, int i1) {
+		const pbd::RigidBody& b0 = engine.bodies.list[i0];
+		const pbd::RigidBody& b1 = engine.bodies.list[i1];
+
+		glm::vec3 mp = (b0.position + b1.position) * 0.5f;
+
+		pbd::CFixed joint;
+		joint.info[0].id = i0;
+		joint.info[0].r = b0.to_local(mp);
+
+		joint.info[1].id = i1;
+		joint.info[1].r = b1.to_local(mp);
+
+		joint.alignment = b0.orientation * glm::conjugate(b1.orientation);
+		joint.angular_compliance = 0.f;
+		joint.positional_compliance = 0.f;
+
+		engine.constraints.add(joint);
+	}
+	void EngineNode::add_hinge_joint(int i0, int i1, Vector3 connect, Vector3 _axis) {
+		const pbd::RigidBody& b0 = engine.bodies.list[i0];
+		const pbd::RigidBody& b1 = engine.bodies.list[i1];
+
+		glm::vec3 mp(connect[0], connect[1], connect[2]);
+		glm::vec3 axis(_axis[0], _axis[1], _axis[2]);
+		glm::vec3 up = glm::cross(axis, glm::vec3(0,0,1));
+		if (glm::dot(up, up) < 1e-5f) {
+			up = glm::cross(axis, glm::vec3(1,0,0));
+		}
+		
+		up = glm::normalize(up);
+
+		pbd::CHingeJoint joint;
+		joint.info[0].id = i0;
+		joint.info[0].r = b0.to_local(mp);
+		joint.info[0].a = b0.to_local_vector(axis);
+		joint.info[0].b = b0.to_local_vector(up);
+
+		joint.info[1].id = i1;
+		joint.info[1].r = b1.to_local(mp);
+		joint.info[1].a = b1.to_local_vector(axis);
+		joint.info[1].b = b1.to_local_vector(up);
+
+		joint.components = 0;
+		joint.angular_compliance = 0.f;
+		joint.positional_compliance = 0.f;
+
+		engine.constraints.add(joint);
+	}
+	void EngineNode::add_sphere_joint(int i0, int i1, Vector3 connect, Vector3 _axis) {
+		const pbd::RigidBody& b0 = engine.bodies.list[i0];
+		const pbd::RigidBody& b1 = engine.bodies.list[i1];
+
+		glm::vec3 mp(connect[0], connect[1], connect[2]);
+		glm::vec3 axis(_axis[0], _axis[1], _axis[2]);
+		glm::vec3 up = glm::cross(axis, glm::vec3(0, 0, 1));
+		if (glm::dot(up, up) < 1e-5f) {
+			up = glm::cross(axis, glm::vec3(1, 0, 0));
+		}
+
+		up = glm::normalize(up);
+
+		pbd::CSphereJoint joint;
+		joint.info[0].id = i0;
+		joint.info[0].r = b0.to_local(mp);
+		joint.info[0].a = b0.to_local_vector(axis);
+		joint.info[0].b = b0.to_local_vector(up);
+
+		joint.info[1].id = i1;
+		joint.info[1].r = b1.to_local(mp);
+		joint.info[1].a = b1.to_local_vector(axis);
+		joint.info[1].b = b1.to_local_vector(up);
+
+		joint.components = 0;
+		joint.compliance = 0.f;
+
+		engine.constraints.add(joint);
+	}
+
+
 
 	void EngineNode::set_multi_mesh_instance(MultiMeshInstance* node) {
 		mminst = node;

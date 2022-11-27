@@ -7,6 +7,7 @@
 #include <pbd/engine/constraint/body/Align.hpp>
 #include <pbd/engine/constraint/body/AttachBody.hpp>
 #include <pbd/engine/constraint/body/AttachParticle.hpp>
+#include <pbd/engine/constraint/body/Fixed.hpp>
 #include <pbd/engine/constraint/body/HingeJoint.hpp>
 #include <pbd/engine/constraint/body/PrismaticJoint.hpp>
 #include <pbd/engine/constraint/body/SphereJoint.hpp>
