@@ -23,10 +23,10 @@ namespace pbd {
 		}};
 
 		std::array<int32_t, 4> ids;
-		float volume;
-		float compliance;
+		real_t volume;
+		real_t compliance;
 
-		void eval(Engine & engine, float rdt2) const;
+		void eval(Engine & engine, real_t rdt2) const;
 
 		void remap(int32_t particle_offset, int32_t body_offset);
 		void transform(const Transform3& form);

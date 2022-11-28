@@ -29,8 +29,8 @@ namespace pbd {
 		size_t size() const noexcept;
 		bool empty() const noexcept;
 
-		int32_t add(const glm::vec3& position, const glm::vec3& velocity, float invMass, float radius, uint32_t _group = 0u, uint32_t _mask = 0u);
-		int32_t add(const glm::vec3& position, float invMass, float radius, uint32_t _group = 0u, uint32_t _mask = 0u);
+		int32_t add(const vec3_t& position, const vec3_t& velocity, real_t invMass, real_t radius, uint32_t _group = 0u, uint32_t _mask = 0u);
+		int32_t add(const vec3_t& position, real_t invMass, real_t radius, uint32_t _group = 0u, uint32_t _mask = 0u);
 		int32_t add(const PrefabParticle& particle);
 		int32_t add(const PrefabParticle& particle, const Transform3& form);
 

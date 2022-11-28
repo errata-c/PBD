@@ -10,44 +10,44 @@ namespace pbd {
 	// Can't make an array of references, so pointers are necessary
 	void apply_positional_correction(
 		std::array<RigidBody*, 2> b,
-		std::array<const glm::vec3*, 2> r,
-		glm::vec3 n,
-		float alpha
+		std::array<const vec3_t*, 2> r,
+		vec3_t n,
+		real_t alpha
 	);
 	// Positional correction involving a rigid body and a particle.
 	void apply_positional_correction(
 		RigidBody* b,
 		Particle* p,
-		const glm::vec3* r,
-		glm::vec3 n,
-		float alpha
+		const vec3_t* r,
+		vec3_t n,
+		real_t alpha
 	);
 	void apply_angular_correction(
 		std::array<RigidBody*, 2> b,
-		glm::vec3 n,
-		float alpha
+		vec3_t n,
+		real_t alpha
 	);
 
 	// This function is slow, there may be a better way to do this.
 	void apply_angular_limit(
 		std::array<RigidBody*, 2> b,
-		const glm::vec3& n,
-		const glm::vec3& n1,
-		const glm::vec3& n2,
-		float min_angle,
-		float max_angle,
-		float alpha
+		const vec3_t& n,
+		const vec3_t& n1,
+		const vec3_t& n2,
+		real_t min_angle,
+		real_t max_angle,
+		real_t alpha
 	);
 
 	/*
 	void apply_angular_limit(
 		std::array<RigidBody*, 2> b,
-		const glm::vec3& n,
-		const glm::vec3& n1,
-		const glm::vec3& n2,
-		float min_angle,
-		float max_angle,
-		float alpha
+		const vec3_t& n,
+		const vec3_t& n1,
+		const vec3_t& n2,
+		real_t min_angle,
+		real_t max_angle,
+		real_t alpha
 	);
 	*/
 }

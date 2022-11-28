@@ -27,19 +27,19 @@ namespace pbd {
 		return first;
 	}
 
-	void CTetra::eval(Engine & engine, float rdt2) const {
+	void CTetra::eval(Engine & engine, real_t rdt2) const {
 		std::array<Particle*, 4> p;
 		// Fetch the addresses of the positions
 		for (int i = 0; i < ids.size(); ++i) {
 			p[i] = &engine.particles.list[ids[i]];
 		}
 
-		std::array<glm::vec3, 4> grads;
+		std::array<vec3_t, 4> grads;
 
-		float w = 0;
+		real_t w = 0;
 		for (int i = 0; i < 4; ++i) {
-			glm::vec3 t0 = p[faceOrder[i][1]]->position - p[faceOrder[i][0]]->position;
-			glm::vec3 t1 = p[faceOrder[i][2]]->position - p[faceOrder[i][0]]->position;
+			vec3_t t0 = p[faceOrder[i][1]]->position - p[faceOrder[i][0]]->position;
+			vec3_t t1 = p[faceOrder[i][2]]->position - p[faceOrder[i][0]]->position;
 
 			grads[i] = glm::cross(t0, t1);
 			grads[i] *= (1.0 / 6.0);
@@ -55,18 +55,18 @@ namespace pbd {
 		}
 
 		// Calculate the volume
-		float currentVolume = 0;
+		real_t currentVolume = 0;
 		{
-			glm::vec3 t0 = p[1]->position - p[0]->position;
-			glm::vec3 t1 = p[2]->position - p[0]->position;
-			glm::vec3 t2 = p[3]->position - p[0]->position;
+			vec3_t t0 = p[1]->position - p[0]->position;
+			vec3_t t1 = p[2]->position - p[0]->position;
+			vec3_t t2 = p[3]->position - p[0]->position;
 
-			glm::vec3 t3 = glm::cross(t0, t1);
+			vec3_t t3 = glm::cross(t0, t1);
 			currentVolume = glm::dot(t3, t2) / 6.0;
 		}
 
 		// Apply the deltas
-		float lambda = -(currentVolume - volume) / w;
+		real_t lambda = -(currentVolume - volume) / w;
 		for (int i = 0; i < 4; ++i) {
 			p[i]->position += lambda * p[i]->imass * grads[i];
 		}

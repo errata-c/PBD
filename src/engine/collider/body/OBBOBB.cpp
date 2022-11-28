@@ -16,7 +16,7 @@
 namespace pbd {
 #define dDOTpq(a, b, p, q) ((a)[0] * (b)[0] + (a)[p] * (b)[q] + (a)[2 * (p)] * (b)[2 * (q)])
 
-using real_t = float;
+using real_t = real_t;
 using vec3_t = glm::tvec3<real_t>;
 using mat3_t = glm::tmat3x3<real_t>;
 

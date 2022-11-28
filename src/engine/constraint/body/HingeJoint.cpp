@@ -68,7 +68,7 @@ namespace pbd {
 		return first;
 	}
 
-	void CHingeJoint::eval(Engine& engine, float rdt2) const {
+	void CHingeJoint::eval(Engine& engine, real_t rdt2) const {
 		// First calculate the positional correction.
 		std::array<RigidBody*, 2> bodies;
 		bodies[0] = &engine.bodies.list[info[0].id];
@@ -81,23 +81,23 @@ namespace pbd {
 			positional_compliance * rdt2
 		);
 
-		std::array<glm::vec3, 2> a;
+		std::array<vec3_t, 2> a;
 		for (int i: iter::range(2)) {
 			a[i] = bodies[i]->to_world_vector(info[i].a);
 		}
 
-		glm::vec3 n = glm::cross(a[0], a[1]);
+		vec3_t n = glm::cross(a[0], a[1]);
 		apply_angular_correction(bodies, n, angular_compliance * rdt2);
 
 		if (components) {
-			std::array<glm::vec3, 2> b;
+			std::array<vec3_t, 2> b;
 			for (int i: iter::range(2)) {
 				b[i] = bodies[i]->to_world_vector(info[i].b);
 			}
 
 			// Always apply the target before the limit, so the limit can work properly.
 			if (components & TargetBit) {
-				glm::vec3 btarget = glm::rotate(glm::angleAxis(target.angle, a[0]), b[0]);
+				vec3_t btarget = glm::rotate(glm::angleAxis(target.angle, a[0]), b[0]);
 				apply_angular_correction(bodies, glm::cross(btarget, b[1]), target.compliance * rdt2);
 			}
 			if (components & LimitBit) {

@@ -14,14 +14,14 @@ namespace pbd {
 
 		static constexpr ConstraintType Kind = ConstraintType::Distance;
 
-		void eval(Engine& engine, float rdt2) const;
+		void eval(Engine& engine, real_t rdt2) const;
 		
 		void remap(int32_t particle_offset, int32_t body_offset);
 		void transform(const Transform3& form);
 
 		int32_t p0, p1;
-		float length;
-		float compliance;
+		real_t length;
+		real_t compliance;
 	};
 
 	static_assert(alignof(CDistance) == alignof(int32_t));

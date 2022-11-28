@@ -43,7 +43,7 @@ namespace pbd {
 		return first;
 	}
 
-	void CFixed::eval(Engine& engine, float rdt2) const {
+	void CFixed::eval(Engine& engine, real_t rdt2) const {
 		// First calculate the positional correction.
 		std::array<RigidBody*, 2> b;
 		b[0] = &engine.bodies.list[info[0].id];
@@ -52,8 +52,8 @@ namespace pbd {
 		apply_positional_correction(b, {&info[0].r, &info[1].r}, b[1]->to_world(info[1].r) - b[0]->to_world(info[0].r), positional_compliance * rdt2);
 
 		// Calculate the angular correction
-		glm::quat tmp = (b[0]->orientation * alignment) * glm::conjugate(b[1]->orientation);
-		apply_angular_correction(b, 2.f * glm::vec3(tmp.x, tmp.y, tmp.z), angular_compliance * rdt2);
+		quat_t tmp = (b[0]->orientation * alignment) * glm::conjugate(b[1]->orientation);
+		apply_angular_correction(b, 2.f * vec3_t(tmp.x, tmp.y, tmp.z), angular_compliance * rdt2);
 	}
 
 	void CFixed::remap(int32_t particle_offset, int32_t body_offset) {

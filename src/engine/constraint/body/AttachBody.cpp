@@ -31,8 +31,8 @@ namespace pbd {
 		return first;
 	}
 
-	void CAttachBody::eval(Engine& engine, float rdt2) const {
-		float alpha = (compliance * rdt2);
+	void CAttachBody::eval(Engine& engine, real_t rdt2) const {
+		real_t alpha = (compliance * rdt2);
 
 		// First calculate the positional correction.
 		std::array<RigidBody*, 2> b;

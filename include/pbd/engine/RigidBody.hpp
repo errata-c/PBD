@@ -1,10 +1,6 @@
 #pragma once
 #include <cinttypes>
-#include <glm/vec3.hpp>
-#include <glm/gtc/quaternion.hpp>
-#include <glm/gtx/quaternion.hpp>
 #include <pbd/common/Types.hpp>
-#include <pbd/common/Transform.hpp>
 
 namespace pbd {
 
@@ -21,44 +17,88 @@ namespace pbd {
 		collision_groups, collision_mask, position, velocity, imass, and the first element of dims (radius)
 	*/
 	class RigidBody {
-	public:	
+	public:
 		uint32_t collision_groups, collision_mask;
 
-		glm::vec3 position, velocity;
+		vec3_t position, velocity;
 
-		float imass;
+		real_t imass;
 
 		// Sphere uses first dim as radius
 		// Cylinder and Capsule use first as radius, and second as height
 		// OBB uses dims as the half extents of the box
-		glm::vec3 dims;
+		vec3_t dims;
 
-		glm::quat orientation;
-		glm::vec3 angular_velocity;
+		quat_t orientation;
+		vec3_t angular_velocity;
 
-		// This is the inverse of the inertial tensor!
-		glm::vec3 inertia;
+		// reciprocal of the inertial tensor (simplified to a 3 component vector)
+
+		vec3_t inverse_inertia;
 		
 		Shape shape;
 
+		RigidBody();
+		RigidBody(
+			Shape shape, 
+			const Transform3& form, 
+			real_t imass, 
+			const vec3_t& dims, 
+			uint32_t cgroups = 0, 
+			uint32_t cmask = 0
+		);
+		RigidBody(
+			Shape shape,
+			const vec3_t& position,
+			const quat_t& orientation,
+			real_t imass,
+			const vec3_t& dims,
+			uint32_t cgroups = 0,
+			uint32_t cmask = 0
+		);
+		RigidBody(
+			Shape shape, 
+			const Transform3& form, 
+			real_t imass, 
+			const vec3_t& dims, 
+			const vec3_t& velocity, 
+			const vec3_t& angular_velocity,
+			uint32_t cgroups = 0,
+			uint32_t cmask = 0
+		);
+		RigidBody(
+			Shape shape,
+			const vec3_t& position,
+			const quat_t& orientation,
+			real_t imass,
+			const vec3_t& dims,
+			const vec3_t& velocity,
+			const vec3_t& angular_velocity,
+			uint32_t cgroups = 0,
+			uint32_t cmask = 0
+		);
 
-		float& width() noexcept;
-		const float& width() const noexcept;
-		float& radius() noexcept;
-		const float& radius() const noexcept;
-		float& height() noexcept;
-		const float& height() const noexcept;
-		float& depth() noexcept;
-		const float& depth() const noexcept;
+		// Update the mass value, also recalculates the inertial tensor
+		void set_mass(real_t mass) noexcept;
+		void set_imass(real_t _imass) noexcept;
+
+		real_t& width() noexcept;
+		const real_t& width() const noexcept;
+		real_t& radius() noexcept;
+		const real_t& radius() const noexcept;
+		real_t& height() noexcept;
+		const real_t& height() const noexcept;
+		real_t& depth() noexcept;
+		const real_t& depth() const noexcept;
 
 		BBox3 bounds() const noexcept;
-		BBox3 skewed_bounds(float delta) const noexcept;
+		BBox3 skewed_bounds(real_t delta) const noexcept;
 		void calculate_inertia();
 
-		glm::vec3 to_local_vector(const glm::vec3& v) const noexcept;
-		glm::vec3 to_world_vector(const glm::vec3& v) const noexcept;
-		glm::vec3 to_local(const glm::vec3& v) const noexcept;
-		glm::vec3 to_world(const glm::vec3& v) const noexcept;
+		vec3_t to_local_vector(const vec3_t& v) const noexcept;
+		vec3_t to_world_vector(const vec3_t& v) const noexcept;
+		vec3_t to_local(const vec3_t& v) const noexcept;
+		vec3_t to_world(const vec3_t& v) const noexcept;
 
 		Transform3 transform() const noexcept;
 	};

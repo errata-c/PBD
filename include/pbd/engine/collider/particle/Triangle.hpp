@@ -13,6 +13,6 @@ namespace pbd {
 		// Colliding particle id.
 		int32_t q;
 		// Projection distance from plane.
-		float h;
+		real_t h;
 	};
 }

@@ -6,11 +6,11 @@
 
 namespace pbd {
 	std::optional<Collision> particle_particle_collide(const Particle & p0, const Particle& p1) {
-		float threshold = p0.radius + p1.radius;
+		real_t threshold = p0.radius + p1.radius;
 		threshold = threshold * threshold;
 
-		glm::vec3 normal = p1.position - p0.position;
-		float dist = glm::dot(normal, normal);
+		vec3_t normal = p1.position - p0.position;
+		real_t dist = glm::dot(normal, normal);
 
 		if (dist < threshold) {
 			dist = std::sqrt(dist);
@@ -38,20 +38,20 @@ std::array<Particle*, 2> p{
 			&engine.particles.list[ids[1]]
 		};
 
-		float w0 = p[0]->imass;
-		float w1 = p[1]->imass;
+		real_t w0 = p[0]->imass;
+		real_t w1 = p[1]->imass;
 
-		float w = w0 + w1 + compliance * rdt2;
+		real_t w = w0 + w1 + compliance * rdt2;
 		if (w <= 1e-5f) {
 			// Zero mass particles do not move.
 			return;
 		}
 
 		// Grads 4x3
-		glm::vec3 grad = p[0]->position - p[1]->position;
-		float length = glm::length(grad);
-		float distance = p[0]->radius + p[1]->radius;
-		float C = length - distance;
+		vec3_t grad = p[0]->position - p[1]->position;
+		real_t length = glm::length(grad);
+		real_t distance = p[0]->radius + p[1]->radius;
+		real_t C = length - distance;
 		if (C >= 0.f || length < 1e-5f) {
 			// Do nothing when the constraint is above zero
 			// Also prevent divide by zero
@@ -60,7 +60,7 @@ std::array<Particle*, 2> p{
 
 		grad /= length;
 
-		float lambda = C / w;
+		real_t lambda = C / w;
 
 		// Update the positions for the next constraint to use.
 		p[0]->position += -lambda * w0 * grad;
@@ -70,8 +70,8 @@ std::array<Particle*, 2> p{
 		// [(x0 - prev x0) - (x1 - prev x1)] perpendicular to normal (x0 - x1, see grad above)
 
 		// Current positional deltas for the substep.
-		glm::vec3 px0 = p[0]->position - engine.particles.prevPos[ids[0]];
-		glm::vec3 px1 = p[1]->position - engine.particles.prevPos[ids[1]];
+		vec3_t px0 = p[0]->position - engine.particles.prevPos[ids[0]];
+		vec3_t px1 = p[1]->position - engine.particles.prevPos[ids[1]];
 
 		// Friction normal is the grad
 		px0 = perpendicular(px0, grad);

@@ -20,25 +20,25 @@ namespace pbd {
 		return ez::deserialize::f32(first, last, out.compliance);
 	}
 
-	void CDistance::eval(Engine& engine, float rdt2) const {
+	void CDistance::eval(Engine& engine, real_t rdt2) const {
 		Particle& part0 = engine.particles.list[p0];
 		Particle& part1 = engine.particles.list[p1];
 
-		float w0 = part0.imass;
-		float w1 = part1.imass;
+		real_t w0 = part0.imass;
+		real_t w1 = part1.imass;
 
-		float w = w0 + w1 + (compliance * rdt2);
+		real_t w = w0 + w1 + (compliance * rdt2);
 		if (w <= 1e-5f) {
 			// Zero mass particles do not move.
 			return;
 		}
 
 		// references, we are going to modify these in place.
-		glm::vec3& x0 = part0.position;
-		glm::vec3& x1 = part1.position;
+		vec3_t& x0 = part0.position;
+		vec3_t& x1 = part1.position;
 		
-		glm::vec3 grad = x0 - x1;
-		float gradLen = glm::length(grad);
+		vec3_t grad = x0 - x1;
+		real_t gradLen = glm::length(grad);
 		if (gradLen <= 1e-5f) {
 			// Zero length gradient means zero length delta. No further work needed.
 			return;
@@ -48,11 +48,11 @@ namespace pbd {
 
 		// The lambda value determines how the movement is to be weighted.
 		// -C / (w1*|grad(C0)| + w2*|grad(C1)| + compliance / dt^2)
-		float C = (gradLen - length);
-		float lambda = C / w;
+		real_t C = (gradLen - length);
+		real_t lambda = C / w;
 
 		// Update the positions for the next constraint to use.
-		x0 += -lambda * w0 * grad;
+		x0 -= lambda * w0 * grad;
 		x1 += lambda * w1 * grad;
 	}
 

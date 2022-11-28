@@ -21,7 +21,7 @@ namespace pbd {
 
 		static constexpr ConstraintType Kind = ConstraintType::Fixed;
 
-		void eval(Engine& engine, float rdt2) const;
+		void eval(Engine& engine, real_t rdt2) const;
 
 		void remap(int32_t particle_offset, int32_t body_offset);
 		void transform(const Transform3& form);
@@ -30,14 +30,14 @@ namespace pbd {
 			int32_t id;
 
 			// Relative attachment point
-			glm::vec3 r;
+			vec3_t r;
 		};
 
 		std::array<BodyInfo, 2> info;
 
 		// The relative rotation from the first body to the second body's desired orientation.
-		glm::quat alignment;
+		quat_t alignment;
 
-		float positional_compliance, angular_compliance;
+		real_t positional_compliance, angular_compliance;
 	};
 }

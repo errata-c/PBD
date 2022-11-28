@@ -18,13 +18,13 @@ namespace pbd {
 			The capsule contacts an edge
 		*/
 
-		glm::quat orient = b1.orientation * glm::conjugate(b0.orientation);
-		glm::vec3 origin = rotate(glm::conjugate(b0.orientation), b1.position - b0.position);
+		quat_t orient = b1.orientation * glm::conjugate(b0.orientation);
+		vec3_t origin = rotate(glm::conjugate(b0.orientation), b1.position - b0.position);
 
-		glm::vec3 axis = rotate(orient, glm::vec3(0.f, 0.f, 1.f));
+		vec3_t axis = rotate(orient, vec3_t(0.f, 0.f, 1.f));
 
 		// Project the origin point onto the capsule line segment.
-		float t = -glm::dot(origin, axis);
+		real_t t = -glm::dot(origin, axis);
 
 		// If projection distance is greater than OBB max sphere, no collision
 		// Note: using pythagorean theorem here ('t' is wrong side of triangle)
@@ -36,7 +36,7 @@ namespace pbd {
 		// (Assuming that dims are always positive values!)
 		if (std::abs(t) > b1.dims.y) {
 			// Devolves into sphere OBB intersection
-			glm::vec3 tmp = origin + axis * glm::clamp(t, -b1.dims.y, b1.dims.y);
+			vec3_t tmp = origin + axis * glm::clamp(t, -b1.dims.y, b1.dims.y);
 			PointNorm pn = sdBox(tmp, b0.dims);
 			if (pn.distance < b1.radius()) {
 				Collision result;

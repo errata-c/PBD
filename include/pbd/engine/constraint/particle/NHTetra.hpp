@@ -21,21 +21,21 @@ namespace pbd {
 		static constexpr ConstraintType Kind = ConstraintType::NHTetra;
 
 		CNHTetra();
-		CNHTetra(const std::array<int32_t, 4> _ids, const glm::mat3& _irest, float hydro, float devia);
+		CNHTetra(const std::array<int32_t, 4> _ids, const glm::mat3& _irest, real_t hydro, real_t devia);
 		CNHTetra(
 			const std::array<int32_t, 4> _ids, 
-			const glm::vec3& p0,
-			const glm::vec3& p1,
-			const glm::vec3& p2,
-			const glm::vec3& p3,
-			float hydro, 
-			float devia);
+			const vec3_t& p0,
+			const vec3_t& p1,
+			const vec3_t& p2,
+			const vec3_t& p3,
+			real_t hydro, 
+			real_t devia);
 		
 		std::array<int32_t, 4> ids;
 		glm::mat3 inv_rest;
-		float hydrostatic_compliance, deviatoric_compliance;
+		real_t hydrostatic_compliance, deviatoric_compliance;
 
-		void eval(Engine& engine, float rdt2) const;
+		void eval(Engine& engine, real_t rdt2) const;
 
 		void remap(int32_t particle_offset, int32_t body_offset);
 		void transform(const Transform3& form);

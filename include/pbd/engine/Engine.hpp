@@ -1,7 +1,6 @@
 #pragma once
 #include <vector>
 #include <cinttypes>
-#include <glm/vec3.hpp>
 
 #include <pbd/common/Types.hpp>
 #include <pbd/engine/constraint/ConstraintList.hpp>
@@ -16,28 +15,28 @@ namespace pbd {
 
 		BBox3 world_bounds;
 
-		glm::vec3 gravity;
-		float dt;
+		vec3_t gravity;
+		real_t dt;
 		int substeps;
 
 		// Perhaps change the global friction to be a particle specific thing?
 		// The issue is that friction is calculated on a material pairing basis.
-		float kinetic_friction;
-		float static_friction;
+		real_t kinetic_friction;
+		real_t static_friction;
 
 		struct Particles {
 			// The particles data and their execution data
 			ParticleList list;
 
 			// The forces and previous positions of the particles
-			std::vector<glm::vec3> forces, prevPos;
+			std::vector<vec3_t> forces, prevPos;
 		} particles;
 		
 		struct Bodies {
 			BodyList list;
 
-			std::vector<glm::vec3> forces, torques, prevPos;
-			std::vector<glm::quat> prevOrientation;
+			std::vector<vec3_t> forces, torques, prevPos;
+			std::vector<quat_t> prevOrientation;
 
 		} bodies;
 
@@ -53,9 +52,9 @@ namespace pbd {
 	private:
 		void prepare_round();
 
-		void integrate_changes(float sdt);
-		void apply_constraints(float sdt);
-		void update_states(float sdt);
+		void integrate_changes(real_t sdt);
+		void apply_constraints(real_t sdt);
+		void update_states(real_t sdt);
 
 		void clear_forces();
 		void save_previous();

@@ -19,7 +19,7 @@ namespace pbd {
 
 		ConstraintRef(ConstraintType _kind, int32_t* _data) noexcept;
 
-		void eval(Engine& engine, float rdt2) const;
+		void eval(Engine& engine, real_t rdt2) const;
 
 		void remap(int32_t particle_offset, int32_t body_offset);
 		void transform(const Transform3& form);
@@ -42,7 +42,7 @@ namespace pbd {
 		ConstConstraintRef(const ConstraintRef & other) noexcept;
 		ConstConstraintRef(ConstraintType _kind, int32_t const* _data) noexcept;
 
-		void eval(Engine& engine, float rdt2) const;
+		void eval(Engine& engine, real_t rdt2) const;
 
 		ConstraintType type() const noexcept;
 

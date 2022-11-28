@@ -11,27 +11,24 @@ namespace pbd {
 	int32_t BodyList::add(
 		Shape shape,
 		const Transform3& form,
-		const glm::vec3& velocity,
-		const glm::vec3& angular_velocity,
-		float imass,
-		const glm::vec3& dims,
+		const vec3_t& velocity,
+		const vec3_t& angular_velocity,
+		real_t imass,
+		const vec3_t& dims,
 		uint32_t _group,
 		uint32_t _mask
 	) {
-		return add(RigidBody{
-			_group,
-			_mask,
-			
-			form.origin,
-			velocity,
+		return add(RigidBody(
+			shape,
+			form,
 			imass,
 			dims,
-
-			form.rotation,
+			velocity,
 			angular_velocity,
-			glm::vec3(0),
-			Shape::Sphere,
-		});
+
+			_group,
+			_mask
+		));
 	}
 	int32_t BodyList::add(
 		const RigidBody& body
@@ -44,101 +41,89 @@ namespace pbd {
 
 	int32_t BodyList::add_sphere(
 		const Transform3& form,
-		float imass,
-		float radius,
-		const glm::vec3& velocity,
-		const glm::vec3& angular_velocity,
+		real_t imass,
+		real_t radius,
+		const vec3_t& velocity,
+		const vec3_t& angular_velocity,
 		uint32_t _group,
 		uint32_t _mask
 	) {
-		return add(RigidBody{
-			_group,
-			_mask,
-			
-			form.origin, 
-			velocity, 
-			imass, 
-			glm::vec3(radius),
-
-			form.rotation, 
-			angular_velocity, 
-			glm::vec3(0), 
+		return add(RigidBody(
 			Shape::Sphere,
-		});
+			form,
+			imass,
+			vec3_t(radius, 0,0),
+			velocity,
+			angular_velocity,
+
+			_group,
+			_mask
+		));
 	}
 	int32_t BodyList::add_capsule(
 		const Transform3& form,
-		float imass,
-		float radius,
-		float height,
-		const glm::vec3& velocity,
-		const glm::vec3& angular_velocity,
+		real_t imass,
+		real_t radius,
+		real_t height,
+		const vec3_t& velocity,
+		const vec3_t& angular_velocity,
 		uint32_t _group,
 		uint32_t _mask
 	) {
-		return add(RigidBody{
-			_group,
-			_mask,
-			
-			form.origin,
-			velocity,
-			imass,
-			glm::vec3(radius, height, height),
-		
-			form.rotation,
-			angular_velocity,
-			glm::vec3(0),
+		return add(RigidBody(
 			Shape::Capsule,
-		});
+			form,
+			imass,
+			vec3_t(radius, height, 0),
+			velocity,
+			angular_velocity,
+
+			_group,
+			_mask
+		));
 	}
 	int32_t BodyList::add_cylinder(
 		const Transform3& form,
-		float imass,
-		float radius,
-		float height,
-		const glm::vec3& velocity,
-		const glm::vec3& angular_velocity,
+		real_t imass,
+		real_t radius,
+		real_t height,
+		const vec3_t& velocity,
+		const vec3_t& angular_velocity,
 		uint32_t _group,
 		uint32_t _mask
 	) {
-		return add(RigidBody{
-			_group,
-			_mask,
-
-			form.origin,
-			velocity,
-			imass,
-			glm::vec3(radius, height, height),
-
-			form.rotation,
-			angular_velocity,
-			glm::vec3(0),
+		return add(RigidBody(
 			Shape::Cylinder,
-			});
+			form,
+			imass,
+			vec3_t(radius, height, 0),
+			velocity,
+			angular_velocity,
+
+			_group,
+			_mask
+		));
 	}
 	int32_t BodyList::add_box(
 		const Transform3& form,
-		float imass,
-		const glm::vec3& dims,
-		const glm::vec3& velocity,
-		const glm::vec3& angular_velocity,
+		real_t imass,
+		const vec3_t& dims,
+		const vec3_t& velocity,
+		const vec3_t& angular_velocity,
 		uint32_t _group,
 		uint32_t _mask
 	) {
-		return add(RigidBody{
-			_group,
-			_mask,
-
-			form.origin,
-			velocity,
+		return add(RigidBody(
+			Shape::OBB,
+			form,
 			imass,
 			dims,
-
-			form.rotation,
+			velocity,
 			angular_velocity,
-			glm::vec3(0),
-			Shape::OBB,
-		});
+
+			_group,
+			_mask
+		));
 	}
 
 	//int32_t add(const PrefabParticle& particle);

@@ -1,12 +1,12 @@
 #pragma once
 #include <array>
 #include <optional>
-#include <glm/vec3.hpp>
+#include <pbd/common/Types.hpp>
 
 namespace pbd {
 	struct Collision {
-		std::array<glm::vec3, 2> contacts;
-		glm::vec3 normal;
-		float depth;
+		std::array<vec3_t, 2> contacts;
+		vec3_t normal;
+		real_t depth;
 	};
 }

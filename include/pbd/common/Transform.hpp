@@ -187,8 +187,8 @@ namespace pbd {
 				rotation = glm::tcomplex<T>(-normVec.y, normVec.x);
 			}
 			else {
-				glm::vec3 look = localZ();
-				glm::vec3 up = glm::cross(normVec, look);
+				vec3_t look = localZ();
+				vec3_t up = glm::cross(normVec, look);
 				rotation = glm::quatLookAtLH(look, up);
 			}
 			return *this;
@@ -398,7 +398,4 @@ namespace pbd {
 		T size;
 		rot_t rotation;
 	};
-
-	using Transform2 = Transform<float, 2>;
-	using Transform3 = Transform<float, 3>;
 }

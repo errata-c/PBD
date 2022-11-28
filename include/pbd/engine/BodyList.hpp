@@ -1,7 +1,7 @@
 #pragma once
 #include <vector>
 #include <cinttypes>
-#include <pbd/common/Transform.hpp>
+#include <pbd/common/Types.hpp>
 #include <pbd/engine/RigidBody.hpp>
 
 namespace pbd {
@@ -28,10 +28,10 @@ namespace pbd {
 		int32_t add(
 			Shape shape, 
 			const Transform3 & form,
-			const glm::vec3 & velocity, 
-			const glm::vec3 & angular_velocity,
-			float imass,
-			const glm::vec3 & dims,
+			const vec3_t & velocity, 
+			const vec3_t & angular_velocity,
+			real_t imass,
+			const vec3_t & dims,
 			uint32_t _group = 0u, 
 			uint32_t _mask = 0u
 		);
@@ -41,39 +41,39 @@ namespace pbd {
 
 		int32_t add_sphere(
 			const Transform3& form, 
-			float imass, 
-			float radius, 
-			const glm::vec3& velocity = glm::vec3(0.f),
-			const glm::vec3& angular_velocity = glm::vec3(0.f),
+			real_t imass, 
+			real_t radius, 
+			const vec3_t& velocity = vec3_t(0.f),
+			const vec3_t& angular_velocity = vec3_t(0.f),
 			uint32_t _group = 0u,
 			uint32_t _mask = 0u
 		);
 		int32_t add_capsule(
 			const Transform3& form,
-			float imass,
-			float radius,
-			float height,
-			const glm::vec3& velocity = glm::vec3(0.f),
-			const glm::vec3& angular_velocity = glm::vec3(0.f),
+			real_t imass,
+			real_t radius,
+			real_t height,
+			const vec3_t& velocity = vec3_t(0.f),
+			const vec3_t& angular_velocity = vec3_t(0.f),
 			uint32_t _group = 0u,
 			uint32_t _mask = 0u
 		);
 		int32_t add_cylinder(
 			const Transform3& form,
-			float imass,
-			float radius,
-			float height,
-			const glm::vec3& velocity = glm::vec3(0.f),
-			const glm::vec3& angular_velocity = glm::vec3(0.f),
+			real_t imass,
+			real_t radius,
+			real_t height,
+			const vec3_t& velocity = vec3_t(0.f),
+			const vec3_t& angular_velocity = vec3_t(0.f),
 			uint32_t _group = 0u,
 			uint32_t _mask = 0u
 		);
 		int32_t add_box(
 			const Transform3& form,
-			float imass,
-			const glm::vec3 & dims,
-			const glm::vec3& velocity = glm::vec3(0.f),
-			const glm::vec3& angular_velocity = glm::vec3(0.f),
+			real_t imass,
+			const vec3_t & dims,
+			const vec3_t& velocity = vec3_t(0.f),
+			const vec3_t& angular_velocity = vec3_t(0.f),
 			uint32_t _group = 0u,
 			uint32_t _mask = 0u
 		);

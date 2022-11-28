@@ -9,7 +9,7 @@ namespace pbd {
 	public:
 		uint32_t collision_groups, collision_mask;
 
-		glm::vec3 position, velocity;
-		float imass, radius;
+		vec3_t position, velocity;
+		real_t imass, radius;
 	};
 }

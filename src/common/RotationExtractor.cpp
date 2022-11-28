@@ -34,7 +34,7 @@ namespace pbd {
 
 		return q;
 	}
-	static glm::mat3 tetraMatrix(const glm::vec3 & p0, const glm::vec3& p1, const glm::vec3& p2, const glm::vec3& p3) {
+	static glm::mat3 tetraMatrix(const vec3_t & p0, const vec3_t& p1, const vec3_t& p2, const vec3_t& p3) {
 		return glm::mat3(
 			p1 - p0,
 			p2 - p0,
@@ -46,19 +46,19 @@ namespace pbd {
 		: rotation(1.f)
 		, prior(1.f, 0.f, 0.f, 0.f)
 	{}
-	RotationExtractor::RotationExtractor(const glm::vec3& p0, const glm::vec3& p1, const glm::vec3& p2, const glm::vec3& p3)
+	RotationExtractor::RotationExtractor(const vec3_t& p0, const vec3_t& p1, const vec3_t& p2, const vec3_t& p3)
 	{
 		reset(p0, p1, p2, p3);
 	}
 
-	void RotationExtractor::reset(const glm::vec3& p0, const glm::vec3& p1, const glm::vec3& p2, const glm::vec3& p3) {
+	void RotationExtractor::reset(const vec3_t& p0, const vec3_t& p1, const vec3_t& p2, const vec3_t& p3) {
 		// Calculate the matrix from the tetrahedra
 		rotation = tetraMatrix(p0, p1, p2, p3);
 		rotation = glm::orthonormalize(rotation);
 		prior = glm::quat_cast(rotation);
 	}
 
-	void RotationExtractor::update(const glm::vec3& p0, const glm::vec3& p1, const glm::vec3& p2, const glm::vec3& p3) {
+	void RotationExtractor::update(const vec3_t& p0, const vec3_t& p1, const vec3_t& p2, const vec3_t& p3) {
 		// Warm start
 		prior = genericExtract(tetraMatrix(p0, p1, p2, p3), prior, 5);
 		rotation = glm::mat3_cast(prior);

@@ -17,17 +17,17 @@ namespace pbd {
 		return first;
 	}
 
-	void CPrismaticJoint::eval(Engine& engine, float rdt2) const {
+	void CPrismaticJoint::eval(Engine& engine, real_t rdt2) const {
 		// First calculate the positional correction.
 		std::array<RigidBody*, 2> bodies;
 		bodies[0] = &engine.bodies.list[info[0].id];
 		bodies[1] = &engine.bodies.list[info[1].id];
 
-		std::array<glm::vec3, 2> r;
+		std::array<vec3_t, 2> r;
 		for (int i: iter::range(2)) {
 			r[i] = bodies[i]->to_world(info[i].r);
 		}
-		glm::vec3 a = bodies[0]->to_world_vector(axis);
+		vec3_t a = bodies[0]->to_world_vector(axis);
 
 
 	}

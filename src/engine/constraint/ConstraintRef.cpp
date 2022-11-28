@@ -11,11 +11,11 @@ namespace pbd {
 
 	template<typename T>
 	struct CEvalFunctor {
-		void operator()(void * mdata, Engine& engine, float rdt2) {
+		void operator()(void * mdata, Engine& engine, real_t rdt2) {
 			((T*)mdata)->eval(engine, rdt2);
 		}
 	};
-	void ConstraintRef::eval(Engine& engine, float rdt2) const {
+	void ConstraintRef::eval(Engine& engine, real_t rdt2) const {
 		constraint_visitor<CEvalFunctor>(mkind, mdata, engine, rdt2);
 	}
 
@@ -60,7 +60,7 @@ namespace pbd {
 		: ref(_kind, const_cast<int32_t*>(_data))
 	{}
 
-	void ConstConstraintRef::eval(Engine& engine, float rdt2) const {
+	void ConstConstraintRef::eval(Engine& engine, real_t rdt2) const {
 		return ref.eval(engine, rdt2);
 	}
 

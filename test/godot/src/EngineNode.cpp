@@ -143,6 +143,9 @@ namespace godot {
 		}
 
 		body.shape = pbd::Shape::Capsule;
+
+		// This must be called!
+		body.calculate_inertia();
 		
 		return engine.bodies.list.add(body);
 	}

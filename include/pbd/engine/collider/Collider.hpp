@@ -19,8 +19,8 @@ namespace pbd {
 
 		Collider(int32_t i0, int32_t i1, ColliderType _type);
 		
-		void position_solve(Engine& engine, float dt);
-		void velocity_solve(Engine& engine, float dt);
+		void position_solve(Engine& engine, real_t dt);
+		void velocity_solve(Engine& engine, real_t dt);
 		
 		ColliderType type;
 		std::array<int32_t, 2> ids;

@@ -29,7 +29,7 @@ namespace pbd {
 		// If needed we can predict where the positions will be roughly, then find the collisions.
 		
 		// Run the iteration substeps.
-		float sdt = dt / float(substeps);
+		real_t sdt = dt / real_t(substeps);
 		for (int i = 0; i < substeps; ++i) {
 			integrate_changes(sdt);
 			apply_constraints(sdt);
@@ -39,21 +39,21 @@ namespace pbd {
 		clear_forces();
 	}
 
-	void Engine::integrate_changes(float sdt) {
+	void Engine::integrate_changes(real_t sdt) {
 		// Store these starting positions for comparison in the constraints.
 		save_previous();
 
 		for (int64_t i = 0, count = num_particles(); i < count; ++i) {
-			float imass = particles.list[i].imass;
+			real_t imass = particles.list[i].imass;
 			if (imass < 1e-5f) {
 				continue;
 			}
 
-			glm::vec3 & velocity = particles.list[i].velocity;
-			glm::vec3 & position = particles.list[i].position;
+			vec3_t & velocity = particles.list[i].velocity;
+			vec3_t & position = particles.list[i].position;
 
 			// External forces
-			const glm::vec3 & force = particles.forces[i];
+			const vec3_t & force = particles.forces[i];
 			
 			// Simple euler integration
 			velocity = velocity + sdt * (gravity + force * imass);
@@ -61,47 +61,46 @@ namespace pbd {
 		}
 
 		for (int64_t i = 0, count = num_bodies(); i < count; ++i) {
-			float imass = bodies.list[i].imass;
+			real_t imass = bodies.list[i].imass;
 			if (imass < 1e-5f) {
 				continue;
 			}
 
 			RigidBody & body = bodies.list[i];
 
-			glm::vec3& velocity = body.velocity;
-			glm::vec3& position = body.position;
+			vec3_t& velocity = body.velocity;
+			vec3_t& position = body.position;
 
 			// External forces
-			const glm::vec3& force = bodies.forces[i];
+			const vec3_t& force = bodies.forces[i];
 
 			// Simple euler integration
 			velocity = velocity + sdt * (gravity + force * imass);
 			position = position + sdt * velocity;
 
-
-			glm::vec3& angular_velocity = body.angular_velocity;
-			glm::quat& orientation = body.orientation;
+			vec3_t& angular_velocity = body.angular_velocity;
+			quat_t& orientation = body.orientation;
 
 			// External torques
-			const glm::vec3 & torque = bodies.torques[i];
+			const vec3_t & torque = bodies.torques[i];
 
-			// We are assuming that inertia is non-zero.
-			glm::vec3 finertia = 1.f / body.inertia;
+			// Since imass is non-zero, inertia must be as well.
+			vec3_t inertia = 1.f / body.inverse_inertia;
 
-			angular_velocity = angular_velocity + sdt * body.inertia * (torque - glm::cross(angular_velocity, finertia * angular_velocity));
-			orientation = orientation + 0.5f * sdt * (glm::quat(0.f, angular_velocity.x, angular_velocity.y, angular_velocity.z) * orientation);
+			angular_velocity = angular_velocity + sdt * body.inverse_inertia * (torque - glm::cross(angular_velocity, inertia * angular_velocity));
+			orientation = orientation + 0.5f * sdt * (quat_t(0.f, angular_velocity.x, angular_velocity.y, angular_velocity.z) * orientation);
 			orientation = glm::normalize(orientation);
 		}
 	}
-	void Engine::apply_constraints(float sdt) {
+	void Engine::apply_constraints(real_t sdt) {
 		// Run all the constraints
 
-		float rdt2 = 1.f / (sdt * sdt);
+		real_t rdt2 = 1.f / (sdt * sdt);
 		for (int64_t i = 0, count = constraints.size(); i < count; ++i) {
 			constraints[i].eval(*this, rdt2);
 		}
 	}
-	void Engine::update_states(float sdt) {
+	void Engine::update_states(real_t sdt) {
 		sdt = 1.f / sdt;
 
 		{
@@ -116,8 +115,8 @@ namespace pbd {
 			auto oit = bodies.prevOrientation.begin();
 			for (RigidBody & body: bodies.list) {
 				body.velocity = (body.position - *pit) * sdt;
-				glm::quat deltao = body.orientation * glm::inverse(*oit);
-				body.angular_velocity = 2.f * glm::vec3(deltao.x, deltao.y, deltao.z) * sdt;
+				quat_t deltao = body.orientation * glm::inverse(*oit);
+				body.angular_velocity = 2.f * vec3_t(deltao.x, deltao.y, deltao.z) * sdt;
 
 				// Correct the sign
 				if (deltao.w < 0.f) {
@@ -151,19 +150,19 @@ namespace pbd {
 	}
 
 	void Engine::prepare_round() {
-		particles.forces.resize(num_particles(), glm::vec3(0));
-		bodies.forces.resize(num_bodies(), glm::vec3(0));
-		bodies.torques.resize(num_bodies(), glm::vec3(0));
+		particles.forces.resize(num_particles(), vec3_t(0));
+		bodies.forces.resize(num_bodies(), vec3_t(0));
+		bodies.torques.resize(num_bodies(), vec3_t(0));
 
-		particles.prevPos.resize(num_particles(), glm::vec3(0));
-		bodies.prevPos.resize(num_bodies(), glm::vec3(0));
-		bodies.prevOrientation.resize(num_bodies(), glm::quat(1.f, 0.f, 0.f, 0.f));
+		particles.prevPos.resize(num_particles(), vec3_t(0));
+		bodies.prevPos.resize(num_bodies(), vec3_t(0));
+		bodies.prevOrientation.resize(num_bodies(), quat_t(1.f, 0.f, 0.f, 0.f));
 	}
 
 	void Engine::clear_forces() {
-		std::fill(particles.forces.begin(), particles.forces.end(), glm::vec3(0.f));
-		std::fill(bodies.forces.begin(), bodies.forces.end(), glm::vec3(0.f));
-		std::fill(bodies.torques.begin(), bodies.torques.end(), glm::vec3(0.f));
+		std::fill(particles.forces.begin(), particles.forces.end(), vec3_t(0.f));
+		std::fill(bodies.forces.begin(), bodies.forces.end(), vec3_t(0.f));
+		std::fill(bodies.torques.begin(), bodies.torques.end(), vec3_t(0.f));
 	}
 	void Engine::save_previous() {
 		{

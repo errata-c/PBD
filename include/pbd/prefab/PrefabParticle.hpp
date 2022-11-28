@@ -1,7 +1,7 @@
 #pragma once
 #include <cinttypes>
 #include <string>
-#include <glm/vec3.hpp>
+#include <pbd/common/Types.hpp>
 
 namespace pbd {
 	// Particle for a prefab.
@@ -11,11 +11,11 @@ namespace pbd {
 		static const char* deserialize(const char* first, const char* last, PrefabParticle& particle);
 
 		PrefabParticle();
-		PrefabParticle(const glm::vec3 & _pos, float _imass, float _radius, uint32_t _cgroups, uint32_t _cmask);
-		PrefabParticle(const glm::vec3& _pos, const glm::vec3& _vel, float _imass, float _radius, uint32_t _cgroups, uint32_t _cmask);
+		PrefabParticle(const vec3_t & _pos, real_t _imass, real_t _radius, uint32_t _cgroups, uint32_t _cmask);
+		PrefabParticle(const vec3_t& _pos, const vec3_t& _vel, real_t _imass, real_t _radius, uint32_t _cgroups, uint32_t _cmask);
 		
-		glm::vec3 position, velocity;
-		float imass, radius;
+		vec3_t position, velocity;
+		real_t imass, radius;
 		uint32_t collision_groups, collision_mask;
 	};
 }

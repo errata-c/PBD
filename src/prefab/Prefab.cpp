@@ -84,11 +84,11 @@ namespace pbd {
 		return trackers.size();
 	}
 
-	int32_t Prefab::add_particle(const glm::vec3& _pos, float _imass, float _radius, uint32_t _groups, uint32_t _mask) {
+	int32_t Prefab::add_particle(const vec3_t& _pos, real_t _imass, real_t _radius, uint32_t _groups, uint32_t _mask) {
 		particles.emplace_back(_pos, _imass, _radius, _groups, _mask);
 		return static_cast<int32_t>(particles.size() - 1);
 	}
-	int32_t Prefab::add_particle(const glm::vec3& _pos, const glm::vec3& _vel, float _imass, float _radius, uint32_t _groups, uint32_t _mask) {
+	int32_t Prefab::add_particle(const vec3_t& _pos, const vec3_t& _vel, real_t _imass, real_t _radius, uint32_t _groups, uint32_t _mask) {
 		particles.emplace_back(_pos, _vel, _imass, _radius, _groups, _mask);
 		return static_cast<int32_t>(particles.size() - 1);
 	}

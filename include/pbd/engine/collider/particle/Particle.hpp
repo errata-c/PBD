@@ -11,9 +11,9 @@ namespace pbd {
 		//static constexpr Constraint Kind = Constraint::CollideParticle;
 
 		std::array<int32_t, 2> ids;
-		float compliance;
+		real_t compliance;
 
-		void eval(Engine& engine, float rdt2) const;
+		void eval(Engine& engine, real_t rdt2) const;
 
 		void remap(int32_t offset);
 	};

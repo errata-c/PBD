@@ -26,11 +26,11 @@ namespace pbd {
 		const std::array<int, 4>& ids() const noexcept;
 		
 		const glm::mat3 & basis() const noexcept;
-		const glm::vec3 & position() const noexcept;
+		const vec3_t & position() const noexcept;
 	private:
 		// Ids of the tetrahedra this rotation is extracted from.
 		std::array<int, 4> mids;
 		RotationExtractor mextractor;
-		glm::vec3 mposition;
+		vec3_t mposition;
 	};
 }

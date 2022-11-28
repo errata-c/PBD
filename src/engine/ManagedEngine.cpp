@@ -164,10 +164,10 @@ namespace pbd {
 		engine.solve();
 	}
 
-	const glm::vec3& ManagedEngine::get_gravity() const noexcept {
+	const vec3_t& ManagedEngine::get_gravity() const noexcept {
 		return engine.gravity;
 	}
-	void ManagedEngine::set_gravity(const glm::vec3& _gravity) noexcept {
+	void ManagedEngine::set_gravity(const vec3_t& _gravity) noexcept {
 		engine.gravity = _gravity;
 	}
 	void ManagedEngine::set_substeps(int count) {
@@ -178,23 +178,23 @@ namespace pbd {
 		return engine.substeps;
 	}
 
-	void ManagedEngine::set_static_friction(float friction) {
+	void ManagedEngine::set_static_friction(real_t friction) {
 		engine.static_friction = friction;
 	}
-	float ManagedEngine::get_static_friction() const noexcept {
+	real_t ManagedEngine::get_static_friction() const noexcept {
 		return engine.static_friction;
 	}
-	void ManagedEngine::set_kinetic_friction(float friction) {
+	void ManagedEngine::set_kinetic_friction(real_t friction) {
 		engine.kinetic_friction = friction;
 	}
-	float ManagedEngine::get_kinetic_friction() const noexcept {
+	real_t ManagedEngine::get_kinetic_friction() const noexcept {
 		return engine.kinetic_friction;
 	}
 
-	void ManagedEngine::set_timestep(float dt) {
+	void ManagedEngine::set_timestep(real_t dt) {
 		engine.dt = dt;
 	}
-	float ManagedEngine::get_timestep() const noexcept {
+	real_t ManagedEngine::get_timestep() const noexcept {
 		return engine.dt;
 	}
 }

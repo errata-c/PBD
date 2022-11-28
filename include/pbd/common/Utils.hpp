@@ -1,23 +1,19 @@
 #pragma once
 #include <iterator>
 #include <cinttypes>
-#include <glm/vec3.hpp>
-#include <glm/gtc/quaternion.hpp>
-#include <glm/gtx/quaternion.hpp>
-
-
+#include <pbd/common/Types.hpp>
 
 namespace pbd {
 	class Engine;
 
-	glm::vec3 rotate(const glm::quat& rot, const glm::vec3& vec);
-	glm::vec3 reverse_rotate(const glm::quat& rot, const glm::vec3& vec);
+	vec3_t rotate(const quat_t& rot, const vec3_t& vec);
+	vec3_t reverse_rotate(const quat_t& rot, const vec3_t& vec);
 
-	glm::vec3 perpendicular(const glm::vec3 & x, const glm::vec3 & n);
+	vec3_t perpendicular(const vec3_t & x, const vec3_t & n);
 
-	glm::vec3 friction_delta(const glm::vec3 & perp, float overlap, float sfriction, float kfriction);
+	vec3_t friction_delta(const vec3_t & perp, real_t overlap, real_t sfriction, real_t kfriction);
 
-	float tetrahedron_volume(const glm::vec3 & p0, const glm::vec3& p1, const glm::vec3& p2, const glm::vec3& p3);
+	real_t tetrahedron_volume(const vec3_t & p0, const vec3_t& p1, const vec3_t& p2, const vec3_t& p3);
 
 	// By default, assume the SFunction type has a static function called 'adapt', accepting a pointer or reference to value_type.
 	template<typename Iter, typename SFunction>

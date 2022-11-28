@@ -20,7 +20,7 @@ namespace pbd {
 
 		static constexpr ConstraintType Kind = ConstraintType::AttachBody;
 
-		void eval(Engine& engine, float rdt2) const;
+		void eval(Engine& engine, real_t rdt2) const;
 
 		void remap(int32_t particle_offset, int32_t body_offset);
 		void transform(const Transform3& form);
@@ -29,10 +29,10 @@ namespace pbd {
 			int32_t id;
 
 			// Relative attachment point
-			glm::vec3 r;
+			vec3_t r;
 		};
 
 		std::array<BodyInfo, 2> info;
-		float compliance;
+		real_t compliance;
 	};
 }

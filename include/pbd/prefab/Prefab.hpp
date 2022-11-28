@@ -40,8 +40,8 @@ namespace pbd {
 		size_t num_constraints() const noexcept;
 		size_t num_trackers() const noexcept;
 
-		int32_t add_particle(const glm::vec3& _pos, float _imass, float _radius, uint32_t _groups, uint32_t _mask);
-		int32_t add_particle(const glm::vec3& _pos, const glm::vec3& _vel, float _imass, float _radius, uint32_t _groups, uint32_t _mask);
+		int32_t add_particle(const vec3_t& _pos, real_t _imass, real_t _radius, uint32_t _groups, uint32_t _mask);
+		int32_t add_particle(const vec3_t& _pos, const vec3_t& _vel, real_t _imass, real_t _radius, uint32_t _groups, uint32_t _mask);
 
 		void add_tracker(std::string_view _name, int32_t p0, int32_t p1, int32_t p2, int32_t p3);
 

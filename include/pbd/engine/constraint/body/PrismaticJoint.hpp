@@ -16,7 +16,7 @@ namespace pbd {
 
 		static constexpr ConstraintType Kind = ConstraintType::PrismaticJoint;
 
-		void eval(Engine& engine, float rdt2) const;
+		void eval(Engine& engine, real_t rdt2) const;
 
 		void remap(int32_t particle_offset, int32_t body_offset);
 		void transform(const Transform3& form);
@@ -29,33 +29,33 @@ namespace pbd {
 
 		struct BodyInfo {
 			int32_t id;
-			glm::vec3 r;
+			vec3_t r;
 		};
 
 		// Id and body relative attachment point
 		std::array<BodyInfo, 2> info;
 
 		// The axis of linear motion
-		glm::vec3 axis;
+		vec3_t axis;
 
 		// The relative rotation from the first body to the second body.		
-		glm::quat alignment;
+		quat_t alignment;
 
 		// Inverse stiffness
-		float positional_compliance, angular_compliance;
+		real_t positional_compliance, angular_compliance;
 		
 		static constexpr uint32_t
 			TargetBit = 1;
 		uint32_t components;
 
 		struct Target {
-			float position;
-			float compliance;
+			real_t position;
+			real_t compliance;
 		} target;
 
 		struct Limit {
-			float min, max;
-			float compliance;
+			real_t min, max;
+			real_t compliance;
 		} limit;
 	};
 }

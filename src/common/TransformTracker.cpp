@@ -27,15 +27,15 @@ namespace pbd {
 	const glm::mat3& TransformTracker::basis() const noexcept {
 		return mextractor.rotation;
 	}
-	const glm::vec3& TransformTracker::position() const noexcept {
+	const vec3_t& TransformTracker::position() const noexcept {
 		return mposition;
 	}
 
 	void TransformTracker::reset(int i0, int i1, int i2, int i3, const ParticleList& particles) {
 		mids = {i0, i1, i2, i3};
-		glm::quat q(1.f, 0.f, 0.f, 0.f);
+		quat_t q(1.f, 0.f, 0.f, 0.f);
 
-		const glm::vec3
+		const vec3_t
 			& p0 = particles[mids[0]].position,
 			& p1 = particles[mids[1]].position,
 			& p2 = particles[mids[2]].position,
@@ -45,7 +45,7 @@ namespace pbd {
 	}
 
 	void TransformTracker::update(const ParticleList& particles) {
-		const glm::vec3
+		const vec3_t
 			& p0 = particles[mids[0]].position,
 			& p1 = particles[mids[1]].position,
 			& p2 = particles[mids[2]].position,

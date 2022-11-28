@@ -4,12 +4,12 @@
 
 namespace pbd {
 	PrefabParticle::PrefabParticle()
-		: PrefabParticle(glm::vec3(0.f), 1.f, 1.f, 0u, 0u)
+		: PrefabParticle(vec3_t(0.f), 1.f, 1.f, 0u, 0u)
 	{}
-	PrefabParticle::PrefabParticle(const glm::vec3& _pos, float _imass, float _radius, uint32_t _cgroups, uint32_t _cmask)
-		: PrefabParticle(_pos, glm::vec3(0.f), _imass, _radius, _cgroups, _cmask)
+	PrefabParticle::PrefabParticle(const vec3_t& _pos, real_t _imass, real_t _radius, uint32_t _cgroups, uint32_t _cmask)
+		: PrefabParticle(_pos, vec3_t(0.f), _imass, _radius, _cgroups, _cmask)
 	{}
-	PrefabParticle::PrefabParticle(const glm::vec3& _pos, const glm::vec3& _vel, float _imass, float _radius, uint32_t _cgroups, uint32_t _cmask)
+	PrefabParticle::PrefabParticle(const vec3_t& _pos, const vec3_t& _vel, real_t _imass, real_t _radius, uint32_t _cgroups, uint32_t _cmask)
 		: position(_pos)
 		, velocity(_vel)
 		, imass(_imass)
@@ -19,7 +19,7 @@ namespace pbd {
 	{}
 
 	void PrefabParticle::serialize(const PrefabParticle& particle, std::string& output) {
-		auto svec = [](const glm::vec3& value, std::string& output) {
+		auto svec = [](const vec3_t& value, std::string& output) {
 			ez::serialize::f32(value.x, output);
 			ez::serialize::f32(value.y, output);
 			ez::serialize::f32(value.z, output);
@@ -33,7 +33,7 @@ namespace pbd {
 		ez::serialize::u32(particle.collision_mask, output);
 	}
 	const char* PrefabParticle::deserialize(const char* first, const char* last, PrefabParticle& particle) {
-		auto svec = [](const char* first, const char* last, glm::vec3 & result) {
+		auto svec = [](const char* first, const char* last, vec3_t & result) {
 			first = ez::deserialize::f32(first, last, result.x);
 			first = ez::deserialize::f32(first, last, result.y);
 			first = ez::deserialize::f32(first, last, result.z);

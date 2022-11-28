@@ -17,7 +17,7 @@ namespace pbd {
 
 		static constexpr ConstraintType Kind = ConstraintType::HingeJoint;
 		
-		void eval(Engine& engine, float rdt2) const;
+		void eval(Engine& engine, real_t rdt2) const;
 
 		void remap(int32_t particle_offset, int32_t body_offset);
 		void transform(const Transform3& form);
@@ -31,12 +31,12 @@ namespace pbd {
 		struct BodyInfo {
 			int32_t id;
 			// 'r' is relative attach point, 'a' is the hinge axis, 'b' is the up axis, must be perpendicular to 'a'
-			glm::vec3 r, a, b;
+			vec3_t r, a, b;
 		};
 
 		std::array<BodyInfo, 2> info;
 		// Possibly store different kinds of compliance, such as positional compliance, angular compliance
-		float positional_compliance, angular_compliance;
+		real_t positional_compliance, angular_compliance;
 
 		static constexpr uint32_t
 			TargetBit = 1,
@@ -44,12 +44,12 @@ namespace pbd {
 		uint32_t components;
 
 		struct Target {
-			float angle;
-			float compliance;
+			real_t angle;
+			real_t compliance;
 		} target;
 		struct Limit {
-			float min_angle, max_angle;
-			float compliance;
+			real_t min_angle, max_angle;
+			real_t compliance;
 		} limit;
 	};
 

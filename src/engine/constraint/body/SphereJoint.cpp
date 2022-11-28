@@ -88,7 +88,7 @@ namespace pbd {
 		return first;
 	}
 
-	void CSphereJoint::eval(Engine& engine, float rdt2) const {
+	void CSphereJoint::eval(Engine& engine, real_t rdt2) const {
 		// First calculate the positional correction.
 		std::array<RigidBody*, 2> bodies;
 		bodies[0] = &engine.bodies.list[info[0].id];
@@ -102,20 +102,20 @@ namespace pbd {
 		);
 
 		if (components) {
-			std::array<glm::vec3, 2> a, b;
+			std::array<vec3_t, 2> a, b;
 			for (int i : iter::range(2)) {
 				a[i] = bodies[i]->to_world_vector(info[i].a);
 				b[i] = bodies[i]->to_world_vector(info[i].b);
 			}
 
 			if (components & TargetBit) {
-				glm::quat tmp = bodies[0]->orientation * glm::conjugate(bodies[1]->orientation * glm::conjugate(target.orientation));
-				apply_angular_correction(bodies, glm::vec3(tmp.x, tmp.y, tmp.z) * 2.f, target.compliance * rdt2);
+				quat_t tmp = bodies[0]->orientation * glm::conjugate(bodies[1]->orientation * glm::conjugate(target.orientation));
+				apply_angular_correction(bodies, vec3_t(tmp.x, tmp.y, tmp.z) * 2.f, target.compliance * rdt2);
 			}
 			if (components & TwistLimitBit) {
-				glm::vec3 n = glm::normalize(a[0] + a[1]);
-				glm::vec3 n0 = glm::normalize(b[0] - glm::dot(n, b[0]) * n);
-				glm::vec3 n1 = glm::normalize(b[1] - glm::dot(n, b[1]) * n);
+				vec3_t n = glm::normalize(a[0] + a[1]);
+				vec3_t n0 = glm::normalize(b[0] - glm::dot(n, b[0]) * n);
+				vec3_t n1 = glm::normalize(b[1] - glm::dot(n, b[1]) * n);
 				apply_angular_limit(bodies, n, n0, n1, twist_limit.min_angle, twist_limit.max_angle, twist_limit.compliance * rdt2);
 			}
 			if (components & SwingLimitBit) {

@@ -10,12 +10,12 @@
 
 namespace pbd {
 	using particle_span = Span<Particle*>;
-	using force_span = Span<glm::vec3*>;
+	using force_span = Span<vec3_t*>;
 	using tracker_span = Span<TransformTracker*>;
 	// Cannot implement the constraint span until the constraint list has a random access iterator.
 
 	using const_particle_span = Span<const Particle*>;
-	using const_force_span = Span<const glm::vec3*>;
+	using const_force_span = Span<const vec3_t*>;
 	using const_tracker_span = Span<const TransformTracker*>;
 
 	// Engine class that handles the creation and deletion of objects as collections of particles and constraints.
@@ -52,18 +52,18 @@ namespace pbd {
 
 		void solve();
 
-		const glm::vec3 & get_gravity() const noexcept;
-		void set_gravity(const glm::vec3 & _gravity) noexcept;
+		const vec3_t & get_gravity() const noexcept;
+		void set_gravity(const vec3_t & _gravity) noexcept;
 		void set_substeps(int count);
 		int get_substeps() const noexcept;
 
-		void set_static_friction(float friction);
-		float get_static_friction() const noexcept;
-		void set_kinetic_friction(float friction);
-		float get_kinetic_friction() const noexcept;
+		void set_static_friction(real_t friction);
+		real_t get_static_friction() const noexcept;
+		void set_kinetic_friction(real_t friction);
+		real_t get_kinetic_friction() const noexcept;
 
-		void set_timestep(float dt);
-		float get_timestep() const noexcept;
+		void set_timestep(real_t dt);
+		real_t get_timestep() const noexcept;
 
 		template<typename T>
 		int64_t add_constraint(const T& cval) {

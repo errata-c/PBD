@@ -9,10 +9,10 @@ namespace pbd {
 		//static constexpr Constraint Kind = Constraint::CollidePlane;
 
 		int32_t id;
-		glm::vec3 origin, normal;
-		float compliance;
+		vec3_t origin, normal;
+		real_t compliance;
 
-		void eval(Engine& engine, float rdt2) const;
+		void eval(Engine& engine, real_t rdt2) const;
 
 		void remap(int32_t offset);
 	};

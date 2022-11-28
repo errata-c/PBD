@@ -31,8 +31,8 @@ namespace pbd {
 		return first;
 	}
 
-	void CAttachParticle::eval(Engine& engine, float rdt2) const {
-		float alpha = (compliance * rdt2);
+	void CAttachParticle::eval(Engine& engine, real_t rdt2) const {
+		real_t alpha = (compliance * rdt2);
 
 		RigidBody* body = &engine.bodies.list[body_id];
 		Particle* particle = &engine.particles.list[particle_id];

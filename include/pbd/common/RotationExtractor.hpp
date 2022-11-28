@@ -1,8 +1,6 @@
 #pragma once
 #include <array>
-#include <glm/vec3.hpp>
-#include <glm/mat3x3.hpp>
-#include <glm/gtc/quaternion.hpp>
+#include <pbd/common/Types.hpp>
 
 namespace pbd {
 	// Class to handle the robust extraction of rotation matricies from deformable objects.
@@ -12,28 +10,28 @@ namespace pbd {
 	public:
 		RotationExtractor();
 		RotationExtractor(
-			const glm::vec3& p0,
-			const glm::vec3& p1,
-			const glm::vec3& p2,
-			const glm::vec3& p3
+			const vec3_t& p0,
+			const vec3_t& p1,
+			const vec3_t& p2,
+			const vec3_t& p3
 		);
 
 		void reset(
-			const glm::vec3& p0,
-			const glm::vec3& p1,
-			const glm::vec3& p2,
-			const glm::vec3& p3);
+			const vec3_t& p0,
+			const vec3_t& p1,
+			const vec3_t& p2,
+			const vec3_t& p3);
 
 		void update(
-			const glm::vec3& p0,
-			const glm::vec3& p1,
-			const glm::vec3& p2,
-			const glm::vec3& p3);
+			const vec3_t& p0,
+			const vec3_t& p1,
+			const vec3_t& p2,
+			const vec3_t& p3);
 
 		// The extracted rotation.
 		glm::mat3 rotation;
 
 		// The previous solution quaternion
-		glm::quat prior;
+		quat_t prior;
 	};
 }

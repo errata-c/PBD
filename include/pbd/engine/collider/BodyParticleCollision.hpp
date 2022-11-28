@@ -6,13 +6,13 @@ namespace pbd {
 	class RigidBody;
 
 	struct PointNorm {
-		glm::vec3 point, normal;
-		float distance;
+		vec3_t point, normal;
+		real_t distance;
 	};
-	PointNorm sdCapsule(const glm::vec3& p, float r, float h);
-	PointNorm sdBox(const glm::vec3& p, const glm::vec3& b);
-	PointNorm sdSphere(const glm::vec3& p, float r);
-	PointNorm sdCylinder(const glm::vec3& p, float r, float h);
+	PointNorm sdCapsule(const vec3_t& p, real_t r, real_t h);
+	PointNorm sdBox(const vec3_t& p, const vec3_t& b);
+	PointNorm sdSphere(const vec3_t& p, real_t r);
+	PointNorm sdCylinder(const vec3_t& p, real_t r, real_t h);
 
 	std::optional<Collision> capsule_particle_collide(const RigidBody& p0, const Particle& p1);
 	std::optional<Collision> cylinder_particle_collide(const RigidBody& p0, const Particle& p1);

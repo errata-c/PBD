@@ -4,9 +4,9 @@
 
 namespace pbd {
 	std::optional<Collision> sphere_sphere_collide(const RigidBody& p0, const RigidBody& p1) {
-		glm::vec3 normal = p1.position - p0.position;
-		float d = glm::dot(normal, normal);
-		float r2 = p0.dims[0] + p1.dims[0];
+		vec3_t normal = p1.position - p0.position;
+		real_t d = glm::dot(normal, normal);
+		real_t r2 = p0.dims[0] + p1.dims[0];
 		if (d < r2 * r2) {
 			Collision result;
 			result.normal = normal / std::sqrt(d);
